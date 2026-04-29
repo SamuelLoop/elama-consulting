@@ -335,7 +335,8 @@ body {
   border: 3px solid var(--ec-mint);
   box-shadow: 0 24px 60px rgba(91,158,127,0.15);
 }
-.ec-photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+.ec-photo-frame img,
+.ec-photo-img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
 .ec-photo-placeholder {
   width: 100%;
   height: 100%;
