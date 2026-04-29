@@ -1,0 +1,15 @@
+# Secrets — never commit these
+.env
+.env.local
+.env.*.local
+
+# Supabase local dev
+supabase/.temp/
+supabase/functions/.env
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
