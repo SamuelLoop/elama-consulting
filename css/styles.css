@@ -440,6 +440,16 @@ body {
 .ec-benefit-navy .ec-benefit-list li .bi-check-circle-fill { color: var(--ec-mint); flex-shrink: 0; margin-top: 3px; }
 .ec-benefit-gold .ec-benefit-list li .bi-check-circle-fill { color: var(--ec-green); flex-shrink: 0; margin-top: 3px; }
 
+/* Tidy two-line benefit list */
+.ec-benefit-list-tidy li { align-items: flex-start; margin-bottom: 1.1rem; }
+.ec-benefit-list-tidy li > div { display: flex; flex-direction: column; gap: 0.15rem; }
+.ec-benefit-list-tidy li strong { font-size: 0.93rem; font-weight: 600; line-height: 1.4; }
+.ec-benefit-list-tidy li span   { font-size: 0.82rem; line-height: 1.4; opacity: 0.72; }
+.ec-benefit-navy .ec-benefit-list-tidy li strong { color: #ffffff; }
+.ec-benefit-navy .ec-benefit-list-tidy li span   { color: rgba(255,255,255,0.65); }
+.ec-benefit-gold .ec-benefit-list-tidy li strong { color: var(--ec-text); }
+.ec-benefit-gold .ec-benefit-list-tidy li span   { color: var(--ec-text-muted); }
+
 /* ---- Steps ---- */
 .ec-step-circle {
   width: 68px;
