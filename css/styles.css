@@ -304,6 +304,24 @@ body {
   border-top: 1px solid rgba(91,158,127,0.15);
 }
 
+.ec-partner-label {
+  font-family: var(--ec-font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ec-text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.ec-partner-logo {
+  width: 233px; /* 466px original ÷ 2 */
+  height: auto;
+  /* The logo is white on transparent — recolour to dark for use on light strip */
+  filter: invert(1);
+  opacity: 0.65;
+}
+
 .ec-stat-number {
   font-family: var(--ec-font-heading);
   font-size: clamp(1.8rem, 4vw, 2.6rem);
