@@ -304,6 +304,17 @@ body {
   border-top: 1px solid rgba(91,158,127,0.15);
 }
 
+.ec-strip-headline {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  font-weight: 500;
+  color: var(--ec-dark);
+  line-height: 1.45;
+  max-width: 780px;
+  margin: 0 auto 2rem;
+  letter-spacing: 0.01em;
+}
+
 .ec-partner-label {
   font-family: var(--ec-font-body);
   font-size: 0.75rem;
