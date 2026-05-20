@@ -335,7 +335,11 @@
     <!-- Connection Request Queue -->
     <div class="li-section-title">Connection Request Queue</div>
     <p class="li-section-sub">Exactly 2 open events — warm leads. Export CSV and upload to Phantombuster to send connection requests automatically.</p>
-    <button class="li-export-btn" onclick="exportPhantombusterCSV()">⬇ Export CSV for Phantombuster</button>
+    <div style="display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;">
+      <button class="li-export-btn" id="pb-launch-btn" onclick="launchPhantombuster()">🚀 Launch on Phantombuster</button>
+      <button class="li-export-btn" style="background:var(--off-white2);color:var(--text);font-size:.8rem;" onclick="exportPhantombusterCSV()">⬇ Download CSV</button>
+      <span id="pb-launch-status" style="font-size:.85rem;color:var(--muted);"></span>
+    </div>
     <div id="li-connect-list"><div class="li-empty">Loading…</div></div>
   </div>
 
@@ -840,6 +844,61 @@ async function markConnectSent(leadId) {
   })
 
   btn.textContent = 'Sent ✓'; btn.className = 'li-btn sent'; btn.disabled = false
+}
+
+async function launchPhantombuster() {
+  const btn = document.getElementById('pb-launch-btn')
+  const status = document.getElementById('pb-launch-status')
+  const connectLeads = allLeads.filter(l => (openEventsMap[l.lead_id]||[]).length === 2 && l.linkedin)
+  if (!connectLeads.length) { status.textContent = 'No warm leads to send.'; return }
+
+  btn.disabled = true
+  btn.textContent = '⏳ Launching…'
+  status.textContent = ''
+
+  try {
+    const res = await fetch('https://ignite-chatbot-nu.vercel.app/api/phantombuster/launch', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer pb_csv_ignite_2026' },
+    })
+    const data = await res.json()
+    if (!res.ok) {
+      status.textContent = `✗ ${data.error || 'Launch failed'}`
+      status.style.color = '#c0392b'
+    } else {
+      btn.textContent = '✓ Launched'
+      status.textContent = `${data.warmLeads} leads queued · container ${data.containerId}`
+      status.style.color = 'var(--green-dark)'
+      // Bulk-mark all warm leads as connection requested in Supabase
+      const now = new Date().toISOString()
+      for (const l of connectLeads) {
+        if (!trackerMap[l.lead_id]) trackerMap[l.lead_id] = { lead_id: l.lead_id }
+        trackerMap[l.lead_id].linkedin_requested_at = now
+        sb('call_tracker', {
+          method: 'POST',
+          headers: { Prefer: 'resolution=merge-duplicates' },
+          body: JSON.stringify({
+            lead_id: l.lead_id,
+            email: l.email || '',
+            first_name: l.first_name || '',
+            company: l.company || '',
+            linkedin_requested_at: now,
+            updated_at: now,
+          }),
+        })
+      }
+      // Refresh the LinkedIn tab
+      setTimeout(() => loadLinkedIn(), 800)
+    }
+  } catch (e) {
+    status.textContent = `✗ Network error — ${e.message}`
+    status.style.color = '#c0392b'
+  } finally {
+    if (btn.textContent === '⏳ Launching…') {
+      btn.textContent = '🚀 Launch on Phantombuster'
+      btn.disabled = false
+    }
+  }
 }
 
 function exportPhantombusterCSV() {
