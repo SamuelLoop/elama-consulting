@@ -668,13 +668,13 @@ function inmailTemplate(lead) {
   const body =
 `Hi ${lead.first_name},
 
-I reached out to ${lead.company} by email recently — just wanted to connect here too.
+I reached out to ${lead.company} by email recently, just wanted to connect here too.
 
 There are a few reasons I think it's worth a quick chat, covered at elamaconsulting.com — the short version is there's a federal wellness program that could be worth $${s.low}k–$${s.high}k/year for a team your size, at no cost to employees.
 
 If you'd like to see the numbers for ${lead.company} specifically, the chatbot at samuel.elamaconsulting.com/health-chat walks through it in about 3 minutes.
 
-Happy to jump on a call whenever suits — would love to connect.
+Happy to jump on a call whenever suits. Would love to connect.
 
 Samuel`
   return { subject, body }
@@ -683,7 +683,7 @@ Samuel`
 function connectTemplate(lead) {
   const s = savings(lead.employee_count)
   // LinkedIn connection note — max 300 chars
-  const msg = `Hi ${lead.first_name} — I emailed ${lead.company} recently about something that might be relevant for your team. Connecting here in case it's worth a quick chat. Samuel`
+  const msg = `Hi ${lead.first_name}, I emailed ${lead.company} recently about something that might be relevant for your team. Connecting here in case it's worth a quick chat. Samuel`
   return msg.slice(0, 300)
 }
 
