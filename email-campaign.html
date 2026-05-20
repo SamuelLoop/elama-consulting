@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campaign Dashboard — Elama Consulting</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --green:#70C19A;--green-dark:#4FA07A;--dark:#1C1C1C;
+      --text:#2E2E2E;--muted:#6B7B74;--off-white:#F4F8F6;
+      --off-white2:#EEF5F2;--radius:12px;--radius-lg:20px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--off-white);color:var(--text);min-height:100vh;}
+
+    /* gate */
+    #gate{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem;}
+    .gate-card{background:#fff;border-radius:var(--radius-lg);padding:3rem 2.5rem;max-width:400px;width:100%;text-align:center;box-shadow:0 4px 32px rgba(0,0,0,.08);}
+    .gate-logo{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:var(--dark);margin-bottom:1.5rem;display:block;}
+    .gate-card h2{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;margin-bottom:.5rem;}
+    .gate-card p{font-size:.875rem;color:var(--muted);margin-bottom:1.5rem;}
+    .gate-input{width:100%;padding:.75rem 1rem;border:1.5px solid #e0e0e0;border-radius:var(--radius);font-size:.95rem;font-family:inherit;outline:none;margin-bottom:1rem;transition:border-color .2s;}
+    .gate-input:focus{border-color:var(--green);}
+    .gate-btn{width:100%;padding:.75rem;background:var(--green);color:#fff;border:none;border-radius:var(--radius);font-size:.95rem;font-family:inherit;font-weight:500;cursor:pointer;transition:background .2s;}
+    .gate-btn:hover{background:var(--green-dark);}
+    .gate-error{color:#c0392b;font-size:.85rem;margin-top:.75rem;display:none;}
+
+    /* shell */
+    #dashboard{display:none;}
+    .nav-tabs{display:flex;gap:.5rem;padding:1.5rem 2rem .5rem;border-bottom:1px solid #e8ede9;background:#fff;position:sticky;top:0;z-index:10;}
+    .nav-tab{padding:.5rem 1.25rem;border-radius:6px;border:none;background:transparent;font-size:.875rem;font-weight:500;font-family:inherit;color:var(--muted);cursor:pointer;transition:all .2s;}
+    .nav-tab.active{background:var(--green);color:#fff;}
+    .page{display:none;padding:2rem;max-width:960px;margin:auto;}
+    .page.active{display:block;}
+
+    /* overview */
+    .page-header{margin-bottom:2rem;}
+    .page-header h1{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;}
+    .page-header p{color:var(--muted);font-size:.875rem;margin-top:.25rem;}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem;}
+    .stat-card{background:#fff;border-radius:var(--radius);padding:1.25rem 1.5rem;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+    .stat-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.4rem;}
+    .stat-value{font-size:2rem;font-weight:600;color:var(--dark);line-height:1;}
+    .stat-value.green{color:var(--green-dark);}
+    .stat-sub{font-size:.75rem;color:var(--muted);margin-top:.3rem;}
+    .progress-section{background:#fff;border-radius:var(--radius);padding:1.5rem;margin-bottom:2rem;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+    .progress-section h3{font-size:.75rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:1rem;}
+    .bar-wrap{background:var(--off-white2);border-radius:99px;height:10px;overflow:hidden;margin-bottom:.5rem;}
+    .bar-fill{height:100%;border-radius:99px;transition:width .8s ease;}
+    .bar-fill.main{background:var(--green);}.bar-fill.e1{background:var(--green);}.bar-fill.e2{background:#5ba8d4;}.bar-fill.e3{background:#a07ad4;}.bar-fill.done{background:var(--dark);}
+    .bar-labels{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);}
+    .seq-rows{display:grid;gap:.75rem;margin-top:1.5rem;}
+    .seq-row{display:flex;align-items:center;gap:.75rem;}
+    .seq-label{font-size:.85rem;width:120px;flex-shrink:0;}
+    .seq-bar-wrap{flex:1;background:var(--off-white2);border-radius:99px;height:8px;overflow:hidden;}
+    .seq-count{font-size:.8rem;color:var(--muted);width:40px;text-align:right;}
+    hr{border:none;border-top:1px solid #e8ede9;margin:2rem 0;}
+    .section-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:400;margin-bottom:1rem;}
+    .tabs{display:flex;gap:.5rem;margin-bottom:1.5rem;flex-wrap:wrap;}
+    .tab{padding:.5rem 1.2rem;border-radius:6px;border:none;background:var(--off-white2);color:var(--text);font-size:.875rem;cursor:pointer;font-weight:500;font-family:inherit;}
+    .tab.active{background:var(--green);color:#fff;}
+    .email-card{background:#fff;border-radius:var(--radius);max-width:680px;box-shadow:0 2px 16px rgba(0,0,0,.07);overflow:hidden;}
+    .email-header{padding:1rem 1.5rem;border-bottom:1px solid #eee;}
+    .e-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:#999;margin-bottom:.25rem;}
+    .e-subject{font-size:1rem;font-weight:600;color:#222;}
+    .e-meta{font-size:.8rem;color:#aaa;margin-top:.3rem;}
+    .email-body{padding:2rem 1.5rem;font-size:.95rem;line-height:1.7;color:#333;}
+    .email-body p{margin-bottom:1rem;}
+    .email-body a{color:var(--green-dark);}
+    .email-panel{display:none;}.email-panel.active{display:block;}
+    .preview-note{font-size:.8rem;color:#999;margin-top:1rem;}
+
+    /* call manager */
+    .cm-toolbar{display:flex;gap:.75rem;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;}
+    .cm-search{flex:1;min-width:200px;padding:.6rem 1rem;border:1.5px solid #e0e0e0;border-radius:var(--radius);font-size:.875rem;font-family:inherit;outline:none;}
+    .cm-search:focus{border-color:var(--green);}
+    .cm-filter{padding:.5rem 1rem;border-radius:6px;border:1.5px solid #e0e0e0;font-size:.8rem;font-family:inherit;background:#fff;cursor:pointer;color:var(--text);}
+    .cm-filter.active{background:var(--green);border-color:var(--green);color:#fff;}
+    .cm-list{display:grid;gap:.75rem;}
+    .cm-card{background:#fff;border-radius:var(--radius);box-shadow:0 2px 10px rgba(0,0,0,.06);overflow:hidden;cursor:pointer;transition:box-shadow .2s;}
+    .cm-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.1);}
+    .cm-card-top{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;}
+    .cm-avatar{width:40px;height:40px;border-radius:50%;background:var(--off-white2);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:.95rem;color:var(--green-dark);flex-shrink:0;}
+    .cm-info{flex:1;min-width:0;}
+    .cm-name{font-weight:600;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .cm-company{font-size:.8rem;color:var(--muted);}
+    .cm-badge{padding:.25rem .65rem;border-radius:99px;font-size:.72rem;font-weight:500;flex-shrink:0;}
+    .badge-pending{background:#f0f0f0;color:#888;}
+    .badge-called{background:#dbeafe;color:#1d4ed8;}
+    .badge-interested{background:#dcfce7;color:#166534;}
+    .badge-not_interested{background:#fee2e2;color:#991b1b;}
+    .badge-no_answer{background:#fef9c3;color:#854d0e;}
+    .cm-detail{display:none;padding:0 1.25rem 1.25rem;border-top:1px solid #f0f0f0;margin-top:0;}
+    .cm-detail.open{display:block;}
+    .cm-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem 1.5rem;margin-bottom:1rem;font-size:.85rem;}
+    .cm-detail-grid span{color:var(--muted);}
+    .cm-detail-grid a{color:var(--green-dark);text-decoration:none;}
+    .cm-emails-sent{font-size:.8rem;color:var(--muted);margin-bottom:1rem;}
+    .status-btns{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;}
+    .status-btn{padding:.4rem .9rem;border-radius:6px;border:1.5px solid #e0e0e0;font-size:.8rem;font-family:inherit;cursor:pointer;background:#fff;transition:all .15s;}
+    .status-btn:hover{border-color:var(--green);}
+    .status-btn.active{background:var(--green);border-color:var(--green);color:#fff;}
+    .cm-notes{width:100%;padding:.65rem .85rem;border:1.5px solid #e0e0e0;border-radius:var(--radius);font-size:.875rem;font-family:inherit;resize:vertical;min-height:70px;outline:none;}
+    .cm-notes:focus{border-color:var(--green);}
+    .cm-save{margin-top:.6rem;padding:.5rem 1.25rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-family:inherit;font-weight:500;cursor:pointer;}
+    .cm-save:hover{background:var(--green-dark);}
+    .cm-empty{text-align:center;padding:3rem;color:var(--muted);font-size:.9rem;}
+    .cm-loading{text-align:center;padding:2rem;color:var(--muted);}
+    .open-badge{display:inline-block;padding:.15rem .5rem;border-radius:99px;font-size:.72rem;font-weight:600;margin-left:.4rem;}
+    .open-badge-1{background:#f0f0f0;color:#888;}
+    .open-badge-2{background:#fef3c7;color:#92400e;}
+    .open-badge-hot{background:#dcfce7;color:#166534;}
+    .heat-score{display:flex;align-items:center;gap:.3rem;flex-shrink:0;}
+    .heat-dots{display:flex;gap:3px;align-items:center;}
+    .heat-dot{width:7px;height:7px;border-radius:50%;background:#e5e7eb;}
+    .heat-dot.on-1{background:#d1d5db;}
+    .heat-dot.on-2{background:#fbbf24;}
+    .heat-dot.on-3{background:#f59e0b;}
+    .heat-dot.on-4{background:#70C19A;}
+    .heat-dot.on-5{background:#4FA07A;}
+    .heat-label{font-size:.7rem;font-weight:600;color:var(--muted);min-width:24px;text-align:right;}
+    .open-timeline{margin-top:.75rem;margin-bottom:.75rem;}
+    .open-timeline-title{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:.4rem;}
+    .open-event{font-size:.8rem;color:var(--text);padding:.2rem 0;border-left:2px solid var(--green);padding-left:.6rem;margin-bottom:.3rem;}
+    .open-event span{color:var(--muted);font-size:.75rem;margin-left:.4rem;}
+
+    /* linkedin tab */
+    .li-section-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;margin-bottom:.25rem;}
+    .li-section-sub{font-size:.85rem;color:var(--muted);margin-bottom:1.25rem;}
+    .li-card{background:#fff;border-radius:var(--radius);box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:1rem;overflow:hidden;}
+    .li-card-top{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;}
+    .li-avatar{width:40px;height:40px;border-radius:50%;background:#e0f0e8;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--green-dark);flex-shrink:0;}
+    .li-info{flex:1;min-width:0;}
+    .li-name{font-weight:600;font-size:.95rem;}
+    .li-meta{font-size:.8rem;color:var(--muted);}
+    .li-actions{display:flex;gap:.5rem;align-items:center;flex-shrink:0;}
+    .li-btn{padding:.4rem .9rem;border-radius:6px;border:1.5px solid #e0e0e0;font-size:.8rem;font-family:inherit;cursor:pointer;background:#fff;transition:all .15s;white-space:nowrap;}
+    .li-btn:hover{border-color:var(--green);}
+    .li-btn.primary{background:var(--green);border-color:var(--green);color:#fff;}
+    .li-btn.primary:hover{background:var(--green-dark);}
+    .li-btn.sent{background:#f0f0f0;color:#888;border-color:#e0e0e0;cursor:default;}
+    .li-template{padding:0 1.25rem 1.25rem;}
+    .li-template-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.4rem;margin-top:.75rem;}
+    .li-template-box{background:var(--off-white);border-radius:8px;padding:.85rem 1rem;font-size:.85rem;line-height:1.6;color:var(--text);white-space:pre-wrap;border:1px solid #e8ede9;}
+    .li-copy-btn{margin-top:.5rem;padding:.35rem .85rem;border-radius:6px;border:1.5px solid var(--green);color:var(--green-dark);background:#fff;font-size:.8rem;font-family:inherit;cursor:pointer;}
+    .li-copy-btn:hover{background:var(--off-white);}
+    .li-cap{background:#fff;border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,.06);font-size:.875rem;display:flex;align-items:center;gap:.75rem;}
+    .li-cap strong{color:var(--green-dark);}
+    .li-export-btn{padding:.5rem 1.25rem;background:var(--dark);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-family:inherit;cursor:pointer;margin-bottom:1.5rem;}
+    .li-export-btn:hover{opacity:.85;}
+    .li-empty{text-align:center;padding:2.5rem;color:var(--muted);font-size:.9rem;background:#fff;border-radius:var(--radius);box-shadow:0 2px 10px rgba(0,0,0,.06);}
+  </style>
+</head>
+<body>
+
+<!-- gate -->
+<div id="gate">
+  <div class="gate-card">
+    <span class="gate-logo">Elama Consulting</span>
+    <h2>Campaign Dashboard</h2>
+    <p>Enter your password to continue.</p>
+    <input id="pw-input" class="gate-input" type="password" placeholder="Password" />
+    <button class="gate-btn" onclick="checkPassword()">Enter</button>
+    <p class="gate-error" id="pw-error">Incorrect password.</p>
+  </div>
+</div>
+
+<!-- dashboard -->
+<div id="dashboard">
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('overview')">General Overview</button>
+    <button class="nav-tab" onclick="showPage('calls')">General Call Manager</button>
+    <button class="nav-tab" onclick="showPage('emails')">General Email Sequence</button>
+    <span style="width:1px;background:#e8ede9;align-self:stretch;margin:0 .25rem;"></span>
+    <button class="nav-tab" onclick="showPage('gc-overview')">GC Overview</button>
+    <button class="nav-tab" onclick="showPage('gc-calls')">GC Call Manager</button>
+    <button class="nav-tab" onclick="showPage('gc-emails')">GC Email Sequence</button>
+    <span style="width:1px;background:#e8ede9;align-self:stretch;margin:0 .25rem;"></span>
+    <button class="nav-tab" onclick="showPage('linkedin')">🔗 LinkedIn</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="page active" id="page-overview">
+    <div class="page-header">
+      <h1>Campaign Overview</h1>
+      <p id="last-updated">Loading…</p>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Sent today</div><div class="stat-value green" id="stat-today">—</div><div class="stat-sub" id="stat-limit-label">daily limit</div></div>
+      <div class="stat-card"><div class="stat-label">Total contacted</div><div class="stat-value" id="stat-contacted">—</div><div class="stat-sub">out of 1,481 leads</div></div>
+      <div class="stat-card"><div class="stat-label">Sequence complete</div><div class="stat-value" id="stat-complete">—</div><div class="stat-sub">all 3 emails sent</div></div>
+      <div class="stat-card"><div class="stat-label">Unsubscribed</div><div class="stat-value" id="stat-unsub">—</div><div class="stat-sub">opted out</div></div>
+      <div class="stat-card"><div class="stat-label">Campaign day</div><div class="stat-value" id="stat-day">—</div><div class="stat-sub" id="stat-ramp">warming up</div></div>
+      <div class="stat-card"><div class="stat-label">Total opened</div><div class="stat-value green" id="stat-opened">—</div><div class="stat-sub">unique opens</div></div>
+      <div class="stat-card"><div class="stat-label">Open rate</div><div class="stat-value" id="stat-openrate">—</div><div class="stat-sub">of emails sent</div></div>
+      <div class="stat-card"><div class="stat-label">Re-factored open rate</div><div class="stat-value green" id="stat-openrate-adj">—</div><div class="stat-sub" id="stat-openrate-adj-sub">minus 188 noise opens</div></div>
+    </div>
+    <div class="progress-section">
+      <h3>Overall progress</h3>
+      <div class="bar-wrap"><div class="bar-fill main" id="progress-fill" style="width:0%"></div></div>
+      <div class="bar-labels"><span id="progress-pct">0%</span><span>1,481 leads</span></div>
+      <div class="seq-rows">
+        <div class="seq-row"><span class="seq-label">Email 1 sent</span><div class="seq-bar-wrap"><div class="bar-fill e1" id="bar-e1" style="width:0%"></div></div><span class="seq-count" id="count-e1">—</span></div>
+        <div class="seq-row"><span class="seq-label">Email 2 sent</span><div class="seq-bar-wrap"><div class="bar-fill e2" id="bar-e2" style="width:0%"></div></div><span class="seq-count" id="count-e2">—</span></div>
+        <div class="seq-row"><span class="seq-label">Email 3 sent</span><div class="seq-bar-wrap"><div class="bar-fill e3" id="bar-e3" style="width:0%"></div></div><span class="seq-count" id="count-e3">—</span></div>
+        <div class="seq-row"><span class="seq-label">Complete</span><div class="seq-bar-wrap"><div class="bar-fill done" id="bar-done" style="width:0%"></div></div><span class="seq-count" id="count-done">—</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALL MANAGER -->
+  <div class="page" id="page-calls">
+    <div class="page-header">
+      <h1>Call Manager</h1>
+      <p>Track follow-up calls with everyone contacted.</p>
+    </div>
+    <div class="cm-toolbar">
+      <input class="cm-search" id="cm-search" type="text" placeholder="Search name or company…" oninput="renderList()" />
+      <button class="cm-filter active" data-filter="all" onclick="setFilter('all')">All</button>
+      <button class="cm-filter" data-filter="pending" onclick="setFilter('pending')">Pending</button>
+      <button class="cm-filter" data-filter="interested" onclick="setFilter('interested')">Interested</button>
+      <button class="cm-filter" data-filter="called" onclick="setFilter('called')">Called</button>
+      <button class="cm-filter" data-filter="no_answer" onclick="setFilter('no_answer')">No answer</button>
+      <button class="cm-filter" data-filter="not_interested" onclick="setFilter('not_interested')">Not interested</button>
+      <button class="cm-filter" data-filter="read" onclick="setFilter('read')">Read email</button>
+      <button class="cm-filter" data-filter="hot" onclick="setFilter('hot')">🔥 Hot leads</button>
+    </div>
+    <div class="cm-list" id="cm-list"><div class="cm-loading">Loading contacts…</div></div>
+  </div>
+
+  <!-- EMAIL SEQUENCE -->
+  <div class="page" id="page-emails">
+    <div class="page-header">
+      <h1>Email Sequence</h1>
+      <p>Sample lead: Jennifer at SCOUT (540 employees)</p>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="showEmail(0)">Email 1 — Day 0</button>
+      <button class="tab" onclick="showEmail(1)">Email 2 — Day 6</button>
+      <button class="tab" onclick="showEmail(2)">Email 3 — Day 12</button>
+    </div>
+    <div class="email-panel active" id="ep-0">
+      <div class="email-card">
+        <div class="email-header"><div class="e-label">Subject line</div><div class="e-subject">quick question for you Jennifer</div><div class="e-meta">From: Samuel &lt;samuel@elamamarketing.com&gt;</div></div>
+        <div class="email-body">
+          <p>Jennifer,</p><p>Came across SCOUT and wanted to reach out directly.</p>
+          <p>There's a federal wellness program most employers in your space haven't picked up yet. Based on your headcount it could be worth somewhere between <strong>$334,800 and $648,000</strong> a year, and it costs employees nothing.</p>
+          <p>I put a short explainer together if you want to take a look:</p>
+          <p><a href="https://samuel.elamaconsulting.com/health-chat">samuel.elamaconsulting.com/health-chat</a></p>
+          <p>Happy to answer any questions, just reply.</p><p>Samuel</p>
+          <p style="font-size:11px;color:#999;">Elama Consulting · <a href="#" style="color:#999;">Unsubscribe</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="email-panel" id="ep-1">
+      <div class="email-card">
+        <div class="email-header"><div class="e-label">Subject line</div><div class="e-subject">Re: quick question for you Jennifer</div><div class="e-meta">From: Samuel &lt;samuel@elamamarketing.com&gt;</div></div>
+        <div class="email-body">
+          <p>Jennifer,</p><p>Just circling back on this.</p>
+          <p>The program is government backed and already running at a few companies similar to SCOUT. Typical saving is around <strong>$491,400 a year</strong> for a team your size.</p>
+          <p>Takes about 3 minutes to get the gist:</p>
+          <p><a href="https://samuel.elamaconsulting.com/health-chat">samuel.elamaconsulting.com/health-chat</a></p>
+          <p>Samuel</p>
+          <p style="font-size:11px;color:#999;">Elama Consulting · <a href="#" style="color:#999;">Unsubscribe</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="email-panel" id="ep-2">
+      <div class="email-card">
+        <div class="email-header"><div class="e-label">Subject line</div><div class="e-subject">last one from me</div><div class="e-meta">From: Samuel &lt;samuel@elamamarketing.com&gt;</div></div>
+        <div class="email-body">
+          <p>Jennifer,</p><p>Won't keep bugging you after this.</p>
+          <p>If $648,000 a year in savings is something worth 3 minutes of your time at some point, the link is here:</p>
+          <p><a href="https://samuel.elamaconsulting.com/health-chat">samuel.elamaconsulting.com/health-chat</a></p>
+          <p>If not, totally fine. Good luck with everything at SCOUT.</p><p>Samuel</p>
+          <p style="font-size:11px;color:#999;">Elama Consulting · <a href="#" style="color:#999;">Unsubscribe</a></p>
+        </div>
+      </div>
+    </div>
+    <p class="preview-note">All 1,481 emails are personalised with the recipient's name, company, and a calculated savings figure based on their employee count.</p>
+  </div>
+
+  <!-- GC OVERVIEW -->
+  <div class="page" id="page-gc-overview">
+    <div class="page-header">
+      <h1>GC Campaign Overview</h1>
+      <p>Pending setup — Resend API key, email sequence, and contact database not yet configured.</p>
+    </div>
+    <div style="background:#fff;border-radius:var(--radius);padding:2rem;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center;color:var(--muted);">
+      <div style="font-size:2.5rem;margin-bottom:1rem;">⏳</div>
+      <p style="font-size:1rem;font-weight:500;color:var(--dark);margin-bottom:.5rem;">Campaign not yet active</p>
+      <p style="font-size:.875rem;">Provide the Resend API key, email sequence, and contact database to activate this campaign. The infrastructure is ready.</p>
+    </div>
+    <div class="stats-grid" style="margin-top:2rem;opacity:.4;pointer-events:none;">
+      <div class="stat-card"><div class="stat-label">Sent today</div><div class="stat-value green" id="gc-stat-today">—</div><div class="stat-sub" id="gc-stat-limit-label">daily limit</div></div>
+      <div class="stat-card"><div class="stat-label">Total contacted</div><div class="stat-value" id="gc-stat-contacted">—</div><div class="stat-sub">out of — leads</div></div>
+      <div class="stat-card"><div class="stat-label">Sequence complete</div><div class="stat-value" id="gc-stat-complete">—</div><div class="stat-sub">all emails sent</div></div>
+      <div class="stat-card"><div class="stat-label">Unsubscribed</div><div class="stat-value" id="gc-stat-unsub">—</div><div class="stat-sub">opted out</div></div>
+      <div class="stat-card"><div class="stat-label">Campaign day</div><div class="stat-value" id="gc-stat-day">—</div><div class="stat-sub" id="gc-stat-ramp">—</div></div>
+      <div class="stat-card"><div class="stat-label">Total opened</div><div class="stat-value green" id="gc-stat-opened">—</div><div class="stat-sub">unique opens</div></div>
+      <div class="stat-card"><div class="stat-label">Open rate</div><div class="stat-value" id="gc-stat-openrate">—</div><div class="stat-sub">of emails sent</div></div>
+      <div class="stat-card"><div class="stat-label">Adjusted open rate</div><div class="stat-value green" id="gc-stat-openrate-adj">—</div><div class="stat-sub" id="gc-stat-openrate-adj-sub">—</div></div>
+    </div>
+  </div>
+
+  <!-- GC CALL MANAGER -->
+  <div class="page" id="page-gc-calls">
+    <div class="page-header">
+      <h1>GC Call Manager</h1>
+      <p>Pending setup — contact database not yet loaded.</p>
+    </div>
+    <div style="background:#fff;border-radius:var(--radius);padding:2rem;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center;color:var(--muted);">
+      <div style="font-size:2.5rem;margin-bottom:1rem;">⏳</div>
+      <p style="font-size:1rem;font-weight:500;color:var(--dark);margin-bottom:.5rem;">No contacts loaded yet</p>
+      <p style="font-size:.875rem;">Once the GC contact database is provided and the campaign is running, contacts will appear here with the same call tracking tools as the General campaign.</p>
+    </div>
+  </div>
+
+  <!-- LINKEDIN -->
+  <div class="page" id="page-linkedin">
+    <div class="page-header">
+      <h1>LinkedIn Outreach</h1>
+      <p>Prioritised daily list based on email open activity.</p>
+    </div>
+
+    <!-- InMail Queue -->
+    <div class="li-section-title">InMail Queue</div>
+    <p class="li-section-sub">3+ open events — your hottest leads. Send manually via Sales Navigator. Core plan: ~2 InMails/day.</p>
+    <div class="li-cap"><strong id="li-inmail-count">—</strong>&nbsp;leads ready &nbsp;·&nbsp; Suggested today: <strong id="li-inmail-today">2</strong> &nbsp;·&nbsp; <span id="li-inmail-credits" style="color:var(--muted)">50 credits/month</span></div>
+    <div id="li-inmail-list"><div class="li-empty">Loading…</div></div>
+
+    <hr style="margin:2rem 0;">
+
+    <!-- Connection Request Queue -->
+    <div class="li-section-title">Connection Request Queue</div>
+    <p class="li-section-sub">Exactly 2 open events — warm leads. Export CSV and upload to Phantombuster to send connection requests automatically.</p>
+    <button class="li-export-btn" onclick="exportPhantombusterCSV()">⬇ Export CSV for Phantombuster</button>
+    <div id="li-connect-list"><div class="li-empty">Loading…</div></div>
+  </div>
+
+  <!-- GC EMAIL SEQUENCE -->
+  <div class="page" id="page-gc-emails">
+    <div class="page-header">
+      <h1>GC Email Sequence</h1>
+      <p>Pending setup — email sequence not yet configured.</p>
+    </div>
+    <div style="background:#fff;border-radius:var(--radius);padding:2rem;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center;color:var(--muted);">
+      <div style="font-size:2.5rem;margin-bottom:1rem;">⏳</div>
+      <p style="font-size:1rem;font-weight:500;color:var(--dark);margin-bottom:.5rem;">Email sequence not yet built</p>
+      <p style="font-size:.875rem;">Provide the GC email templates and they will be previewed here, personalised with recipient name, company, and relevant figures.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SB_URL  = 'https://bosvbnjhsimqtnwkkcvn.supabase.co'
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvc3Zibmpoc2ltcXRud2trY3ZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNjA0OTMsImV4cCI6MjA5MTkzNjQ5M30.4F1XJarCvJ2ESpL71h-0wMBF1iH5VAesx-EANMhTbyg'
+const CAMPAIGN_START = '2026-05-13'
+const TOTAL_LEADS    = 1481
+const PASSWORD       = 'ignite2026'
+const RAMP           = [[0,4,20],[5,9,40],[10,14,80],[15,19,120],[20,Infinity,150]]
+const STATUS_LABELS  = { pending:'Pending', called:'Called', interested:'Interested', not_interested:'Not interested', no_answer:'No answer' }
+
+let allLeads = []
+let trackerMap = {}
+let opensMap = {}       // lead_id → Set of sequence_index values opened
+let lastOpenMap = {}    // lead_id → most recent opened_at ISO string
+let openEventsMap = {}  // lead_id → array of { sequence_index, opened_at } all events
+let heatScores = {}     // lead_id → normalised heat score 0-10
+let activeFilter = 'all'
+let openCard = null
+
+function sb(path, opts={}) {
+  const { headers: extraHeaders, ...rest } = opts
+  return fetch(`${SB_URL}/rest/v1/${path}`, {
+    headers: { apikey: SB_KEY, Authorization: `Bearer ${SB_KEY}`, 'Content-Type': 'application/json', ...extraHeaders },
+    ...rest
+  })
+}
+
+function checkPassword() {
+  if (document.getElementById('pw-input').value === PASSWORD) {
+    document.getElementById('gate').style.display = 'none'
+    document.getElementById('dashboard').style.display = 'block'
+    loadStats()
+    loadCallManager()
+  } else {
+    document.getElementById('pw-error').style.display = 'block'
+  }
+}
+document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key==='Enter') checkPassword() })
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'))
+  document.getElementById('page-'+id).classList.add('active')
+  event.target.classList.add('active')
+  if (id === 'linkedin') loadLinkedIn()
+}
+
+// ── Overview stats ──────────────────────────────────────────
+async function loadStats() {
+  const dayNum = Math.floor((Date.now() - new Date(CAMPAIGN_START).getTime()) / 86400000)
+  const limit  = (RAMP.find(([a,b]) => dayNum>=a && dayNum<=b)||[0,0,80])[2]
+  document.getElementById('stat-day').textContent = dayNum+1
+  document.getElementById('stat-limit-label').textContent = `${limit} emails/day limit`
+  document.getElementById('stat-ramp').textContent = dayNum<15 ? 'warming up' : 'full speed'
+
+  try {
+    const r = await (await sb('campaign_stats?select=*')).json()
+    const s = r[0]||{}
+    const e1=+s.email1_sent||0, e2=+s.email2_sent||0, e3=+s.email3_sent||0
+    const done=+s.sequence_complete||0, contacted=+s.total_contacted||0, today=+s.sent_today||0
+    document.getElementById('stat-today').textContent = today
+    document.getElementById('stat-contacted').textContent = contacted
+    document.getElementById('stat-complete').textContent = done
+    const pct = Math.round((contacted/TOTAL_LEADS)*100)
+    document.getElementById('progress-fill').style.width = pct+'%'
+    document.getElementById('progress-pct').textContent = pct+'%'
+    const set=(id,bid,v)=>{ document.getElementById(id).textContent=v; document.getElementById(bid).style.width=Math.round((v/TOTAL_LEADS)*100)+'%' }
+    set('count-e1','bar-e1',e1); set('count-e2','bar-e2',e2); set('count-e3','bar-e3',e3); set('count-done','bar-done',done)
+
+    // Open stats (unique opens / total sent)
+    try {
+      const openRes = await sb('email_opens?select=count', { headers:{ Prefer:'count=exact', Range:'0-0' } })
+      const totalOpened = parseInt(openRes.headers.get('content-range')?.split('/')[1]||'0')
+      const totalSent = e1 + e2 + e3
+      const trackableSent = Math.max(0, totalSent - 188)
+      document.getElementById('stat-opened').textContent = totalOpened
+      document.getElementById('stat-openrate').textContent = totalSent > 0 ? Math.round((totalOpened/totalSent)*100)+'%' : '—'
+      document.getElementById('stat-openrate-adj').textContent = trackableSent > 0 ? Math.round((totalOpened/trackableSent)*100)+'%' : '—'
+      document.getElementById('stat-openrate-adj-sub').textContent = `${totalOpened} opens / ${trackableSent} trackable sent`
+    } catch(e) {}
+  } catch(e) {}
+
+  try {
+    const r = await sb('unsubscribes?select=count', { headers:{ Prefer:'count=exact', Range:'0-0' } })
+    document.getElementById('stat-unsub').textContent = r.headers.get('content-range')?.split('/')[1]||'0'
+  } catch(e) {}
+
+  document.getElementById('last-updated').textContent = `Last updated ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`
+}
+
+// ── Call Manager ────────────────────────────────────────────
+async function loadCallManager() {
+  // Fetch unique contacts from campaign_sends
+  const sendsRes = await sb('campaign_sends?select=lead_id,first_name,full_name,company,email,phone,employee_count,category,city,website,linkedin,sequence_index,sent_at&order=sent_at.asc')
+  const sends = await sendsRes.json()
+
+  // Deduplicate — one entry per lead, track which emails were sent
+  const leadMap = {}
+  for (const s of sends) {
+    if (!leadMap[s.lead_id]) leadMap[s.lead_id] = { lead_id:s.lead_id, first_name:s.first_name, full_name:s.full_name, company:s.company, email:s.email, phone:s.phone, employee_count:s.employee_count, category:s.category, city:s.city, website:s.website, linkedin:s.linkedin, emails_sent:[], first_sent:s.sent_at }
+    leadMap[s.lead_id].emails_sent.push(s.sequence_index)
+  }
+  allLeads = Object.values(leadMap)
+
+  // Fetch call tracker records
+  const trackerRes = await sb('call_tracker?select=*')
+  const tracker = await trackerRes.json()
+  trackerMap = Object.fromEntries(tracker.map(t => [t.lead_id, t]))
+
+  // Fetch all open events — build maps for badge, timeline, heat score
+  try {
+    const opensRes = await sb('email_opens?select=lead_id,sequence_index,opened_at&order=opened_at.desc')
+    const opens = await opensRes.json()
+    opensMap = {}; lastOpenMap = {}; openEventsMap = {}
+
+    for (const o of opens) {
+      if (!o.lead_id) continue
+      if (!opensMap[o.lead_id]) opensMap[o.lead_id] = new Set()
+      opensMap[o.lead_id].add(o.sequence_index)
+      if (!lastOpenMap[o.lead_id]) lastOpenMap[o.lead_id] = o.opened_at
+      if (!openEventsMap[o.lead_id]) openEventsMap[o.lead_id] = []
+      openEventsMap[o.lead_id].push({ sequence_index: o.sequence_index, opened_at: o.opened_at })
+    }
+
+    // Compute heat scores (raw), then normalise 0-10 across all leads
+    const rawScores = {}
+    for (const [leadId, events] of Object.entries(openEventsMap)) {
+      const distinct = opensMap[leadId].size
+      const recency = events.reduce((sum, e) => {
+        const days = (Date.now() - new Date(e.opened_at).getTime()) / 86400000
+        return sum + 1 / (days + 1)
+      }, 0)
+      rawScores[leadId] = recency * (1 + distinct * 0.5)
+    }
+    const maxRaw = Math.max(...Object.values(rawScores), 1)
+    heatScores = Object.fromEntries(
+      Object.entries(rawScores).map(([id, s]) => [id, Math.round((s / maxRaw) * 10)])
+    )
+  } catch(e) { opensMap = {}; lastOpenMap = {}; openEventsMap = {}; heatScores = {} }
+
+  renderList()
+}
+
+function setFilter(f) {
+  activeFilter = f
+  document.querySelectorAll('.cm-filter').forEach(b => b.classList.toggle('active', b.dataset.filter===f))
+  renderList()
+}
+
+function renderList() {
+  const q = document.getElementById('cm-search').value.toLowerCase()
+  let leads = allLeads.filter(l => {
+    const t = trackerMap[l.lead_id]
+    const status = t?.status || 'pending'
+    if (activeFilter === 'read') {
+      if (!lastOpenMap[l.lead_id]) return false
+    } else if (activeFilter === 'hot') {
+      if (!openEventsMap[l.lead_id] || openEventsMap[l.lead_id].length < 2) return false
+    } else if (activeFilter !== 'all' && status !== activeFilter) return false
+    if (q && !l.first_name?.toLowerCase().includes(q) && !l.company?.toLowerCase().includes(q)) return false
+    return true
+  })
+
+  // Sort by most recent open / heat score
+  if (activeFilter === 'read') {
+    leads.sort((a, b) => new Date(lastOpenMap[b.lead_id]) - new Date(lastOpenMap[a.lead_id]))
+  } else if (activeFilter === 'hot') {
+    leads.sort((a, b) => (heatScores[b.lead_id] || 0) - (heatScores[a.lead_id] || 0))
+  }
+
+  const list = document.getElementById('cm-list')
+  if (!leads.length) { list.innerHTML = '<div class="cm-empty">No contacts match this filter.</div>'; return }
+
+  list.innerHTML = leads.map(l => {
+    const t = trackerMap[l.lead_id] || {}
+    const status = t.status || 'pending'
+    const initials = (l.first_name||'?')[0].toUpperCase()
+    const leadOpens = opensMap[l.lead_id] || new Set()
+    const openCount = l.emails_sent.filter(i => leadOpens.has(i)).length
+    const emailsLabel = `${l.emails_sent.length} sent · ${openCount} opened`
+    const firstDate = l.first_sent ? new Date(l.first_sent).toLocaleDateString('en-GB',{day:'numeric',month:'short'}) : ''
+    const lastRead = lastOpenMap[l.lead_id]
+      ? '📖 ' + new Date(lastOpenMap[l.lead_id]).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})
+      : null
+    const events = openEventsMap[l.lead_id] || []
+    const totalOpens = events.length
+    const heat = heatScores[l.lead_id] || 0
+    // Open count badge
+    const badgeClass = totalOpens === 0 ? '' : totalOpens === 1 ? 'open-badge-1' : totalOpens <= 3 ? 'open-badge-2' : 'open-badge-hot'
+    const openBadge = totalOpens > 0 ? `<span class="open-badge ${badgeClass}">${totalOpens}×</span>` : ''
+    // Signal bar (5 dots)
+    const filledDots = Math.ceil(heat / 2)
+    const dots = [1,2,3,4,5].map(i => `<div class="heat-dot${i<=filledDots?' on-'+filledDots:''}"></div>`).join('')
+    const heatBar = totalOpens > 0 ? `<div class="heat-score"><div class="heat-dots">${dots}</div><span class="heat-label">${heat}/10</span></div>` : ''
+    // Open event timeline for expanded card
+    const timelineHtml = events.length > 0 ? `
+      <div class="open-timeline">
+        <div class="open-timeline-title">Open history</div>
+        ${events.map(e => `<div class="open-event">Email ${(e.sequence_index??0)+1} opened<span>${new Date(e.opened_at).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</span></div>`).join('')}
+      </div>` : ''
+    const emailsDetail = [0,1,2].map(i => {
+      const sent = l.emails_sent.includes(i)
+      if (!sent) return `<span style="color:#ccc">Email ${i+1} not sent</span>`
+      const opened = leadOpens.has(i)
+      const icon = opened ? '✓' : '—'
+      const col = opened ? 'var(--green-dark)' : 'var(--muted)'
+      return `<a href="#" onclick="navToEmail(${i});return false;" style="color:${col};text-decoration:none;" title="Preview email ${i+1}">Email ${i+1} <strong>${icon}</strong></a>`
+    }).join(' &nbsp;·&nbsp; ')
+    return `
+    <div class="cm-card" id="card-${l.lead_id}">
+      <div class="cm-card-top" onclick="toggleCard('${l.lead_id}')">
+        <div class="cm-avatar">${initials}</div>
+        <div class="cm-info">
+          <div class="cm-name">${l.first_name||''} &nbsp;<span style="font-weight:400;color:var(--muted)">${l.company||''}</span>${openBadge}</div>
+          <div class="cm-company">${l.email} &nbsp;·&nbsp; ${l.employee_count ? l.employee_count.toLocaleString()+' staff &nbsp;·&nbsp; ' : ''}${emailsLabel} &nbsp;·&nbsp; ${firstDate}${lastRead ? ' &nbsp;·&nbsp; <strong style="color:var(--green-dark)">'+lastRead+'</strong>' : ''}</div>
+        </div>
+        ${heatBar}
+        <span class="cm-badge badge-${status}">${STATUS_LABELS[status]}</span>
+      </div>
+      <div class="cm-detail" id="detail-${l.lead_id}">
+        <div class="cm-detail-grid">
+          <div><span>Full name</span><br>${l.full_name||'—'}</div>
+          <div><span>Company</span><br>${l.company||'—'}</div>
+          <div><span>Category</span><br>${l.category||'—'}</div>
+          <div><span>City</span><br>${l.city||'—'}</div>
+          <div><span>Staff</span><br>${l.employee_count ? l.employee_count.toLocaleString() : '—'}</div>
+          <div><span>Phone</span><br>${l.phone ? `<a href="tel:${l.phone}">${l.phone}</a>` : '—'}</div>
+          <div><span>Email</span><br><a href="mailto:${l.email}">${l.email}</a></div>
+          <div><span>Website</span><br>${l.website ? `<a href="${l.website}" target="_blank">${l.website.replace(/^https?:\/\//,'')}</a>` : '—'}</div>
+          <div><span>LinkedIn</span><br>${l.linkedin ? `<a href="${l.linkedin}" target="_blank">View profile</a>` : '—'}</div>
+          <div><span>First contacted</span><br>${firstDate}</div>
+          <div style="grid-column:1/-1"><span>Email sequence</span><br><span style="font-size:.85rem">${emailsDetail}</span></div>
+        </div>
+        ${timelineHtml}
+        <div class="status-btns">
+          ${Object.entries(STATUS_LABELS).map(([k,v]) => `<button class="status-btn${(t.status||'pending')===k?' active':''}" onclick="setStatus('${l.lead_id}','${k}')">${v}</button>`).join('')}
+        </div>
+        <textarea class="cm-notes" id="notes-${l.lead_id}" placeholder="Add notes…">${t.notes||''}</textarea>
+        <button class="cm-save" onclick="saveTracker('${l.lead_id}','${l.email}','${l.first_name||''}','${(l.company||'').replace(/'/g,"\\'")}')">Save</button>
+      </div>
+    </div>`
+  }).join('')
+}
+
+function toggleCard(leadId) {
+  if (openCard && openCard !== leadId) {
+    document.getElementById('detail-'+openCard).classList.remove('open')
+  }
+  const d = document.getElementById('detail-'+leadId)
+  d.classList.toggle('open')
+  openCard = d.classList.contains('open') ? leadId : null
+}
+
+function setStatus(leadId, status) {
+  if (!trackerMap[leadId]) trackerMap[leadId] = { lead_id:leadId, status, notes:'' }
+  else trackerMap[leadId].status = status
+  // Update badge immediately
+  const card = document.getElementById('card-'+leadId)
+  card.querySelector('.cm-badge').className = `cm-badge badge-${status}`
+  card.querySelector('.cm-badge').textContent = STATUS_LABELS[status]
+  // Update button states
+  card.querySelectorAll('.status-btn').forEach(b => b.classList.toggle('active', b.textContent===STATUS_LABELS[status]))
+}
+
+async function saveTracker(leadId, email, firstName, company) {
+  const notes  = document.getElementById('notes-'+leadId).value
+  const status = trackerMap[leadId]?.status || 'pending'
+  const payload = { lead_id:leadId, email, first_name:firstName, company, status, notes, updated_at:new Date().toISOString() }
+  if (status==='called' && !trackerMap[leadId]?.called_at) payload.called_at = new Date().toISOString()
+
+  await sb('call_tracker', {
+    method: 'POST',
+    headers: { Prefer:'resolution=merge-duplicates' },
+    body: JSON.stringify(payload)
+  })
+
+  if (!trackerMap[leadId]) trackerMap[leadId] = {}
+  Object.assign(trackerMap[leadId], payload)
+
+  const btn = document.querySelector(`#detail-${leadId} .cm-save`)
+  btn.textContent = 'Saved!'
+  setTimeout(() => { btn.textContent = 'Save' }, 1500)
+}
+
+function showEmail(i) {
+  document.querySelectorAll('.email-panel').forEach((p,j) => p.classList.toggle('active',j===i))
+  document.querySelectorAll('.tab').forEach((t,j) => t.classList.toggle('active',j===i))
+}
+
+function navToEmail(i) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+  document.getElementById('page-emails').classList.add('active')
+  document.querySelectorAll('.nav-tab').forEach((t,j) => t.classList.toggle('active', j===2))
+  showEmail(i)
+}
+
+// ── LinkedIn ─────────────────────────────────────────────────
+
+function savings(employeeCount) {
+  const n = parseInt(employeeCount) || 100
+  const low  = Math.round(n * 620  / 1000)
+  const high = Math.round(n * 1200 / 1000)
+  return { low, high }
+}
+
+function inmailTemplate(lead) {
+  const s = savings(lead.employee_count)
+  const subject = `Quick follow-up, ${lead.first_name}`
+  const body =
+`Hi ${lead.first_name},
+
+I reached out to ${lead.company} by email recently — just wanted to connect here too.
+
+There are a few reasons I think it's worth a quick chat, covered at elamaconsulting.com — the short version is there's a federal wellness program that could be worth $${s.low}k–$${s.high}k/year for a team your size, at no cost to employees.
+
+If you'd like to see the numbers for ${lead.company} specifically, the chatbot at samuel.elamaconsulting.com/health-chat walks through it in about 3 minutes.
+
+Happy to jump on a call whenever suits — would love to connect.
+
+Samuel`
+  return { subject, body }
+}
+
+function connectTemplate(lead) {
+  const s = savings(lead.employee_count)
+  // LinkedIn connection note — max 300 chars
+  const msg = `Hi ${lead.first_name} — I emailed ${lead.company} recently about a federal program potentially worth $${s.low}k–$${s.high}k/year. Worth a quick chat — elamaconsulting.com has the detail. Happy to connect! Samuel`
+  return msg.slice(0, 300)
+}
+
+function liSalesNavUrl(linkedinUrl) {
+  if (!linkedinUrl) return null
+  // Convert regular LinkedIn URL to Sales Navigator equivalent
+  const match = linkedinUrl.match(/linkedin\.com\/in\/([^/?]+)/)
+  if (!match) return linkedinUrl
+  return `https://www.linkedin.com/sales/lead/${match[1]}`
+}
+
+async function loadLinkedIn() {
+  // allLeads, openEventsMap, trackerMap already loaded by loadCallManager
+  const inmailLeads   = []
+  const connectLeads  = []
+
+  for (const lead of allLeads) {
+    const events = openEventsMap[lead.lead_id] || []
+    const tracker = trackerMap[lead.lead_id] || {}
+    if (events.length >= 3) {
+      inmailLeads.push({ ...lead, events, tracker })
+    } else if (events.length === 2) {
+      connectLeads.push({ ...lead, events, tracker })
+    }
+  }
+
+  // Sort both by heat score desc
+  inmailLeads.sort((a,b) => (heatScores[b.lead_id]||0) - (heatScores[a.lead_id]||0))
+  connectLeads.sort((a,b) => (heatScores[b.lead_id]||0) - (heatScores[a.lead_id]||0))
+
+  // InMail queue
+  document.getElementById('li-inmail-count').textContent = inmailLeads.length
+  const inmailList = document.getElementById('li-inmail-list')
+  if (!inmailLeads.length) {
+    inmailList.innerHTML = '<div class="li-empty">No leads at 3+ opens yet — check back as opens come in.</div>'
+  } else {
+    inmailList.innerHTML = inmailLeads.map(l => {
+      const { subject, body } = inmailTemplate(l)
+      const salesNavUrl = liSalesNavUrl(l.linkedin)
+      const alreadySent = !!l.tracker.inmail_sent_at
+      const sentLabel = alreadySent
+        ? `Sent ${new Date(l.tracker.inmail_sent_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`
+        : 'Mark sent'
+      return `
+      <div class="li-card" id="li-card-${l.lead_id}">
+        <div class="li-card-top">
+          <div class="li-avatar">${(l.first_name||'?')[0].toUpperCase()}</div>
+          <div class="li-info">
+            <div class="li-name">${l.first_name} ${l.company ? '· '+l.company : ''}</div>
+            <div class="li-meta">${l.events.length} opens · Heat ${heatScores[l.lead_id]||0}/10 · ${l.employee_count ? l.employee_count.toLocaleString()+' staff' : ''}</div>
+          </div>
+          <div class="li-actions">
+            ${salesNavUrl ? `<a href="${salesNavUrl}" target="_blank"><button class="li-btn">Open in Sales Nav →</button></a>` : '<span style="font-size:.8rem;color:var(--muted)">No LinkedIn URL</span>'}
+            <button class="li-btn ${alreadySent ? 'sent' : 'primary'}" id="li-inmail-btn-${l.lead_id}" onclick="${alreadySent ? '' : `markInmailSent('${l.lead_id}')`}">${sentLabel}</button>
+          </div>
+        </div>
+        <div class="li-template">
+          <div class="li-template-label">Subject</div>
+          <div class="li-template-box">${subject}</div>
+          <div class="li-template-label">Message</div>
+          <div class="li-template-box" id="li-body-${l.lead_id}">${body}</div>
+          <button class="li-copy-btn" onclick="copyInmail('${l.lead_id}', \`${subject.replace(/`/g,'\\`')}\`, \`${body.replace(/`/g,'\\`')}\`)">Copy message</button>
+        </div>
+      </div>`
+    }).join('')
+  }
+
+  // Connection request queue
+  const connectList = document.getElementById('li-connect-list')
+  if (!connectLeads.length) {
+    connectList.innerHTML = '<div class="li-empty">No leads at exactly 2 opens yet.</div>'
+  } else {
+    connectList.innerHTML = connectLeads.map(l => {
+      const msg = connectTemplate(l)
+      const salesNavUrl = liSalesNavUrl(l.linkedin)
+      const alreadySent = !!l.tracker.linkedin_requested_at
+      const sentLabel = alreadySent
+        ? `Sent ${new Date(l.tracker.linkedin_requested_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`
+        : 'Mark sent'
+      return `
+      <div class="li-card" id="li-conn-card-${l.lead_id}">
+        <div class="li-card-top">
+          <div class="li-avatar">${(l.first_name||'?')[0].toUpperCase()}</div>
+          <div class="li-info">
+            <div class="li-name">${l.first_name} ${l.company ? '· '+l.company : ''}</div>
+            <div class="li-meta">2 opens · Heat ${heatScores[l.lead_id]||0}/10 · ${l.employee_count ? l.employee_count.toLocaleString()+' staff' : ''}</div>
+          </div>
+          <div class="li-actions">
+            ${salesNavUrl ? `<a href="${salesNavUrl}" target="_blank"><button class="li-btn">Open in Sales Nav →</button></a>` : '<span style="font-size:.8rem;color:var(--muted)">No LinkedIn URL</span>'}
+            <button class="li-btn ${alreadySent ? 'sent' : 'primary'}" id="li-conn-btn-${l.lead_id}" onclick="${alreadySent ? '' : `markConnectSent('${l.lead_id}')`}">${sentLabel}</button>
+          </div>
+        </div>
+        <div class="li-template">
+          <div class="li-template-label">Connection note (${msg.length}/300 chars)</div>
+          <div class="li-template-box">${msg}</div>
+          <button class="li-copy-btn" onclick="navigator.clipboard.writeText(\`${msg.replace(/`/g,'\\`')}\`).then(()=>{ const b=event.target; b.textContent='Copied!'; setTimeout(()=>b.textContent='Copy note',1500) })">Copy note</button>
+        </div>
+      </div>`
+    }).join('')
+  }
+}
+
+function copyInmail(leadId, subject, body) {
+  const full = `Subject: ${subject}\n\n${body}`
+  navigator.clipboard.writeText(full).then(() => {
+    const btn = document.querySelector(`#li-card-${leadId} .li-copy-btn`)
+    if (btn) { btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy message', 1500) }
+  })
+}
+
+async function markInmailSent(leadId) {
+  const btn = document.getElementById('li-inmail-btn-'+leadId)
+  btn.textContent = 'Saving…'; btn.disabled = true
+  const now = new Date().toISOString()
+  const lead = allLeads.find(l => l.lead_id === leadId)
+  if (!trackerMap[leadId]) trackerMap[leadId] = { lead_id: leadId }
+  trackerMap[leadId].inmail_sent_at = now
+
+  await sb('call_tracker', {
+    method: 'POST',
+    headers: { Prefer: 'resolution=merge-duplicates' },
+    body: JSON.stringify({
+      lead_id: leadId,
+      email: lead?.email || '',
+      first_name: lead?.first_name || '',
+      company: lead?.company || '',
+      status: trackerMap[leadId]?.status || 'pending',
+      notes: trackerMap[leadId]?.notes || '',
+      inmail_sent_at: now,
+      updated_at: now,
+    })
+  })
+
+  btn.textContent = 'Sent ✓'; btn.className = 'li-btn sent'; btn.disabled = false
+}
+
+async function markConnectSent(leadId) {
+  const btn = document.getElementById('li-conn-btn-'+leadId)
+  btn.textContent = 'Saving…'; btn.disabled = true
+  const now = new Date().toISOString()
+  const lead = allLeads.find(l => l.lead_id === leadId)
+  if (!trackerMap[leadId]) trackerMap[leadId] = { lead_id: leadId }
+  trackerMap[leadId].linkedin_requested_at = now
+
+  await sb('call_tracker', {
+    method: 'POST',
+    headers: { Prefer: 'resolution=merge-duplicates' },
+    body: JSON.stringify({
+      lead_id: leadId,
+      email: lead?.email || '',
+      first_name: lead?.first_name || '',
+      company: lead?.company || '',
+      status: trackerMap[leadId]?.status || 'pending',
+      notes: trackerMap[leadId]?.notes || '',
+      linkedin_requested_at: now,
+      updated_at: now,
+    })
+  })
+
+  btn.textContent = 'Sent ✓'; btn.className = 'li-btn sent'; btn.disabled = false
+}
+
+function exportPhantombusterCSV() {
+  const connectLeads = allLeads.filter(l => (openEventsMap[l.lead_id]||[]).length === 2 && l.linkedin)
+  if (!connectLeads.length) { alert('No warm leads with LinkedIn URLs to export.'); return }
+
+  const rows = [['firstName','companyName','linkedInUrl','message']]
+  for (const l of connectLeads) {
+    const msg = connectTemplate(l)
+    rows.push([l.first_name, l.company, l.linkedin, msg])
+  }
+  const csv = rows.map(r => r.map(v => `"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n')
+  const blob = new Blob([csv], { type: 'text/csv' })
+  const url  = URL.createObjectURL(blob)
+  const a    = document.createElement('a')
+  a.href = url; a.download = `phantombuster-connections-${new Date().toISOString().slice(0,10)}.csv`
+  a.click(); URL.revokeObjectURL(url)
+}
+</script>
+</body>
+</html>
