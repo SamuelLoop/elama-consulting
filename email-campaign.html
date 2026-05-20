@@ -871,12 +871,12 @@ async function launchPhantombuster() {
       status.style.color = 'var(--green-dark)'
       // Bulk-mark all warm leads as connection requested in Supabase
       const now = new Date().toISOString()
-      for (const l of connectLeads) {
+      await Promise.all(connectLeads.map(l => {
         if (!trackerMap[l.lead_id]) trackerMap[l.lead_id] = { lead_id: l.lead_id }
         trackerMap[l.lead_id].linkedin_requested_at = now
-        sb('call_tracker', {
+        return sb('call_tracker?on_conflict=lead_id', {
           method: 'POST',
-          headers: { Prefer: 'resolution=merge-duplicates' },
+          headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
           body: JSON.stringify({
             lead_id: l.lead_id,
             email: l.email || '',
@@ -886,7 +886,7 @@ async function launchPhantombuster() {
             updated_at: now,
           }),
         })
-      }
+      }))
       // Refresh the LinkedIn tab
       setTimeout(() => loadLinkedIn(), 800)
     }
