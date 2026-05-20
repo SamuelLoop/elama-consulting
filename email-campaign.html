@@ -683,7 +683,7 @@ Samuel`
 function connectTemplate(lead) {
   const s = savings(lead.employee_count)
   // LinkedIn connection note — max 300 chars
-  const msg = `Hi ${lead.first_name} — I emailed ${lead.company} recently about a federal program potentially worth $${s.low}k–$${s.high}k/year. Worth a quick chat — elamaconsulting.com has the detail. Happy to connect! Samuel`
+  const msg = `Hi ${lead.first_name} — I emailed ${lead.company} recently about something that might be relevant for your team. Connecting here in case it's worth a quick chat. Samuel`
   return msg.slice(0, 300)
 }
 
