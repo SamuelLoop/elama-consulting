@@ -963,7 +963,7 @@ async function loadWhatsApp() {
 }
 
 async function fetchWaConversations() {
-  const res  = await sb('whatsapp_conversations?select=id,lead_phone,lead_name,company,status,last_reply_at,reply_count,outbound_body&neq.status=opted_out&order=last_reply_at.desc.nullslast')
+  const res  = await sb('whatsapp_conversations?select=id,lead_phone,lead_name,company,status,last_reply_at,reply_count,outbound_body&status=neq.opted_out&order=last_reply_at.desc.nullslast')
   const convs = await res.json()
   if (!Array.isArray(convs)) return
 
