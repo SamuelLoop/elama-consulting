@@ -2,6 +2,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/email-campaign", "destination": "/email-campaign.html" }
+    { "source": "/email-campaign", "destination": "/email-campaign.html" },
+    { "source": "/health-chat", "destination": "/health-chat.html" }
   ]
 }
