@@ -179,6 +179,7 @@
     <span style="width:1px;background:#e8ede9;align-self:stretch;margin:0 .25rem;"></span>
     <button class="nav-tab" onclick="showPage('linkedin')">🔗 LinkedIn</button>
     <button class="nav-tab" onclick="showPage('whatsapp')">💬 WhatsApp</button>
+    <button class="nav-tab" onclick="showPage('replies')" id="tab-replies">📩 Replies</button>
   </div>
 
   <!-- OVERVIEW -->
@@ -368,6 +369,17 @@
     </div>
   </div>
 
+  <!-- EMAIL REPLIES -->
+  <div class="page" id="page-replies">
+    <div class="page-header">
+      <h1>Email Replies</h1>
+      <p>Inbound replies from leads — polled from samuel@elamamarketing.com every 30 minutes. Emails are never marked as read.</p>
+    </div>
+    <div id="replies-list" style="display:grid;gap:.75rem;max-width:720px;">
+      <div style="color:var(--muted);font-size:.875rem;">Loading…</div>
+    </div>
+  </div>
+
   <!-- GC EMAIL SEQUENCE -->
   <div class="page" id="page-gc-emails">
     <div class="page-header">
@@ -428,6 +440,7 @@ function showPage(id) {
   event.target.classList.add('active')
   if (id === 'linkedin') loadLinkedIn()
   if (id === 'whatsapp') loadWhatsApp()
+  if (id === 'replies')  loadReplies()
 }
 
 // ── Overview stats ──────────────────────────────────────────
@@ -955,6 +968,51 @@ const WA_QUICK_REPLIES = [
 
 let waCurrentPhone = null
 let waPollTimer    = null
+
+// ── Email Replies ────────────────────────────────────────────
+async function loadReplies() {
+  const el = document.getElementById('replies-list')
+  if (!el) return
+  el.innerHTML = '<div style="color:var(--muted);font-size:.875rem;">Loading…</div>'
+
+  const res   = await sb('email_replies?select=*&order=received_at.desc')
+  const rows  = await res.json()
+
+  if (!Array.isArray(rows) || rows.length === 0) {
+    el.innerHTML = '<div style="background:#fff;border-radius:var(--radius);padding:2rem;box-shadow:0 2px 12px rgba(0,0,0,.06);text-align:center;color:var(--muted);font-size:.875rem;">No replies yet.</div>'
+    return
+  }
+
+  // Update tab badge
+  const tab = document.getElementById('tab-replies')
+  if (tab) tab.textContent = `📩 Replies (${rows.length})`
+
+  el.innerHTML = rows.map(r => {
+    const date     = new Date(r.received_at)
+    const dateStr  = date.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric', timeZone:'Europe/London' })
+    const timeStr  = date.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', timeZone:'Europe/London' })
+    const name     = r.from_name || r.from_email
+    const initial  = name[0].toUpperCase()
+    const subject  = r.subject || '(no subject)'
+    const preview  = r.body_preview || '(no body preview)'
+    const gmailUrl = `https://mail.google.com/mail/u/0/#search/from%3A${encodeURIComponent(r.from_email)}`
+
+    return `<div style="background:#fff;border-radius:var(--radius);padding:1.25rem 1.5rem;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;gap:1rem;align-items:flex-start;">
+      <div style="width:40px;height:40px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1rem;flex-shrink:0;">${initial}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;flex-wrap:wrap;margin-bottom:.25rem;">
+          <span style="font-weight:600;font-size:.9rem;">${name} &mdash; <span style="color:var(--muted);font-weight:400;">${r.company || r.from_email}</span></span>
+          <span style="font-size:.75rem;color:var(--muted);flex-shrink:0;">${dateStr}, ${timeStr}</span>
+        </div>
+        <div style="font-size:.85rem;font-weight:500;color:var(--dark);margin-bottom:.4rem;">${subject}</div>
+        <div style="font-size:.8rem;color:var(--muted);line-height:1.5;white-space:pre-wrap;word-break:break-word;">${preview}</div>
+        <div style="margin-top:.75rem;">
+          <a href="${gmailUrl}" target="_blank" style="display:inline-block;padding:.35rem .9rem;background:var(--off-white2);border-radius:6px;font-size:.78rem;font-weight:500;color:var(--text);text-decoration:none;">Open in Gmail →</a>
+        </div>
+      </div>
+    </div>`
+  }).join('')
+}
 
 async function loadWhatsApp() {
   clearInterval(waPollTimer)
