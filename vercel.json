@@ -3,6 +3,7 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/email-campaign", "destination": "/email-campaign.html" },
-    { "source": "/health-chat", "destination": "/health-chat.html" }
+    { "source": "/health-chat", "destination": "/health-chat.html" },
+    { "source": "/chat-logic", "destination": "/chat-logic.html" }
   ]
 }

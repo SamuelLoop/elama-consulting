@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Decision tree audit view for the Eläm&auml; Consulting health benefits chatbot." />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Chat Logic | Eläm&auml; Consulting</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <style>
+    body { background: #F4F8F6; }
+
+    /* ---- Page layout ---- */
+    .logic-page { padding-top: 100px; padding-bottom: 60px; }
+
+    .logic-header {
+      max-width: 1100px;
+      margin: 0 auto 2rem;
+      text-align: center;
+    }
+    .logic-stats {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+    .logic-stat {
+      background: white;
+      border: 1px solid #E0FFF2;
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
+      text-align: center;
+      min-width: 110px;
+    }
+    .logic-stat-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.75rem;
+      color: #4FA07A;
+      line-height: 1;
+    }
+    .logic-stat-label {
+      font-size: 0.65rem;
+      color: #6B7B74;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-top: 0.35rem;
+    }
+
+    /* ---- Toolbar ---- */
+    .logic-toolbar {
+      max-width: 1100px;
+      margin: 0 auto 1.5rem;
+      background: white;
+      border: 1px solid #E0FFF2;
+      border-radius: 16px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .logic-search {
+      flex: 1;
+      min-width: 220px;
+      border: 1px solid #E5EDE9;
+      background: #F4F8F6;
+      border-radius: 10px;
+      padding: 0.55rem 1rem 0.55rem 2.5rem;
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236B7B74' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: 0.85rem center;
+      transition: all 0.2s ease;
+    }
+    .logic-search:focus {
+      outline: none;
+      border-color: #70C19A;
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(112,193,154,0.15);
+    }
+    .logic-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .logic-filter-btn {
+      background: white;
+      border: 1px solid #E5EDE9;
+      color: #2E2E2E;
+      border-radius: 999px;
+      padding: 0.4rem 0.95rem;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: 'Inter', sans-serif;
+    }
+    .logic-filter-btn:hover {
+      border-color: #70C19A;
+      color: #4FA07A;
+    }
+    .logic-filter-btn.active {
+      background: #70C19A;
+      color: white;
+      border-color: #70C19A;
+    }
+
+    /* ---- Nodes ---- */
+    .logic-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+      gap: 1rem;
+    }
+    .logic-card {
+      background: white;
+      border: 1px solid #E0FFF2;
+      border-radius: 16px;
+      padding: 1.25rem;
+      transition: all 0.2s ease;
+      scroll-margin-top: 100px;
+    }
+    .logic-card:hover {
+      border-color: #70C19A;
+      box-shadow: 0 6px 24px rgba(112,193,154,0.08);
+    }
+    .logic-card.highlighted {
+      border-color: #70C19A;
+      box-shadow: 0 0 0 3px rgba(112,193,154,0.18);
+    }
+
+    .logic-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .logic-card-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #1C1C1C;
+      background: #F4F8F6;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+    }
+    .logic-card-cat {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+    .cat-opener    { background: #C8F8E1; color: #2E6B4F; }
+    .cat-discovery { background: #C8E6FF; color: #1E4D7C; }
+    .cat-value     { background: #E0FFF2; color: #4FA07A; }
+    .cat-objection { background: #FFE9D6; color: #8C5A20; }
+    .cat-close     { background: #DBF3E0; color: #1F6B3A; }
+
+    .logic-section {
+      margin-top: 0.75rem;
+    }
+    .logic-section-label {
+      font-size: 0.65rem;
+      color: #6B7B74;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.4rem;
+      font-weight: 600;
+    }
+    .logic-triggers {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+    .logic-trigger {
+      background: #F4F8F6;
+      color: #2E2E2E;
+      border: 1px solid #E5EDE9;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .logic-trigger.empty {
+      color: #999;
+      font-style: italic;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .logic-response {
+      background: #F4F8F6;
+      border-left: 3px solid #70C19A;
+      padding: 0.85rem 1rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.88rem;
+      color: #2E2E2E;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+    .logic-response strong { color: #1C1C1C; }
+    .logic-response.collapsed {
+      max-height: 90px;
+      overflow: hidden;
+      position: relative;
+    }
+    .logic-response.collapsed::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 30px;
+      background: linear-gradient(to bottom, transparent, #F4F8F6);
+    }
+    .logic-expand-btn {
+      background: none;
+      border: none;
+      color: #4FA07A;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0.25rem 0;
+      margin-top: 0.25rem;
+      text-decoration: underline;
+    }
+
+    .logic-followup {
+      background: #FFF8E8;
+      border: 1px solid #F4E4A8;
+      padding: 0.65rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #6B5A20;
+      font-style: italic;
+    }
+
+    .logic-next {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+    .logic-next-btn {
+      background: white;
+      border: 1px solid #C8E6FF;
+      color: #1E4D7C;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-family: 'JetBrains Mono', monospace;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .logic-next-btn:hover {
+      background: #C8E6FF;
+      transform: translateY(-1px);
+    }
+    .logic-next.empty {
+      color: #999;
+      font-style: italic;
+      font-size: 0.82rem;
+    }
+
+    .logic-empty-state {
+      max-width: 600px;
+      margin: 4rem auto;
+      text-align: center;
+      color: #6B7B74;
+    }
+
+    .logic-loading {
+      text-align: center;
+      padding: 4rem;
+      color: #6B7B74;
+    }
+
+    .logic-error {
+      max-width: 700px;
+      margin: 4rem auto;
+      background: #FEF2F2;
+      border: 1px solid #FCA5A5;
+      color: #B91C1C;
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .logic-meta {
+      max-width: 1100px;
+      margin: 2rem auto 0;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #6B7B74;
+    }
+
+    /* ---- Sales Journey Flowchart ---- */
+    .logic-flow {
+      max-width: 1100px;
+      margin: 0 auto 2rem;
+      background: white;
+      border: 1px solid #E0FFF2;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 16px rgba(112,193,154,0.04);
+    }
+    .logic-flow-header { margin-bottom: 1.25rem; text-align: center; }
+    .logic-mermaid {
+      background: #F4F8F6;
+      border-radius: 12px;
+      padding: 1rem;
+      overflow-x: auto;
+      text-align: center;
+    }
+    .logic-mermaid svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    @media (max-width: 768px) {
+      .logic-grid { grid-template-columns: 1fr; }
+      .logic-page { padding-top: 80px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav id="mainNav" class="navbar navbar-expand-lg navbar-dark fixed-top ec-nav scrolled">
+    <div class="container">
+      <a class="navbar-brand ec-brand" href="index.html">
+        <span class="ec-logo-mark"><span class="ec-dot ec-dot-1"></span><span class="ec-dot ec-dot-2"></span><span class="ec-dot ec-dot-3"></span></span>
+        <span class="brand-elama">Eläm&auml;</span><span class="brand-consulting">Consulting</span>
+      </a>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="index.html#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#coaching">Executive Coaching</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#health-benefits">Health Benefits</a></li>
+          <li class="nav-item"><a class="nav-link" href="health-chat.html">Health Chat</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.html#contact">Contact</a></li>
+          <li class="nav-item ms-lg-3">
+            <a class="btn ec-btn-gold" href="book.html">Book a Call</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="logic-page">
+    <div class="container-fluid">
+
+      <div class="logic-header">
+        <p class="ec-eyebrow mb-2">Internal Audit View</p>
+        <h1 class="ec-section-title mb-3">Chat Decision Tree</h1>
+        <p class="ec-body-text mb-0">
+          Every node in the chatbot's logic — its trigger keywords, scripted response, follow-up question, and where the conversation can go next. This page reads live from the production chatbot, so any change we deploy shows up here automatically.
+        </p>
+        <div class="mt-3 d-flex gap-2 justify-content-center flex-wrap">
+          <a href="https://ignite-chatbot-nu.vercel.app/admin/knowledge" target="_blank" rel="noopener"
+             class="btn ec-btn-gold btn-sm" style="font-size:0.75rem;padding:0.5rem 1.1rem;">
+            <i class="bi bi-database me-1"></i>Knowledge Base
+          </a>
+          <a href="https://ignite-chatbot-nu.vercel.app/admin/agents" target="_blank" rel="noopener"
+             class="btn ec-btn-gold btn-sm" style="font-size:0.75rem;padding:0.5rem 1.1rem;">
+            <i class="bi bi-people me-1"></i>Manage Sales Agents
+          </a>
+        </div>
+        <div id="logicStats" class="logic-stats"></div>
+      </div>
+
+      <div class="logic-toolbar" id="logicToolbar" style="display:none;">
+        <input id="logicSearch" type="text" class="logic-search" placeholder="Search node ID, trigger, or response text..." />
+        <div class="logic-filters" id="logicFilters"></div>
+      </div>
+
+      <div id="logicLoading" class="logic-loading">
+        <div class="ec-logo-mark mb-3" style="gap:6px;">
+          <span class="ec-dot ec-dot-1" style="width:14px;height:14px;animation:chatBounce 1.4s ease-in-out infinite;"></span>
+          <span class="ec-dot ec-dot-2" style="width:14px;height:14px;animation:chatBounce 1.4s ease-in-out infinite;animation-delay:.15s;"></span>
+          <span class="ec-dot ec-dot-3" style="width:14px;height:14px;animation:chatBounce 1.4s ease-in-out infinite;animation-delay:.3s;"></span>
+        </div>
+        <p>Loading decision tree from production chatbot…</p>
+      </div>
+
+      <div id="logicError" class="logic-error" style="display:none;"></div>
+
+      <!-- ===== SALES JOURNEY FLOWCHART ===== -->
+      <div id="logicFlow" class="logic-flow" style="display:none;">
+        <div class="logic-flow-header">
+          <h2 class="ec-section-subtitle mb-2">The 7-Stage Sales Journey</h2>
+          <p class="ec-body-text mb-0" style="font-size:0.95rem;">Every conversation is driven through this sequence toward booking a call with Samuel. The bot picks the next move based on signals: <span style="color:#4FA07A;font-weight:500;">engagement</span> pushes toward booking, <span style="color:#E0A85C;font-weight:500;">hesitation</span> triggers a handout offer.</p>
+        </div>
+        <div id="logicMermaid" class="logic-mermaid"></div>
+      </div>
+
+      <div id="logicGrid" class="logic-grid"></div>
+
+      <div id="logicMeta" class="logic-meta"></div>
+
+    </div>
+  </section>
+
+  <style>
+    @keyframes chatBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-6px); }
+    }
+  </style>
+
+  <footer class="ec-footer py-4">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-12 col-md-6 text-center text-md-start mb-3 mb-md-0 d-flex align-items-center justify-content-center justify-content-md-start gap-2">
+          <span class="ec-logo-mark"><span class="ec-dot ec-dot-1"></span><span class="ec-dot ec-dot-2"></span><span class="ec-dot ec-dot-3"></span></span>
+          <span class="ec-footer-brand">Eläm&auml; Consulting</span>
+        </div>
+        <div class="col-12 col-md-6 text-center text-md-end">
+          <span class="ec-footer-copy">&copy; 2026 Elama Consulting. All rights reserved.</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: {
+        primaryColor: '#C8F8E1',
+        primaryTextColor: '#1C1C1C',
+        primaryBorderColor: '#70C19A',
+        lineColor: '#4FA07A',
+        secondaryColor: '#E0FFF2',
+        tertiaryColor: '#F4F8F6',
+        fontFamily: 'Inter, sans-serif',
+        fontSize: '13px',
+      },
+      flowchart: { curve: 'basis', padding: 20 },
+    });
+    window.__mermaid = mermaid;
+  </script>
+
+  <script>
+    'use strict';
+
+    const CHAT_API_BASE = 'https://ignite-chatbot-nu.vercel.app';
+    const CATEGORY_LABELS = {
+      opener:    'Openers',
+      discovery: 'Discovery',
+      value:     'Value Props',
+      objection: 'Objections',
+      close:     'Close',
+    };
+
+    // Maps each node ID to one of the 7 sales stages
+    const STAGE_BY_NODE = {
+      why_here: 'HOOK', why_care: 'HOOK', what_catch: 'HOOK',
+      employee_count: 'DISCOVERY', has_wellness: 'DISCOVERY', no_wellness: 'DISCOVERY',
+      eligibility: 'DISCOVERY', personalized_savings: 'DISCOVERY',
+      savings_calc: 'EDUCATION', federal_program: 'EDUCATION',
+      how_setup_works: 'EDUCATION', how_doesnt_affect_takehome: 'EDUCATION',
+      what_employees_get: 'VALUE', what_employer_gets: 'VALUE',
+      the_ignite_app: 'VALUE', employee_health_roi: 'VALUE',
+      object_expensive: 'CONCERNS', object_too_much_work: 'CONCERNS',
+      object_employees_wont_use: 'CONCERNS', object_too_good_to_be_true: 'CONCERNS',
+      object_legal_compliance: 'CONCERNS', object_existing_insurance: 'CONCERNS',
+      object_not_interested: 'CONCERNS',
+      offer_handout: 'SOFT CLOSE', send_handout: 'SOFT CLOSE', request_info: 'SOFT CLOSE',
+      request_call: 'HARD CLOSE',
+    };
+
+    let allNodes = [];
+    let activeCategory = 'all';
+    let searchTerm = '';
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function renderInlineMarkdown(str) {
+      // Only handle bold + line breaks for the response preview
+      return escapeHtml(str)
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    }
+
+    async function load() {
+      try {
+        const res = await fetch(`${CHAT_API_BASE}/api/decision-tree`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        allNodes = data.nodes;
+        renderStats(data);
+        renderFilters(data.categories);
+        renderMeta(data);
+        document.getElementById('logicLoading').style.display = 'none';
+        document.getElementById('logicToolbar').style.display = 'flex';
+        document.getElementById('logicFlow').style.display = 'block';
+        await renderFlowchart(data.nodes);
+        renderGrid();
+      } catch (err) {
+        console.error('[chat-logic] load failed:', err);
+        document.getElementById('logicLoading').style.display = 'none';
+        const errorEl = document.getElementById('logicError');
+        errorEl.style.display = 'block';
+        errorEl.innerHTML = `
+          <strong>Could not load the decision tree.</strong><br>
+          ${escapeHtml(err.message || 'Unknown error')}<br>
+          <small>Endpoint: ${CHAT_API_BASE}/api/decision-tree</small>
+        `;
+      }
+    }
+
+    async function renderFlowchart(nodes) {
+      const stages = ['HOOK', 'DISCOVERY', 'EDUCATION', 'VALUE', 'CONCERNS', 'SOFT CLOSE', 'HARD CLOSE'];
+      const stageEmoji = {
+        HOOK: '🎯', DISCOVERY: '🔍', EDUCATION: '📚', VALUE: '💎',
+        CONCERNS: '🛡️', 'SOFT CLOSE': '📄', 'HARD CLOSE': '📞',
+      };
+
+      // Group nodes by stage
+      const grouped = {};
+      stages.forEach(s => grouped[s] = []);
+      nodes.forEach(n => {
+        const s = STAGE_BY_NODE[n.id];
+        if (s && grouped[s]) grouped[s].push(n);
+      });
+
+      // Build Mermaid flowchart definition
+      const lines = ['flowchart TD'];
+      lines.push('  START([Visitor enters chat])');
+      lines.push('  END_BOOK([📞 Books call with Samuel]):::winNode');
+
+      // Stages as subgraphs
+      stages.forEach((stage, idx) => {
+        const stageId = stage.replace(/\s+/g, '_');
+        lines.push(`  subgraph S_${stageId}["${stageEmoji[stage]} ${idx + 1}. ${stage}"]`);
+        grouped[stage].forEach(n => {
+          const safeLabel = n.id.replace(/_/g, ' ');
+          lines.push(`    ${n.id}["${safeLabel}"]`);
+        });
+        lines.push('  end');
+      });
+
+      // Entry: START → HOOK starters
+      grouped.HOOK.forEach(n => lines.push(`  START --> ${n.id}`));
+
+      // Within-stage flow: HOOK → DISCOVERY → EDUCATION → VALUE
+      // We use an "anchor" arrow from each stage to the next stage's first node
+      // to avoid 100+ lines of node→node arrows.
+      const stageAnchors = stages.map(s => grouped[s][0]).filter(Boolean);
+      for (let i = 0; i < stageAnchors.length - 1; i++) {
+        const from = stageAnchors[i];
+        const to = stageAnchors[i + 1];
+        if (!from || !to) continue;
+        // Skip linking from HARD CLOSE
+        if (STAGE_BY_NODE[from.id] === 'HARD CLOSE') break;
+        lines.push(`  ${from.id} -.->|next stage| ${to.id}`);
+      }
+
+      // CRITICAL PATHS — these always exist in every conversation
+      // Hesitation → SOFT CLOSE (offer_handout)
+      const concernNodes = grouped.CONCERNS;
+      if (grouped['SOFT CLOSE'][0]) {
+        concernNodes.forEach(n => {
+          lines.push(`  ${n.id} ==>|"😐 hesitation"| offer_handout`);
+        });
+      }
+      // SOFT CLOSE → handout sent
+      if (grouped['SOFT CLOSE'].find(n => n.id === 'send_handout')) {
+        lines.push(`  offer_handout ==>|"yes please"| send_handout`);
+      }
+      // Engagement signals → HARD CLOSE
+      ['savings_calc', 'personalized_savings', 'what_employer_gets', 'the_ignite_app', 'how_doesnt_affect_takehome'].forEach(id => {
+        if (nodes.find(n => n.id === id)) {
+          lines.push(`  ${id} ==>|"💚 engaged"| request_call`);
+        }
+      });
+      // SOFT CLOSE → HARD CLOSE
+      if (grouped['SOFT CLOSE'].length && grouped['HARD CLOSE'][0]) {
+        lines.push(`  send_handout --> request_call`);
+      }
+      // HARD CLOSE → END
+      if (grouped['HARD CLOSE'][0]) {
+        lines.push(`  request_call ==> END_BOOK`);
+      }
+
+      // Styling
+      lines.push('  classDef winNode fill:#70C19A,stroke:#4FA07A,color:white,font-weight:600');
+      lines.push('  classDef default fill:#FFFFFF,stroke:#70C19A,color:#1C1C1C');
+
+      const definition = lines.join('\n');
+
+      // Render
+      try {
+        const target = document.getElementById('logicMermaid');
+        const { svg } = await window.__mermaid.render('flowchartSvg', definition);
+        target.innerHTML = svg;
+      } catch (err) {
+        console.error('[chat-logic] mermaid render failed:', err);
+        document.getElementById('logicMermaid').innerHTML =
+          '<p style="color:#6B7B74;padding:1rem;">Could not render flowchart. ' + escapeHtml(err.message || '') + '</p>';
+      }
+    }
+
+    function renderStats(data) {
+      const counts = {};
+      data.nodes.forEach(n => { counts[n.category] = (counts[n.category] || 0) + 1; });
+      const total = data.nodes.length;
+
+      const statHtml = [
+        `<div class="logic-stat"><div class="logic-stat-value">${total}</div><div class="logic-stat-label">Total nodes</div></div>`,
+        ...Object.keys(CATEGORY_LABELS).map(cat => {
+          const n = counts[cat] || 0;
+          if (!n) return '';
+          return `<div class="logic-stat"><div class="logic-stat-value">${n}</div><div class="logic-stat-label">${CATEGORY_LABELS[cat]}</div></div>`;
+        }),
+      ].join('');
+      document.getElementById('logicStats').innerHTML = statHtml;
+    }
+
+    function renderFilters(categories) {
+      const filterContainer = document.getElementById('logicFilters');
+      const cats = ['all', ...Object.keys(CATEGORY_LABELS).filter(c => categories.includes(c))];
+      filterContainer.innerHTML = cats.map(cat => {
+        const label = cat === 'all' ? 'All' : CATEGORY_LABELS[cat];
+        return `<button class="logic-filter-btn ${cat === activeCategory ? 'active' : ''}" data-cat="${cat}">${label}</button>`;
+      }).join('');
+      filterContainer.querySelectorAll('.logic-filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          activeCategory = btn.dataset.cat;
+          filterContainer.querySelectorAll('.logic-filter-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === activeCategory));
+          renderGrid();
+        });
+      });
+    }
+
+    function renderMeta(data) {
+      const date = new Date(data.generated_at);
+      document.getElementById('logicMeta').innerHTML = `
+        Live data fetched from <code>${escapeHtml(CHAT_API_BASE)}/api/decision-tree</code>
+        · last generated ${date.toLocaleString()}
+        · refresh the page to fetch the latest version
+      `;
+    }
+
+    function nodeMatches(node) {
+      if (activeCategory !== 'all' && node.category !== activeCategory) return false;
+      if (!searchTerm) return true;
+      const t = searchTerm.toLowerCase();
+      if (node.id.toLowerCase().includes(t)) return true;
+      if (node.response.toLowerCase().includes(t)) return true;
+      if (node.followUp && node.followUp.toLowerCase().includes(t)) return true;
+      if (node.triggers.some(tr => tr.toLowerCase().includes(t))) return true;
+      return false;
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById('logicGrid');
+      const filtered = allNodes.filter(nodeMatches);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="logic-empty-state" style="grid-column:1/-1;"><i class="bi bi-search" style="font-size:2rem;"></i><p class="mt-3">No nodes match your search.</p></div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(renderCard).join('');
+      bindCardActions();
+    }
+
+    function renderCard(node) {
+      const triggers = node.triggers && node.triggers.length
+        ? node.triggers.map(t => `<span class="logic-trigger">${escapeHtml(t)}</span>`).join('')
+        : '<span class="logic-trigger empty">No triggers (fallback / starter)</span>';
+
+      const nextBtns = node.nextNodes && node.nextNodes.length
+        ? node.nextNodes.map(id => `<button class="logic-next-btn" data-jump="${escapeHtml(id)}">${escapeHtml(id)}</button>`).join('')
+        : '<span class="logic-next empty">— end of branch —</span>';
+
+      const followUp = node.followUp
+        ? `<div class="logic-section">
+             <div class="logic-section-label">Follow-up question (the bot asks this next)</div>
+             <div class="logic-followup">${escapeHtml(node.followUp)}</div>
+           </div>`
+        : '';
+
+      const responseId = `resp-${node.id}`;
+      const isLong = node.response.length > 220;
+
+      return `
+        <div class="logic-card" id="node-${escapeHtml(node.id)}">
+          <div class="logic-card-header">
+            <span class="logic-card-id">#${escapeHtml(node.id)}</span>
+            <span class="logic-card-cat cat-${escapeHtml(node.category)}">${escapeHtml(CATEGORY_LABELS[node.category] || node.category)}</span>
+          </div>
+
+          <div class="logic-section">
+            <div class="logic-section-label">Triggers (keywords that route here)</div>
+            <div class="logic-triggers">${triggers}</div>
+          </div>
+
+          <div class="logic-section">
+            <div class="logic-section-label">Response (what the bot says)</div>
+            <div id="${responseId}" class="logic-response ${isLong ? 'collapsed' : ''}">${renderInlineMarkdown(node.response)}</div>
+            ${isLong ? `<button class="logic-expand-btn" data-toggle="${responseId}">Show full response ↓</button>` : ''}
+          </div>
+
+          ${followUp}
+
+          <div class="logic-section">
+            <div class="logic-section-label">Next possible nodes</div>
+            <div class="logic-next">${nextBtns}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function bindCardActions() {
+      // Expand / collapse response
+      document.querySelectorAll('.logic-expand-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = document.getElementById(btn.dataset.toggle);
+          target.classList.toggle('collapsed');
+          btn.textContent = target.classList.contains('collapsed') ? 'Show full response ↓' : 'Show less ↑';
+        });
+      });
+
+      // Jump to node
+      document.querySelectorAll('.logic-next-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.jump;
+          const target = document.getElementById(`node-${id}`);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            target.classList.add('highlighted');
+            setTimeout(() => target.classList.remove('highlighted'), 1500);
+          }
+        });
+      });
+    }
+
+    document.getElementById('logicSearch').addEventListener('input', (e) => {
+      searchTerm = e.target.value.trim();
+      renderGrid();
+    });
+
+    load();
+  </script>
+</body>
+</html>

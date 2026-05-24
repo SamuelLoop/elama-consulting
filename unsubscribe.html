@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unsubscribe — Elama Consulting</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <style>
+    body { background: var(--ec-off-white); display: flex; align-items: center; min-height: 100vh; }
+    .unsub-card {
+      background: var(--ec-white);
+      border-radius: var(--ec-radius-lg);
+      padding: 3rem 2.5rem;
+      max-width: 480px;
+      width: 100%;
+      margin: auto;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.07);
+      text-align: center;
+    }
+    .unsub-logo {
+      font-family: var(--ec-font-heading);
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: var(--ec-dark);
+      margin-bottom: 2rem;
+      display: block;
+    }
+    .unsub-email {
+      font-family: var(--ec-font-body);
+      font-size: 0.95rem;
+      color: var(--ec-text-muted);
+      background: var(--ec-off-white2);
+      border-radius: var(--ec-radius);
+      padding: 0.6rem 1rem;
+      display: inline-block;
+      margin-bottom: 1.75rem;
+      word-break: break-all;
+    }
+    .btn-unsub {
+      background: var(--ec-green);
+      color: #fff;
+      border: none;
+      border-radius: var(--ec-radius);
+      padding: 0.75rem 2rem;
+      font-family: var(--ec-font-body);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background var(--ec-transition);
+    }
+    .btn-unsub:hover { background: var(--ec-green-dark); }
+    .btn-unsub:disabled { opacity: 0.6; cursor: not-allowed; }
+    .state-success h2 { color: var(--ec-green); }
+    .state-error  h2 { color: #c0392b; }
+    .back-link { font-size: 0.85rem; color: var(--ec-text-muted); margin-top: 1.5rem; display: block; }
+    .back-link a { color: var(--ec-green); text-decoration: none; }
+  </style>
+</head>
+<body>
+<div class="container px-3">
+  <div class="unsub-card">
+
+    <span class="unsub-logo">Elama Consulting</span>
+
+    <!-- Pending state -->
+    <div id="state-pending">
+      <h2 class="ec-section-title mb-2" style="font-size:1.6rem;">Unsubscribe</h2>
+      <p class="text-muted mb-3" style="font-size:0.9rem;">Confirm you'd like to stop receiving emails from us.</p>
+      <div class="unsub-email" id="display-email">Loading…</div>
+      <br>
+      <button class="btn-unsub" id="btn-confirm">Confirm unsubscribe</button>
+    </div>
+
+    <!-- Success state -->
+    <div id="state-success" class="state-success d-none">
+      <h2 class="ec-section-title mb-3" style="font-size:1.6rem;">Done</h2>
+      <p class="text-muted" style="font-size:0.95rem;">
+        You've been removed from our mailing list.<br>
+        You won't receive any further emails from us.
+      </p>
+    </div>
+
+    <!-- Error state -->
+    <div id="state-error" class="state-error d-none">
+      <h2 class="ec-section-title mb-3" style="font-size:1.6rem;">Something went wrong</h2>
+      <p class="text-muted" id="error-msg" style="font-size:0.95rem;">Please try again or reply to any of our emails to opt out.</p>
+    </div>
+
+    <span class="back-link"><a href="/">← Back to Elama Consulting</a></span>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL     = 'https://bosvbnjhsimqtnwkkcvn.supabase.co'
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvc3Zibmpoc2ltcXRud2trY3ZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNjA0OTMsImV4cCI6MjA5MTkzNjQ5M30.4F1XJarCvJ2ESpL71h-0wMBF1iH5VAesx-EANMhTbyg'
+
+  const params = new URLSearchParams(window.location.search)
+  const email  = params.get('e') || ''
+
+  const elEmail   = document.getElementById('display-email')
+  const elPending = document.getElementById('state-pending')
+  const elSuccess = document.getElementById('state-success')
+  const elError   = document.getElementById('state-error')
+  const elErrMsg  = document.getElementById('error-msg')
+  const btnConfirm = document.getElementById('btn-confirm')
+
+  if (!email) {
+    elEmail.textContent = 'No email address found in this link.'
+    btnConfirm.disabled = true
+  } else {
+    elEmail.textContent = email
+  }
+
+  btnConfirm.addEventListener('click', async () => {
+    if (!email) return
+    btnConfirm.disabled = true
+    btnConfirm.textContent = 'Processing…'
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/unsubscribes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Prefer': 'resolution=ignore-duplicates',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      if (res.ok || res.status === 201 || res.status === 200) {
+        elPending.classList.add('d-none')
+        elSuccess.classList.remove('d-none')
+      } else {
+        throw new Error(`Status ${res.status}`)
+      }
+    } catch (err) {
+      elErrMsg.textContent = 'Please reply to any of our emails to opt out manually.'
+      elPending.classList.add('d-none')
+      elError.classList.remove('d-none')
+    }
+  })
+</script>
+</body>
+</html>
