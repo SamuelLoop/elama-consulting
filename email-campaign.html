@@ -190,7 +190,7 @@
     </div>
     <div class="stats-grid">
       <div class="stat-card"><div class="stat-label">Sent today</div><div class="stat-value green" id="stat-today">—</div><div class="stat-sub" id="stat-limit-label">daily limit</div></div>
-      <div class="stat-card"><div class="stat-label">Total contacted</div><div class="stat-value" id="stat-contacted">—</div><div class="stat-sub">out of 1,481 leads</div></div>
+      <div class="stat-card"><div class="stat-label">Total contacted</div><div class="stat-value" id="stat-contacted">—</div><div class="stat-sub">out of <span id="stat-total-leads">—</span> leads</div></div>
       <div class="stat-card"><div class="stat-label">Sequence complete</div><div class="stat-value" id="stat-complete">—</div><div class="stat-sub">all 3 emails sent</div></div>
       <div class="stat-card"><div class="stat-label">Unsubscribed</div><div class="stat-value" id="stat-unsub">—</div><div class="stat-sub">opted out</div></div>
       <div class="stat-card"><div class="stat-label">Campaign day</div><div class="stat-value" id="stat-day">—</div><div class="stat-sub" id="stat-ramp">warming up</div></div>
@@ -201,7 +201,7 @@
     <div class="progress-section">
       <h3>Overall progress</h3>
       <div class="bar-wrap"><div class="bar-fill main" id="progress-fill" style="width:0%"></div></div>
-      <div class="bar-labels"><span id="progress-pct">0%</span><span>1,481 leads</span></div>
+      <div class="bar-labels"><span id="progress-pct">0%</span><span id="progress-total-leads">— leads</span></div>
       <div class="seq-rows">
         <div class="seq-row"><span class="seq-label">Email 1 sent</span><div class="seq-bar-wrap"><div class="bar-fill e1" id="bar-e1" style="width:0%"></div></div><span class="seq-count" id="count-e1">—</span></div>
         <div class="seq-row"><span class="seq-label">Email 2 sent</span><div class="seq-bar-wrap"><div class="bar-fill e2" id="bar-e2" style="width:0%"></div></div><span class="seq-count" id="count-e2">—</span></div>
@@ -280,7 +280,7 @@
         </div>
       </div>
     </div>
-    <p class="preview-note">All 1,481 emails are personalised with the recipient's name, company, and a calculated savings figure based on their employee count.</p>
+    <p class="preview-note">All <span id="preview-total-leads">—</span> leads are personalised with the recipient's name, company, and a calculated savings figure based on their employee count.</p>
   </div>
 
   <!-- GC OVERVIEW -->
@@ -399,7 +399,7 @@
 const SB_URL  = 'https://bosvbnjhsimqtnwkkcvn.supabase.co'
 const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvc3Zibmpoc2ltcXRud2trY3ZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNjA0OTMsImV4cCI6MjA5MTkzNjQ5M30.4F1XJarCvJ2ESpL71h-0wMBF1iH5VAesx-EANMhTbyg'
 const CAMPAIGN_START = '2026-05-13'
-const TOTAL_LEADS    = 1481
+let TOTAL_LEADS      = null
 const PASSWORD       = 'ignite2026'
 const RAMP           = [[0,4,20],[5,9,40],[10,14,80],[15,19,120],[20,Infinity,150]]
 const STATUS_LABELS  = { pending:'Pending', called:'Called', interested:'Interested', not_interested:'Not interested', no_answer:'No answer' }
@@ -452,17 +452,26 @@ async function loadStats() {
   document.getElementById('stat-ramp').textContent = dayNum<15 ? 'warming up' : 'full speed'
 
   try {
-    const r = await (await sb('campaign_stats?select=*')).json()
-    const s = r[0]||{}
+    const [statsRes, configRes] = await Promise.all([
+      sb('campaign_stats?select=*').then(r => r.json()),
+      sb('campaign_config?key=eq.total_leads&select=value').then(r => r.json())
+    ])
+    const s = statsRes[0]||{}
+    TOTAL_LEADS = parseInt(configRes[0]?.value || '0') || null
+    const totalStr = TOTAL_LEADS ? TOTAL_LEADS.toLocaleString() : '—'
+    document.getElementById('stat-total-leads').textContent = totalStr
+    document.getElementById('progress-total-leads').textContent = TOTAL_LEADS ? `${totalStr} leads` : '— leads'
+    document.getElementById('preview-total-leads').textContent = totalStr
+
     const e1=+s.email1_sent||0, e2=+s.email2_sent||0, e3=+s.email3_sent||0
     const done=+s.sequence_complete||0, contacted=+s.total_contacted||0, today=+s.sent_today||0
     document.getElementById('stat-today').textContent = today
     document.getElementById('stat-contacted').textContent = contacted
     document.getElementById('stat-complete').textContent = done
-    const pct = Math.round((contacted/TOTAL_LEADS)*100)
+    const pct = TOTAL_LEADS ? Math.round((contacted/TOTAL_LEADS)*100) : 0
     document.getElementById('progress-fill').style.width = pct+'%'
     document.getElementById('progress-pct').textContent = pct+'%'
-    const set=(id,bid,v)=>{ document.getElementById(id).textContent=v; document.getElementById(bid).style.width=Math.round((v/TOTAL_LEADS)*100)+'%' }
+    const set=(id,bid,v)=>{ document.getElementById(id).textContent=v; document.getElementById(bid).style.width=(TOTAL_LEADS ? Math.round((v/TOTAL_LEADS)*100) : 0)+'%' }
     set('count-e1','bar-e1',e1); set('count-e2','bar-e2',e2); set('count-e3','bar-e3',e3); set('count-done','bar-done',done)
 
     // Open stats (unique opens / total sent)
