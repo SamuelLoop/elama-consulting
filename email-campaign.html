@@ -741,6 +741,7 @@ function liSalesNavSearchUrl(lead) {
 }
 
 async function loadLinkedIn() {
+  if (!allLeads.length) await loadCallManager()
   // allLeads, openEventsMap, trackerMap already loaded by loadCallManager
   const inmailLeads   = []
   const connectLeads  = []
