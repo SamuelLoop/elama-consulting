@@ -735,12 +735,9 @@ function connectTemplate(lead) {
   return msg.slice(0, 300)
 }
 
-function liSalesNavUrl(linkedinUrl) {
-  if (!linkedinUrl) return null
-  // Convert regular LinkedIn URL to Sales Navigator equivalent
-  const match = linkedinUrl.match(/linkedin\.com\/in\/([^/?]+)/)
-  if (!match) return linkedinUrl
-  return `https://www.linkedin.com/sales/lead/${match[1]}`
+function liSalesNavSearchUrl(lead) {
+  const parts = [lead.full_name || lead.first_name, lead.company, lead.city].filter(Boolean)
+  return `https://www.linkedin.com/sales/search/people?query=(keywords:${encodeURIComponent(parts.join(' '))})`
 }
 
 async function loadLinkedIn() {
@@ -770,7 +767,7 @@ async function loadLinkedIn() {
   } else {
     inmailList.innerHTML = inmailLeads.map(l => {
       const { subject, body } = inmailTemplate(l)
-      const salesNavUrl = liSalesNavUrl(l.linkedin)
+      const salesNavSearchUrl = liSalesNavSearchUrl(l)
       const alreadySent = !!l.tracker.inmail_sent_at
       const sentLabel = alreadySent
         ? `Sent ${new Date(l.tracker.inmail_sent_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`
@@ -784,7 +781,8 @@ async function loadLinkedIn() {
             <div class="li-meta">${l.events.length} opens · Heat ${heatScores[l.lead_id]||0}/10 · ${l.employee_count ? l.employee_count.toLocaleString()+' staff' : ''}</div>
           </div>
           <div class="li-actions">
-            ${salesNavUrl ? `<a href="${salesNavUrl}" target="_blank"><button class="li-btn">Open in Sales Nav →</button></a>` : '<span style="font-size:.8rem;color:var(--muted)">No LinkedIn URL</span>'}
+            ${l.linkedin ? `<a href="${l.linkedin}" target="_blank"><button class="li-btn">Open Profile →</button></a>` : '<span style="font-size:.8rem;color:var(--muted)">No LinkedIn URL</span>'}
+            <a href="${salesNavSearchUrl}" target="_blank"><button class="li-btn">Search Sales Nav →</button></a>
             <button class="li-btn ${alreadySent ? 'sent' : 'primary'}" id="li-inmail-btn-${l.lead_id}" onclick="${alreadySent ? '' : `markInmailSent('${l.lead_id}')`}">${sentLabel}</button>
           </div>
         </div>
@@ -806,7 +804,7 @@ async function loadLinkedIn() {
   } else {
     connectList.innerHTML = connectLeads.map(l => {
       const msg = connectTemplate(l)
-      const salesNavUrl = liSalesNavUrl(l.linkedin)
+      const salesNavSearchUrl = liSalesNavSearchUrl(l)
       const alreadySent = !!l.tracker.linkedin_requested_at
       const sentLabel = alreadySent
         ? `Sent ${new Date(l.tracker.linkedin_requested_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`
@@ -820,7 +818,8 @@ async function loadLinkedIn() {
             <div class="li-meta">2 opens · Heat ${heatScores[l.lead_id]||0}/10 · ${l.employee_count ? l.employee_count.toLocaleString()+' staff' : ''}</div>
           </div>
           <div class="li-actions">
-            ${salesNavUrl ? `<a href="${salesNavUrl}" target="_blank"><button class="li-btn">Open in Sales Nav →</button></a>` : '<span style="font-size:.8rem;color:var(--muted)">No LinkedIn URL</span>'}
+            ${l.linkedin ? `<a href="${l.linkedin}" target="_blank"><button class="li-btn">Open Profile →</button></a>` : '<span style="font-size:.8rem;color:var(--muted)">No LinkedIn URL</span>'}
+            <a href="${salesNavSearchUrl}" target="_blank"><button class="li-btn">Search Sales Nav →</button></a>
             <button class="li-btn ${alreadySent ? 'sent' : 'primary'}" id="li-conn-btn-${l.lead_id}" onclick="${alreadySent ? '' : `markConnectSent('${l.lead_id}')`}">${sentLabel}</button>
           </div>
         </div>
