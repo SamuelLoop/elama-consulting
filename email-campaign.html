@@ -147,6 +147,15 @@
     .li-copy-btn:hover{background:var(--off-white);}
     .li-cap{background:#fff;border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,.06);font-size:.875rem;display:flex;align-items:center;gap:.75rem;}
     .li-cap strong{color:var(--green-dark);}
+    .li-quota{background:#fff;border-radius:var(--radius);padding:1rem 1.25rem;margin-bottom:1.5rem;box-shadow:0 2px 10px rgba(0,0,0,.06);display:flex;align-items:center;flex-wrap:wrap;gap:1.25rem;}
+    .li-quota-item{display:flex;flex-direction:column;gap:.2rem;}
+    .li-quota-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
+    .li-quota-val{font-size:1rem;font-weight:600;}
+    .li-quota-val.ok{color:var(--green-dark);}
+    .li-quota-val.warn{color:#d4860a;}
+    .li-quota-val.maxed{color:#c0392b;}
+    .li-quota-divider{width:1px;height:2rem;background:#e8e8e8;}
+    .li-quota-block{font-size:.8rem;color:#c0392b;font-weight:500;margin-left:auto;}
     .li-export-btn{padding:.5rem 1.25rem;background:var(--dark);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-family:inherit;cursor:pointer;margin-bottom:1.5rem;}
     .li-export-btn:hover{opacity:.85;}
     .li-empty{text-align:center;padding:2.5rem;color:var(--muted);font-size:.9rem;background:#fff;border-radius:var(--radius);box-shadow:0 2px 10px rgba(0,0,0,.06);}
@@ -336,8 +345,8 @@
 
     <!-- InMail Queue -->
     <div class="li-section-title">InMail Queue</div>
-    <p class="li-section-sub">3+ open events — your hottest leads. Send manually via Sales Navigator. Core plan: ~2 InMails/day.</p>
-    <div class="li-cap"><strong id="li-inmail-count">—</strong>&nbsp;leads ready &nbsp;·&nbsp; Suggested today: <strong id="li-inmail-today">2</strong> &nbsp;·&nbsp; <span id="li-inmail-credits" style="color:var(--muted)">50 credits/month</span></div>
+    <p class="li-section-sub">3+ open events — your hottest leads. Review the full list, then send via Sales Navigator. Max 3/day · 15/week · 50/month.</p>
+    <div id="li-inmail-quota" class="li-quota"><span style="font-size:.85rem;color:var(--muted)">Loading…</span></div>
     <div id="li-inmail-list"><div class="li-empty">Loading…</div></div>
 
     <hr style="margin:2rem 0;">
@@ -711,6 +720,66 @@ function navToEmail(i) {
 
 // ── LinkedIn ─────────────────────────────────────────────────
 
+const INMAIL_DAY_LIMIT   = 3
+const INMAIL_WEEK_LIMIT  = 15
+const INMAIL_MONTH_LIMIT = 50
+
+function inmailQuotas() {
+  const now      = new Date()
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+  const dow      = (now.getDay() + 6) % 7   // 0=Mon … 6=Sun
+  const weekStart  = new Date(now.getFullYear(), now.getMonth(), now.getDate() - dow)
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+  let today = 0, week = 0, month = 0
+  for (const t of Object.values(trackerMap)) {
+    if (!t.inmail_sent_at) continue
+    const d = new Date(t.inmail_sent_at)
+    if (d >= monthStart) month++
+    if (d >= weekStart)  week++
+    if (d >= todayStart) today++
+  }
+  return { today, week, month }
+}
+
+function nextMonday() {
+  const d = new Date()
+  d.setDate(d.getDate() + ((8 - d.getDay()) % 7 || 7))
+  return d.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'short' })
+}
+
+function quotaColour(val, limit) {
+  if (val >= limit)            return 'maxed'
+  if (val >= limit - 1)        return 'warn'
+  return 'ok'
+}
+
+function renderInmailQuota() {
+  const q   = inmailQuotas()
+  const dayBlocked  = q.today >= INMAIL_DAY_LIMIT
+  const weekBlocked = q.week  >= INMAIL_WEEK_LIMIT
+  let blockMsg = ''
+  if (weekBlocked) blockMsg = `Weekly limit reached — resets ${nextMonday()}`
+  else if (dayBlocked) blockMsg = 'Daily limit reached — resets tomorrow'
+  document.getElementById('li-inmail-quota').innerHTML = `
+    <div class="li-quota-item">
+      <div class="li-quota-label">Today</div>
+      <div class="li-quota-val ${quotaColour(q.today, INMAIL_DAY_LIMIT)}">${q.today} / ${INMAIL_DAY_LIMIT}</div>
+    </div>
+    <div class="li-quota-divider"></div>
+    <div class="li-quota-item">
+      <div class="li-quota-label">This week</div>
+      <div class="li-quota-val ${quotaColour(q.week, INMAIL_WEEK_LIMIT)}">${q.week} / ${INMAIL_WEEK_LIMIT}</div>
+    </div>
+    <div class="li-quota-divider"></div>
+    <div class="li-quota-item">
+      <div class="li-quota-label">This month</div>
+      <div class="li-quota-val ${quotaColour(q.month, INMAIL_MONTH_LIMIT)}">${q.month} / ${INMAIL_MONTH_LIMIT}</div>
+    </div>
+    ${blockMsg ? `<div class="li-quota-block">${blockMsg}</div>` : ''}
+  `
+  return { dayBlocked, weekBlocked, blocked: dayBlocked || weekBlocked }
+}
+
 function savings(employeeCount) {
   const n = parseInt(employeeCount) || 100
   const low  = Math.round(n * 620  / 1000)
@@ -769,18 +838,24 @@ async function loadLinkedIn() {
   connectLeads.sort((a,b) => (heatScores[b.lead_id]||0) - (heatScores[a.lead_id]||0))
 
   // InMail queue
-  document.getElementById('li-inmail-count').textContent = inmailLeads.length
+  const { blocked: inmailBlocked } = renderInmailQuota()
   const inmailList = document.getElementById('li-inmail-list')
+
   if (!inmailLeads.length) {
     inmailList.innerHTML = '<div class="li-empty">No leads at 3+ opens yet — check back as opens come in.</div>'
   } else {
-    inmailList.innerHTML = inmailLeads.map(l => {
+    const renderInmailCard = (l, forceDisable) => {
       const { subject, body } = inmailTemplate(l)
       const salesNavSearchUrl = liSalesNavSearchUrl(l)
       const alreadySent = !!l.tracker.inmail_sent_at
-      const sentLabel = alreadySent
-        ? `Sent ${new Date(l.tracker.inmail_sent_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`
-        : 'Mark sent'
+      let btnClass, btnLabel, btnClick, btnDisabled
+      if (alreadySent) {
+        btnClass = 'li-btn sent'; btnLabel = `Sent ${new Date(l.tracker.inmail_sent_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`; btnClick = ''; btnDisabled = 'disabled'
+      } else if (forceDisable) {
+        btnClass = 'li-btn sent'; btnLabel = 'Limit reached'; btnClick = ''; btnDisabled = 'disabled'
+      } else {
+        btnClass = 'li-btn primary'; btnLabel = 'Mark sent'; btnClick = `markInmailSent('${l.lead_id}')`; btnDisabled = ''
+      }
       return `
       <div class="li-card" id="li-card-${l.lead_id}">
         <div class="li-card-top">
@@ -792,7 +867,7 @@ async function loadLinkedIn() {
           <div class="li-actions">
             ${l.linkedin ? `<a href="${l.linkedin}" target="_blank"><button class="li-btn">Open Profile →</button></a>` : '<span style="font-size:.8rem;color:var(--muted)">No LinkedIn URL</span>'}
             <a href="${salesNavSearchUrl}" target="_blank"><button class="li-btn">Search Sales Nav →</button></a>
-            <button class="li-btn ${alreadySent ? 'sent' : 'primary'}" id="li-inmail-btn-${l.lead_id}" onclick="${alreadySent ? '' : `markInmailSent('${l.lead_id}')`}">${sentLabel}</button>
+            <button class="${btnClass}" id="li-inmail-btn-${l.lead_id}" onclick="${btnClick}" ${btnDisabled}>${btnLabel}</button>
           </div>
         </div>
         <div class="li-template">
@@ -803,7 +878,24 @@ async function loadLinkedIn() {
           <button class="li-copy-btn" onclick="copyInmail('${l.lead_id}', \`${subject.replace(/`/g,'\\`')}\`, \`${body.replace(/`/g,'\\`')}\`)">Copy message</button>
         </div>
       </div>`
-    }).join('')
+    }
+
+    const unsentInmails = inmailLeads.filter(l => !l.tracker.inmail_sent_at)
+    const sentInmails   = inmailLeads
+      .filter(l => !!l.tracker.inmail_sent_at)
+      .sort((a, b) => new Date(b.tracker.inmail_sent_at) - new Date(a.tracker.inmail_sent_at))
+
+    let html = unsentInmails.map(l => renderInmailCard(l, inmailBlocked)).join('')
+
+    if (sentInmails.length) {
+      html += `
+      <details class="li-sent-details">
+        <summary class="li-sent-summary">${sentInmails.length} sent — click to expand</summary>
+        <div class="li-sent-inner">${sentInmails.map(l => renderInmailCard(l, false)).join('')}</div>
+      </details>`
+    }
+
+    inmailList.innerHTML = html || '<div class="li-empty">No leads at 3+ opens yet.</div>'
   }
 
   // Connection request queue
@@ -868,6 +960,16 @@ function copyInmail(leadId, subject, body) {
 }
 
 async function markInmailSent(leadId) {
+  const { today, week } = inmailQuotas()
+  if (today >= INMAIL_DAY_LIMIT) {
+    alert(`Daily limit reached (${INMAIL_DAY_LIMIT}/day) — resets tomorrow.`)
+    return
+  }
+  if (week >= INMAIL_WEEK_LIMIT) {
+    alert(`Weekly limit reached (${INMAIL_WEEK_LIMIT}/week) — resets next Monday.`)
+    return
+  }
+
   const btn = document.getElementById('li-inmail-btn-'+leadId)
   btn.textContent = 'Saving…'; btn.disabled = true
   const now = new Date().toISOString()
@@ -877,7 +979,7 @@ async function markInmailSent(leadId) {
 
   await sb('call_tracker?on_conflict=lead_id', {
     method: 'POST',
-    headers: { Prefer: 'resolution=merge-duplicates' },
+    headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
     body: JSON.stringify({
       lead_id: leadId,
       email: lead?.email || '',
@@ -890,7 +992,17 @@ async function markInmailSent(leadId) {
     })
   })
 
-  btn.textContent = 'Sent ✓'; btn.className = 'li-btn sent'; btn.disabled = false
+  btn.textContent = 'Sent ✓'; btn.className = 'li-btn sent'; btn.disabled = true
+
+  // Re-check quota — if now at limit, disable all remaining unsent buttons
+  const { blocked } = renderInmailQuota()
+  if (blocked) {
+    document.querySelectorAll('[id^="li-inmail-btn-"]').forEach(b => {
+      if (b.classList.contains('primary')) {
+        b.textContent = 'Limit reached'; b.className = 'li-btn sent'; b.disabled = true; b.onclick = null
+      }
+    })
+  }
 }
 
 async function markConnectSent(leadId) {
