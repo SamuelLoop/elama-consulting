@@ -140,6 +140,9 @@
     .li-btn.primary{background:var(--green);border-color:var(--green);color:#fff;}
     .li-btn.primary:hover{background:var(--green-dark);}
     .li-btn.sent{background:#f0f0f0;color:#888;border-color:#e0e0e0;cursor:default;}
+    .li-btn.auto{background:var(--dark);border-color:var(--dark);color:#fff;}
+    .li-btn.auto:hover{opacity:.85;}
+    .li-btn.spinning{opacity:.65;cursor:default;}
     .li-template{padding:0 1.25rem 1.25rem;}
     .li-template-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.4rem;margin-top:.75rem;}
     .li-template-box{background:var(--off-white);border-radius:8px;padding:.85rem 1rem;font-size:.85rem;line-height:1.6;color:var(--text);white-space:pre-wrap;border:1px solid #e8ede9;}
@@ -848,13 +851,17 @@ async function loadLinkedIn() {
       const { subject, body } = inmailTemplate(l)
       const salesNavSearchUrl = liSalesNavSearchUrl(l)
       const alreadySent = !!l.tracker.inmail_sent_at
-      let btnClass, btnLabel, btnClick, btnDisabled
+      let sentBtn, autoBtn
       if (alreadySent) {
-        btnClass = 'li-btn sent'; btnLabel = `Sent ${new Date(l.tracker.inmail_sent_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`; btnClick = ''; btnDisabled = 'disabled'
+        const dateStr = new Date(l.tracker.inmail_sent_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})
+        sentBtn = `<button class="li-btn sent" disabled>Sent ${dateStr}</button>`
+        autoBtn = ''
       } else if (forceDisable) {
-        btnClass = 'li-btn sent'; btnLabel = 'Limit reached'; btnClick = ''; btnDisabled = 'disabled'
+        sentBtn = `<button class="li-btn sent" disabled>Limit reached</button>`
+        autoBtn = ''
       } else {
-        btnClass = 'li-btn primary'; btnLabel = 'Mark sent'; btnClick = `markInmailSent('${l.lead_id}')`; btnDisabled = ''
+        sentBtn = `<button class="li-btn" id="li-inmail-btn-${l.lead_id}" onclick="markInmailSent('${l.lead_id}')">Mark sent</button>`
+        autoBtn = `<button class="li-btn auto" id="li-inmail-auto-${l.lead_id}" onclick="autoSendInmail('${l.lead_id}')">Auto-send ▶</button>`
       }
       return `
       <div class="li-card" id="li-card-${l.lead_id}">
@@ -867,7 +874,8 @@ async function loadLinkedIn() {
           <div class="li-actions">
             ${l.linkedin ? `<a href="${l.linkedin}" target="_blank"><button class="li-btn">Open Profile →</button></a>` : '<span style="font-size:.8rem;color:var(--muted)">No LinkedIn URL</span>'}
             <a href="${salesNavSearchUrl}" target="_blank"><button class="li-btn">Search Sales Nav →</button></a>
-            <button class="${btnClass}" id="li-inmail-btn-${l.lead_id}" onclick="${btnClick}" ${btnDisabled}>${btnLabel}</button>
+            ${autoBtn}
+            ${sentBtn}
           </div>
         </div>
         <div class="li-template">
@@ -1002,6 +1010,70 @@ async function markInmailSent(leadId) {
         b.textContent = 'Limit reached'; b.className = 'li-btn sent'; b.disabled = true; b.onclick = null
       }
     })
+  }
+}
+
+async function autoSendInmail(leadId) {
+  const { today, week } = inmailQuotas()
+  if (today >= INMAIL_DAY_LIMIT) {
+    alert(`Daily limit reached (${INMAIL_DAY_LIMIT}/day) — resets tomorrow.`)
+    return
+  }
+  if (week >= INMAIL_WEEK_LIMIT) {
+    alert(`Weekly limit reached (${INMAIL_WEEK_LIMIT}/week) — resets next Monday.`)
+    return
+  }
+
+  const autoBtn = document.getElementById('li-inmail-auto-'+leadId)
+  const markBtn = document.getElementById('li-inmail-btn-'+leadId)
+
+  // Lock both buttons while sending
+  autoBtn.textContent = 'Sending…'; autoBtn.classList.add('spinning'); autoBtn.disabled = true
+  if (markBtn) { markBtn.disabled = true }
+
+  try {
+    const res = await fetch('https://ignite-chatbot-nu.vercel.app/api/phantombuster/send-inmail', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer pb_csv_ignite_2026',
+      },
+      body: JSON.stringify({ leadId }),
+    })
+    const data = await res.json()
+
+    if (!res.ok || !data.ok) {
+      autoBtn.textContent = `✗ ${data.error || 'Failed'}`
+      autoBtn.classList.remove('spinning')
+      autoBtn.disabled = false
+      if (markBtn) { markBtn.disabled = false }
+      return
+    }
+
+    // Backend confirmed send and wrote inmail_sent_at — update local state
+    const now = new Date().toISOString()
+    if (!trackerMap[leadId]) trackerMap[leadId] = { lead_id: leadId }
+    trackerMap[leadId].inmail_sent_at = now
+
+    // Update UI
+    autoBtn.textContent = 'Sent ✓'; autoBtn.className = 'li-btn sent'; autoBtn.disabled = true
+    if (markBtn) { markBtn.textContent = 'Sent ✓'; markBtn.className = 'li-btn sent'; markBtn.disabled = true }
+
+    // Re-check quota bar and lock remaining cards if at limit
+    const { blocked } = renderInmailQuota()
+    if (blocked) {
+      document.querySelectorAll('[id^="li-inmail-auto-"]').forEach(b => {
+        if (!b.disabled) { b.textContent = 'Limit reached'; b.className = 'li-btn sent'; b.disabled = true }
+      })
+      document.querySelectorAll('[id^="li-inmail-btn-"]').forEach(b => {
+        if (!b.disabled) { b.textContent = 'Limit reached'; b.className = 'li-btn sent'; b.disabled = true }
+      })
+    }
+  } catch (e) {
+    autoBtn.textContent = '✗ Network error'
+    autoBtn.classList.remove('spinning')
+    autoBtn.disabled = false
+    if (markBtn) { markBtn.disabled = false }
   }
 }
 
