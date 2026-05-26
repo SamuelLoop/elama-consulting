@@ -150,6 +150,13 @@
     .li-export-btn{padding:.5rem 1.25rem;background:var(--dark);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-family:inherit;cursor:pointer;margin-bottom:1.5rem;}
     .li-export-btn:hover{opacity:.85;}
     .li-empty{text-align:center;padding:2.5rem;color:var(--muted);font-size:.9rem;background:#fff;border-radius:var(--radius);box-shadow:0 2px 10px rgba(0,0,0,.06);}
+    .li-sent-details{margin-top:1.25rem;}
+    .li-sent-summary{font-size:.82rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);cursor:pointer;padding:.6rem .9rem;background:#f4f8f6;border-radius:6px;list-style:none;display:flex;align-items:center;gap:.5rem;user-select:none;}
+    .li-sent-summary::-webkit-details-marker{display:none;}
+    .li-sent-summary::before{content:'▶';font-size:.65rem;transition:transform .2s;}
+    details[open] .li-sent-summary::before{transform:rotate(90deg);}
+    .li-sent-summary:hover{background:#eaf2ec;}
+    .li-sent-inner{margin-top:.75rem;}
   </style>
 </head>
 <body>
@@ -804,7 +811,7 @@ async function loadLinkedIn() {
   if (!connectLeads.length) {
     connectList.innerHTML = '<div class="li-empty">No leads at exactly 2 opens yet.</div>'
   } else {
-    connectList.innerHTML = connectLeads.map(l => {
+    const renderConnectCard = l => {
       const msg = connectTemplate(l)
       const salesNavSearchUrl = liSalesNavSearchUrl(l)
       const alreadySent = !!l.tracker.linkedin_requested_at
@@ -831,7 +838,24 @@ async function loadLinkedIn() {
           <button class="li-copy-btn" onclick="navigator.clipboard.writeText(\`${msg.replace(/`/g,'\\`')}\`).then(()=>{ const b=event.target; b.textContent='Copied!'; setTimeout(()=>b.textContent='Copy note',1500) })">Copy note</button>
         </div>
       </div>`
-    }).join('')
+    }
+
+    const unsentLeads = connectLeads.filter(l => !l.tracker.linkedin_requested_at)
+    const sentLeads   = connectLeads
+      .filter(l => !!l.tracker.linkedin_requested_at)
+      .sort((a, b) => new Date(b.tracker.linkedin_requested_at) - new Date(a.tracker.linkedin_requested_at))
+
+    let html = unsentLeads.map(renderConnectCard).join('')
+
+    if (sentLeads.length) {
+      html += `
+      <details class="li-sent-details">
+        <summary class="li-sent-summary">${sentLeads.length} sent — click to expand</summary>
+        <div class="li-sent-inner">${sentLeads.map(renderConnectCard).join('')}</div>
+      </details>`
+    }
+
+    connectList.innerHTML = html || '<div class="li-empty">No leads at exactly 2 opens yet.</div>'
   }
 }
 
