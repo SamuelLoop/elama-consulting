@@ -193,6 +193,7 @@
       <div class="stat-card"><div class="stat-label">Total contacted</div><div class="stat-value" id="stat-contacted">—</div><div class="stat-sub">out of <span id="stat-total-leads">—</span> leads</div></div>
       <div class="stat-card"><div class="stat-label">Sequence complete</div><div class="stat-value" id="stat-complete">—</div><div class="stat-sub">all 3 emails sent</div></div>
       <div class="stat-card"><div class="stat-label">Unsubscribed</div><div class="stat-value" id="stat-unsub">—</div><div class="stat-sub">opted out</div></div>
+      <div class="stat-card"><div class="stat-label">Non-US excluded</div><div class="stat-value" id="stat-excluded">72</div><div class="stat-sub">filtered from pipeline</div></div>
       <div class="stat-card"><div class="stat-label">Campaign day</div><div class="stat-value" id="stat-day">—</div><div class="stat-sub" id="stat-ramp">warming up</div></div>
       <div class="stat-card"><div class="stat-label">Total opened</div><div class="stat-value green" id="stat-opened">—</div><div class="stat-sub">unique opens</div></div>
       <div class="stat-card"><div class="stat-label">Open rate</div><div class="stat-value" id="stat-openrate">—</div><div class="stat-sub">of emails sent</div></div>
@@ -498,7 +499,7 @@ async function loadStats() {
 // ── Call Manager ────────────────────────────────────────────
 async function loadCallManager() {
   // Fetch unique contacts from campaign_sends
-  const sendsRes = await sb('campaign_sends?select=lead_id,first_name,full_name,company,email,phone,employee_count,category,city,website,linkedin,sequence_index,sent_at&order=sent_at.asc')
+  const sendsRes = await sb('campaign_sends?select=lead_id,first_name,full_name,company,email,phone,employee_count,category,city,website,linkedin,sequence_index,sent_at&excluded=eq.false&order=sent_at.asc')
   const sends = await sendsRes.json()
 
   // Deduplicate — one entry per lead, track which emails were sent
