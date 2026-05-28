@@ -380,6 +380,10 @@
              class="btn ec-btn-gold btn-sm" style="font-size:0.75rem;padding:0.5rem 1.1rem;">
             <i class="bi bi-people me-1"></i>Manage Sales Agents
           </a>
+          <a href="team.html"
+             class="btn ec-btn-gold btn-sm" style="font-size:0.75rem;padding:0.5rem 1.1rem;">
+            <i class="bi bi-person-lines-fill me-1"></i>Manage Team
+          </a>
         </div>
         <div id="logicStats" class="logic-stats"></div>
       </div>
@@ -531,6 +535,14 @@
       }
     }
 
+    async function waitForMermaid(maxMs = 5000) {
+      const start = Date.now();
+      while (!window.__mermaid) {
+        if (Date.now() - start > maxMs) throw new Error('Mermaid library did not load within 5 seconds — check CDN connectivity');
+        await new Promise(r => setTimeout(r, 100));
+      }
+    }
+
     async function renderFlowchart(nodes) {
       const stages = ['HOOK', 'DISCOVERY', 'EDUCATION', 'VALUE', 'CONCERNS', 'SOFT CLOSE', 'HARD CLOSE'];
       const stageEmoji = {
@@ -611,8 +623,9 @@
 
       const definition = lines.join('\n');
 
-      // Render
+      // Render — wait for the ESM module to finish assigning window.__mermaid
       try {
+        await waitForMermaid();
         const target = document.getElementById('logicMermaid');
         const { svg } = await window.__mermaid.render('flowchartSvg', definition);
         target.innerHTML = svg;
