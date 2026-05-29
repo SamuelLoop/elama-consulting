@@ -517,9 +517,15 @@ async function loadStats() {
 
 // ── Call Manager ────────────────────────────────────────────
 async function loadCallManager() {
-  // Fetch unique contacts from campaign_sends
-  const sendsRes = await sb('campaign_sends?select=lead_id,first_name,full_name,company,email,phone,employee_count,category,city,website,linkedin,sequence_index,sent_at&excluded=eq.false&order=sent_at.asc')
-  const sends = await sendsRes.json()
+  // Fetch all send records — paginate to bypass 1000-row server cap (currently 2000+ rows)
+  const sends = []
+  for (let page = 0; ; page++) {
+    const start = page * 1000, end = start + 999
+    const res = await sb('campaign_sends?select=lead_id,first_name,full_name,company,email,phone,employee_count,category,city,website,linkedin,sequence_index,sent_at&excluded=eq.false&order=sent_at.asc', { headers: { Range: `${start}-${end}` } })
+    const rows = await res.json()
+    sends.push(...rows)
+    if (rows.length < 1000) break
+  }
 
   // Deduplicate — one entry per lead, track which emails were sent
   const leadMap = {}
@@ -529,8 +535,8 @@ async function loadCallManager() {
   }
   allLeads = Object.values(leadMap)
 
-  // Fetch call tracker records
-  const trackerRes = await sb('call_tracker?select=*')
+  // Fetch call tracker records — select only needed columns
+  const trackerRes = await sb('call_tracker?select=lead_id,status,notes,linkedin_requested_at,inmail_sent_at,called_at,updated_at')
   const tracker = await trackerRes.json()
   trackerMap = Object.fromEntries(tracker.map(t => [t.lead_id, t]))
 
