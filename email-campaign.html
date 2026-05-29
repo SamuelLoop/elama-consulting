@@ -534,10 +534,13 @@ async function loadCallManager() {
   const tracker = await trackerRes.json()
   trackerMap = Object.fromEntries(tracker.map(t => [t.lead_id, t]))
 
-  // Fetch all open events — build maps for badge, timeline, heat score
+  // Fetch all open events — paginate to bypass 1000-row server cap
   try {
-    const opensRes = await sb('email_opens?select=lead_id,sequence_index,opened_at&order=opened_at.desc&limit=10000')
-    const opens = await opensRes.json()
+    const [res1, res2] = await Promise.all([
+      sb('email_opens?select=lead_id,sequence_index,opened_at&order=opened_at.desc', { headers: { Range: '0-999' } }),
+      sb('email_opens?select=lead_id,sequence_index,opened_at&order=opened_at.desc', { headers: { Range: '1000-1999' } }),
+    ])
+    const opens = [...(await res1.json()), ...(await res2.json())]
     opensMap = {}; lastOpenMap = {}; openEventsMap = {}
 
     for (const o of opens) {
