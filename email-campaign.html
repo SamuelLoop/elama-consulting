@@ -536,7 +536,7 @@ async function loadCallManager() {
 
   // Fetch all open events — build maps for badge, timeline, heat score
   try {
-    const opensRes = await sb('email_opens?select=lead_id,sequence_index,opened_at&order=opened_at.desc')
+    const opensRes = await sb('email_opens?select=lead_id,sequence_index,opened_at&order=opened_at.desc&limit=10000')
     const opens = await opensRes.json()
     opensMap = {}; lastOpenMap = {}; openEventsMap = {}
 
