@@ -4,6 +4,7 @@
   "rewrites": [
     { "source": "/email-campaign", "destination": "/email-campaign.html" },
     { "source": "/health-chat", "destination": "/health-chat.html" },
-    { "source": "/chat-logic", "destination": "/chat-logic.html" }
+    { "source": "/chat-logic", "destination": "/chat-logic.html" },
+    { "source": "/privacy-policy", "destination": "/privacy-policy.html" }
   ]
 }

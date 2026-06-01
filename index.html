@@ -38,7 +38,7 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
-          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">Meet the Team</a></li>
           <li class="nav-item"><a class="nav-link" href="#coaching">Executive Coaching</a></li>
           <li class="nav-item"><a class="nav-link" href="#health-benefits">Health Benefits</a></li>
           <li class="nav-item"><a class="nav-link" href="health-chat.html">Health Chat</a></li>
@@ -115,32 +115,36 @@
     </div>
   </section>
 
-  <!-- ===== ABOUT ===== -->
+  <!-- ===== MEET THE TEAM ===== -->
   <section id="about" class="ec-section ec-section-light">
     <div class="container">
-      <div class="row align-items-center gy-5">
-        <div class="col-12 col-lg-5 text-center" data-aos="fade-right">
-          <div class="ec-photo-frame mx-auto">
-            <img src="images/samuel.jpg" alt="Samuel Barlow — Founder, Elama Consulting" class="ec-photo-img" />
-          </div>
+
+      <!-- Loading indicator -->
+      <div id="teamLoading" class="text-center py-5">
+        <div class="ec-team-loading-dots">
+          <span class="ec-dot ec-dot-1"></span>
+          <span class="ec-dot ec-dot-2"></span>
+          <span class="ec-dot ec-dot-3"></span>
         </div>
-        <div class="col-12 col-lg-7" data-aos="fade-left">
-          <p class="ec-eyebrow mb-2">About</p>
-          <h2 class="ec-section-title mb-4">Samuel Barlow<br /><span class="ec-gold">Founder, Elama Consulting</span></h2>
-          <p class="ec-body-text mb-4">
-            Samuel Barlow is a technology-driven business strategist, growth consultant, and executive advisor with a strong background in software, AI, and commercial operations. With expertise spanning business development, systems design, automation, and strategic scaling, Samuel helps founders and leadership teams break through growth ceilings, streamline operations, and build businesses that perform efficiently without constant owner involvement.
-          </p>
-          <p class="ec-body-text mb-4">
-            Combining technical insight with commercial execution, Samuel works with companies to modernise workflows, improve profitability, strengthen sales performance, and unlock new revenue opportunities. His approach blends practical business strategy with emerging technology, enabling organisations to scale smarter in an increasingly digital economy.
-          </p>
-          <p class="ec-body-text mb-4">
-            In addition to consulting, Samuel brings a unique advantage to U.S. businesses through access to the PCMP (Preventive Care Management Program), a federally funded wellness and benefits solution that can save employers $620+ per employee annually with zero reduction in employee take-home pay. This allows companies to improve workforce wellbeing while reducing operating costs.
-          </p>
-          <a href="book.html" class="btn ec-btn-navy btn-lg">
-            Work With Samuel
-          </a>
-        </div>
+        <p class="ec-body-text mt-3">Loading team…</p>
       </div>
+
+      <!-- Carousel shell — populated by loadTeam() in main.js -->
+      <div id="teamCarousel" class="carousel slide d-none">
+        <div class="carousel-indicators" id="teamIndicators"></div>
+        <div class="carousel-inner" id="teamInner"></div>
+        <button class="carousel-control-prev ec-carousel-ctrl" type="button"
+                data-bs-target="#teamCarousel" data-bs-slide="prev">
+          <i class="bi bi-chevron-left ec-carousel-icon" aria-hidden="true"></i>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next ec-carousel-ctrl" type="button"
+                data-bs-target="#teamCarousel" data-bs-slide="next">
+          <i class="bi bi-chevron-right ec-carousel-icon" aria-hidden="true"></i>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+
     </div>
   </section>
 
@@ -474,7 +478,7 @@
                 <label for="finterest" class="form-label ec-form-label">I'm interested in</label>
                 <select class="form-select ec-form-input" id="finterest" name="interest">
                   <option value="">Select one...</option>
-                  <option value="coaching">Executive Coaching</option>
+                  <option value="coaching">Executive Coaching / Consulting &amp; SME Services</option>
                   <option value="benefits">PCMP Health Benefits</option>
                   <option value="both">Both</option>
                 </select>
@@ -542,6 +546,7 @@
           <span class="ec-footer-brand">Eläm&auml; Consulting</span>
         </div>
         <div class="col-12 col-md-6 text-center text-md-end">
+          <a href="/privacy-policy" class="ec-footer-copy me-3" style="opacity:0.6; text-decoration:none;">Privacy Policy</a>
           <span class="ec-footer-copy">&copy; 2026 Elama Consulting. All rights reserved.</span>
         </div>
       </div>
