@@ -571,6 +571,144 @@ body {
 /* ---- z-index helper ---- */
 .z-1 { position: relative; z-index: 1; }
 
+/* ---- Meet the Team Carousel ---- */
+
+.ec-team-loading-dots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+#teamCarousel {
+  padding-bottom: 3rem;
+}
+
+/* Indicators */
+#teamCarousel .carousel-indicators {
+  bottom: 0.5rem;
+  margin: 0;
+}
+#teamCarousel .carousel-indicators [data-bs-target] {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--ec-mint);
+  border: none;
+  opacity: 0.55;
+  margin: 0 5px;
+  flex-shrink: 0;
+  transition: opacity var(--ec-transition), background-color var(--ec-transition);
+}
+#teamCarousel .carousel-indicators .active {
+  background-color: var(--ec-green);
+  opacity: 1;
+}
+
+/* Prev / Next controls */
+.ec-carousel-ctrl {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(112,193,154,0.18);
+  top: calc(50% - 1.5rem);
+  opacity: 1;
+  transition: background var(--ec-transition);
+}
+.ec-carousel-ctrl:hover { background: rgba(112,193,154,0.38); }
+.carousel-control-prev.ec-carousel-ctrl { left: -4px; }
+.carousel-control-next.ec-carousel-ctrl { right: -4px; }
+.ec-carousel-icon {
+  font-size: 1.1rem;
+  color: var(--ec-green-dark);
+  line-height: 1;
+}
+
+/* ---- Team overview slide ---- */
+.ec-team-overview-slide {
+  padding: 0 3rem 1rem;
+}
+
+.ec-team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 2rem 1.5rem;
+  justify-items: center;
+}
+
+.ec-team-card {
+  text-align: center;
+  max-width: 210px;
+}
+
+.ec-team-avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 0.9rem;
+  border: 3px solid var(--ec-mint);
+  background: var(--ec-off-white2);
+  flex-shrink: 0;
+}
+.ec-team-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  filter: grayscale(1);
+}
+.ec-team-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  color: var(--ec-mint);
+}
+
+.ec-team-name {
+  font-family: var(--ec-font-heading);
+  font-size: 1.05rem;
+  font-weight: 400;
+  color: var(--ec-dark);
+  margin-bottom: 0.2rem;
+  letter-spacing: 0.02em;
+}
+.ec-team-role {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ec-green);
+  margin-bottom: 0.45rem;
+}
+.ec-team-synopsis {
+  font-size: 0.85rem;
+  color: var(--ec-text-muted);
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* ---- Team member detail slide ---- */
+.ec-team-member-slide {
+  padding: 0 3rem 1rem;
+}
+
+.ec-photo-bw {
+  filter: grayscale(1);
+}
+
+/* ---- Responsive: carousel ---- */
+@media (max-width: 767.98px) {
+  .ec-team-overview-slide,
+  .ec-team-member-slide { padding: 0 0.5rem 1rem; }
+  .carousel-control-prev.ec-carousel-ctrl { left: 0; }
+  .carousel-control-next.ec-carousel-ctrl { right: 0; }
+  .ec-team-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem 1rem; }
+}
+
 /* ---- Responsive: mobile parallax fix ---- */
 @media (max-width: 767.98px) {
   .parallax-bg, .parallax-bg-2, .parallax-bg-3 { background-attachment: scroll; }
