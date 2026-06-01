@@ -157,3 +157,148 @@ function showFormError(msg) {
 function simulateDelay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+// ============================================================
+// MEET THE TEAM — carousel
+// ============================================================
+
+const SUPABASE_URL = 'https://bosvbnjhsimqtnwkkcvn.supabase.co';
+
+const TEAM_FALLBACK = [
+  {
+    id: 'samuel-barlow',
+    name: 'Samuel Barlow',
+    title: 'Founder, Elama Consulting',
+    synopsis: 'Technology-driven business strategist, growth consultant, and executive advisor',
+    about: 'Samuel Barlow is a technology-driven business strategist, growth consultant, and executive advisor with a strong background in software, AI, and commercial operations. With expertise spanning business development, systems design, automation, and strategic scaling, Samuel helps founders and leadership teams break through growth ceilings, streamline operations, and build businesses that perform efficiently without constant owner involvement.\n\nCombining technical insight with commercial execution, Samuel works with companies to modernise workflows, improve profitability, strengthen sales performance, and unlock new revenue opportunities. His approach blends practical business strategy with emerging technology, enabling organisations to scale smarter in an increasingly digital economy.\n\nIn addition to consulting, Samuel brings a unique advantage to U.S. businesses through access to the PCMP (Preventive Care Management Program), a federally funded wellness and benefits solution that can save employers $620+ per employee annually with zero reduction in employee take-home pay. This allows companies to improve workforce wellbeing while reducing operating costs.',
+    image_data: 'images/samuel.jpg',
+    display_order: 0,
+  },
+];
+
+async function loadTeam() {
+  const loadingEl  = document.getElementById('teamLoading');
+  const carouselEl = document.getElementById('teamCarousel');
+  if (!loadingEl || !carouselEl) return;
+
+  let members = TEAM_FALLBACK;
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 3000);
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/team_members?select=*&order=display_order.asc`,
+      {
+        signal: controller.signal,
+        headers: {
+          'apikey':        SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+      }
+    );
+    clearTimeout(timer);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.length) members = data;
+    }
+  } catch (_) { /* fall through to fallback */ }
+
+  buildTeamCarousel(members, carouselEl, loadingEl);
+}
+
+function buildTeamCarousel(members, carouselEl, loadingEl) {
+  const indicatorsEl = document.getElementById('teamIndicators');
+  const innerEl      = document.getElementById('teamInner');
+
+  // Indicators: slot 0 = overview, slots 1…N = individual members
+  const totalSlides = members.length + 1;
+  indicatorsEl.innerHTML = Array.from({ length: totalSlides }, (_, i) =>
+    `<button type="button" data-bs-target="#teamCarousel" data-bs-slide-to="${i}"
+       ${i === 0 ? 'class="active" aria-current="true"' : ''}
+       aria-label="Slide ${i + 1}"></button>`
+  ).join('');
+
+  // Slides
+  innerEl.innerHTML = teamOverviewSlide(members)
+    + members.map(m => teamMemberSlide(m)).join('');
+
+  // Show carousel
+  loadingEl.classList.add('d-none');
+  carouselEl.classList.remove('d-none');
+
+  new bootstrap.Carousel(carouselEl, {
+    interval: false,
+    ride:     false,
+    wrap:     true,
+    touch:    true,
+  });
+}
+
+function teamOverviewSlide(members) {
+  const cards = members.map(m => `
+    <div class="ec-team-card">
+      <div class="ec-team-avatar">
+        ${m.image_data
+          ? `<img src="${htmlEnc(m.image_data)}" alt="${htmlEnc(m.name)}" class="ec-team-avatar-img" />`
+          : `<div class="ec-team-avatar-placeholder"><i class="bi bi-person"></i></div>`
+        }
+      </div>
+      <h4 class="ec-team-name">${htmlEnc(m.name)}</h4>
+      <p class="ec-team-role">${htmlEnc(m.title)}</p>
+      <p class="ec-team-synopsis">${htmlEnc(m.synopsis)}</p>
+    </div>
+  `).join('');
+
+  return `
+    <div class="carousel-item active">
+      <div class="ec-team-overview-slide">
+        <div class="text-center mb-5">
+          <p class="ec-eyebrow mb-2">Our Team</p>
+        </div>
+        <div class="ec-team-grid">${cards}</div>
+      </div>
+    </div>`;
+}
+
+function teamMemberSlide(m) {
+  const firstName  = htmlEnc(m.name.split(' ')[0]);
+  const paragraphs = (m.about || m.synopsis || '')
+    .split('\n\n')
+    .filter(p => p.trim())
+    .map(p => `<p class="ec-body-text mb-4">${htmlEnc(p.trim())}</p>`)
+    .join('');
+
+  const photoHTML = m.image_data
+    ? `<img src="${htmlEnc(m.image_data)}" alt="${htmlEnc(m.name)}" class="ec-photo-img ec-photo-bw" />`
+    : `<div class="ec-photo-placeholder"><i class="bi bi-person"></i><p>No photo</p></div>`;
+
+  return `
+    <div class="carousel-item">
+      <div class="ec-team-member-slide">
+        <div class="row align-items-center gy-5">
+          <div class="col-12 col-lg-5 text-center">
+            <div class="ec-photo-frame mx-auto">${photoHTML}</div>
+          </div>
+          <div class="col-12 col-lg-7">
+            <p class="ec-eyebrow mb-2">Team Member</p>
+            <h2 class="ec-section-title mb-4">${htmlEnc(m.name)}<br/>
+              <span class="ec-gold">${htmlEnc(m.title)}</span></h2>
+            ${paragraphs}
+            <a href="book.html" class="btn ec-btn-navy btn-lg">Work With ${firstName}</a>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function htmlEnc(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+// Kick off on index page only
+if (document.getElementById('teamCarousel')) {
+  loadTeam();
+}
