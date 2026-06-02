@@ -105,6 +105,8 @@
     .cm-notes:focus{border-color:var(--green);}
     .cm-save{margin-top:.6rem;padding:.5rem 1.25rem;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:.85rem;font-family:inherit;font-weight:500;cursor:pointer;}
     .cm-save:hover{background:var(--green-dark);}
+    .cm-mail-btn{padding:.3rem .65rem;background:#fff;color:var(--dark);border:1.5px solid #d0d0d0;border-radius:6px;font-size:.85rem;cursor:pointer;flex-shrink:0;transition:all .15s;line-height:1;}
+    .cm-mail-btn:hover{border-color:var(--green);color:var(--green-dark);background:var(--off-white);}
     .cm-empty{text-align:center;padding:3rem;color:var(--muted);font-size:.9rem;}
     .cm-loading{text-align:center;padding:2rem;color:var(--muted);}
     .open-badge{display:inline-block;padding:.15rem .5rem;border-radius:99px;font-size:.72rem;font-weight:600;margin-left:.4rem;}
@@ -654,6 +656,7 @@ function renderList() {
           <div class="cm-company">${l.email} &nbsp;·&nbsp; ${l.employee_count ? l.employee_count.toLocaleString()+' staff &nbsp;·&nbsp; ' : ''}${emailsLabel} &nbsp;·&nbsp; ${firstDate}${lastRead ? ' &nbsp;·&nbsp; <strong style="color:var(--green-dark)">'+lastRead+'</strong>' : ''}</div>
         </div>
         ${heatBar}
+        <button class="cm-mail-btn" title="Draft follow-up email" onclick="event.stopPropagation();draftFollowUpEmail('${l.email}','${l.first_name||''}')">✉</button>
         <span class="cm-badge badge-${status}">${STATUS_LABELS[status]}</span>
       </div>
       <div class="cm-detail" id="detail-${l.lead_id}">
@@ -719,6 +722,23 @@ async function saveTracker(leadId, email, firstName, company) {
   const btn = document.querySelector(`#detail-${leadId} .cm-save`)
   btn.textContent = 'Saved!'
   setTimeout(() => { btn.textContent = 'Save' }, 1500)
+}
+
+function draftFollowUpEmail(email, firstName) {
+  const name = firstName || 'there'
+  const subject = encodeURIComponent('quick call?')
+  const cc = encodeURIComponent('Brett@elamaconsulting.com')
+  const body = encodeURIComponent(
+`Hi ${name},
+
+I know emails are a pain. I can see you have been interested in my messages by the read receipts.
+
+Really simple, lets jump on a quick call and I can answer any questions you have. It's so easy and it really does make you money.
+
+When is a good time to speak?
+
+Samuel`)
+  window.location.href = `mailto:${email}?cc=${cc}&subject=${subject}&body=${body}`
 }
 
 function showEmail(i) {
