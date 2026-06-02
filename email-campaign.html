@@ -107,7 +107,8 @@
     .cm-save:hover{background:var(--green-dark);}
     .cm-mail-btn{padding:.3rem .65rem;background:#fff;color:var(--dark);border:1.5px solid #d0d0d0;border-radius:6px;font-size:.85rem;cursor:pointer;flex-shrink:0;transition:all .15s;line-height:1;}
     .cm-mail-btn:hover{border-color:var(--green);color:var(--green-dark);background:var(--off-white);}
-    .cm-mail-sent{padding:.3rem .65rem;background:#f0f7f4;color:var(--green-dark);border:1.5px solid var(--green);border-radius:6px;font-size:.78rem;font-weight:600;flex-shrink:0;line-height:1;white-space:nowrap;}
+    .cm-mail-sent{padding:.3rem .65rem;background:#f0f7f4;color:var(--green-dark);border:1.5px solid var(--green);border-radius:6px;font-size:.78rem;font-weight:600;flex-shrink:0;line-height:1;white-space:nowrap;cursor:pointer;font-family:inherit;transition:all .15s;}
+    .cm-mail-sent:hover{background:#fee2e2;color:#991b1b;border-color:#fca5a5;}
     .cm-empty{text-align:center;padding:3rem;color:var(--muted);font-size:.9rem;}
     .cm-loading{text-align:center;padding:2rem;color:var(--muted);}
     .open-badge{display:inline-block;padding:.15rem .5rem;border-radius:99px;font-size:.72rem;font-weight:600;margin-left:.4rem;}
@@ -658,7 +659,7 @@ function renderList() {
         </div>
         ${heatBar}
         ${trackerMap[l.lead_id]?.manual_email_sent_at
-          ? `<span class="cm-mail-sent" title="Manual email drafted ${new Date(trackerMap[l.lead_id].manual_email_sent_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}">✉ Sent</span>`
+          ? `<button class="cm-mail-sent" title="Click to undo" onclick="event.stopPropagation();clearManualEmail('${l.lead_id}')">✉ Sent</button>`
           : `<button class="cm-mail-btn" title="Draft follow-up email" onclick="event.stopPropagation();draftFollowUpEmail('${l.lead_id}','${l.email}','${l.first_name||''}')">✉</button>`}
         <span class="cm-badge badge-${status}">${STATUS_LABELS[status]}</span>
       </div>
@@ -727,6 +728,40 @@ async function saveTracker(leadId, email, firstName, company) {
   setTimeout(() => { btn.textContent = 'Save' }, 1500)
 }
 
+async function clearManualEmail(leadId) {
+  if (!trackerMap[leadId]) return
+  trackerMap[leadId].manual_email_sent_at = null
+
+  const lead = allLeads.find(l => l.lead_id === leadId)
+  await sb('call_tracker?on_conflict=lead_id', {
+    method: 'POST',
+    headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({
+      lead_id: leadId,
+      email: lead?.email || '',
+      first_name: lead?.first_name || '',
+      company: lead?.company || '',
+      status: trackerMap[leadId]?.status || 'pending',
+      notes: trackerMap[leadId]?.notes || '',
+      manual_email_sent_at: null,
+      updated_at: new Date().toISOString(),
+    })
+  })
+
+  const card = document.getElementById('card-' + leadId)
+  if (card) {
+    const sent = card.querySelector('.cm-mail-sent')
+    if (sent) {
+      const btn = document.createElement('button')
+      btn.className = 'cm-mail-btn'
+      btn.title = 'Draft follow-up email'
+      btn.textContent = '✉'
+      btn.onclick = (e) => { e.stopPropagation(); draftFollowUpEmail(leadId, lead?.email || '', lead?.first_name || '') }
+      sent.replaceWith(btn)
+    }
+  }
+}
+
 async function draftFollowUpEmail(leadId, email, firstName) {
   const name = firstName || 'there'
   const subject = encodeURIComponent('quick call?')
@@ -770,10 +805,11 @@ Samuel`)
     const btn = card.querySelector('.cm-mail-btn')
     if (btn) {
       const dateStr = new Date(now).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
-      const sent = document.createElement('span')
+      const sent = document.createElement('button')
       sent.className = 'cm-mail-sent'
-      sent.title = `Manual email drafted ${dateStr}`
+      sent.title = 'Click to undo'
       sent.textContent = '✉ Sent'
+      sent.onclick = (e) => { e.stopPropagation(); clearManualEmail(leadId) }
       btn.replaceWith(sent)
     }
   }
