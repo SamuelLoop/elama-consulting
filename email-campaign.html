@@ -435,6 +435,7 @@ let lastOpenMap = {}    // lead_id → most recent opened_at ISO string
 let openEventsMap = {}  // lead_id → array of { sequence_index, opened_at } all events
 let heatScores = {}     // lead_id → normalised heat score 0-10
 let activeFilter = 'all'
+const SCANNER_THRESHOLD_SECS = 60  // opens faster than this are Apple MPP / security scanners
 let openCard = null
 
 function sb(path, opts={}) {
@@ -539,6 +540,13 @@ async function loadCallManager() {
   }
   allLeads = Object.values(leadMap)
 
+  // Build sentAtMap for scanner filtering: lead_id|sequence_index → sent_at
+  const sentAtMap = {}
+  for (const s of sends) {
+    const key = `${s.lead_id}|${s.sequence_index}`
+    if (!sentAtMap[key]) sentAtMap[key] = s.sent_at
+  }
+
   // Fetch call tracker records — select only needed columns
   const trackerRes = await sb('call_tracker?select=lead_id,status,notes,linkedin_requested_at,inmail_sent_at,called_at,manual_email_sent_at,updated_at')
   const tracker = await trackerRes.json()
@@ -558,6 +566,9 @@ async function loadCallManager() {
 
     for (const o of opens) {
       if (!o.lead_id) continue
+      // Skip scanner opens: Apple MPP + security gateways fire the pixel in < 60s
+      const sentAt = sentAtMap[`${o.lead_id}|${o.sequence_index}`]
+      if (sentAt && (new Date(o.opened_at) - new Date(sentAt)) / 1000 < SCANNER_THRESHOLD_SECS) continue
       if (!opensMap[o.lead_id]) opensMap[o.lead_id] = new Set()
       opensMap[o.lead_id].add(o.sequence_index)
       if (!lastOpenMap[o.lead_id]) lastOpenMap[o.lead_id] = o.opened_at
@@ -579,6 +590,22 @@ async function loadCallManager() {
     heatScores = Object.fromEntries(
       Object.entries(rawScores).map(([id, s]) => [id, Math.round((s / maxRaw) * 10)])
     )
+
+    // Patch overview stats with scanner-filtered open count
+    const realOpenCount = Object.values(openEventsMap).reduce((sum, evts) => sum + evts.length, 0)
+    const e1 = parseInt(document.getElementById('count-e1')?.textContent || '0')
+    const e2 = parseInt(document.getElementById('count-e2')?.textContent || '0')
+    const e3 = parseInt(document.getElementById('count-e3')?.textContent || '0')
+    const totalSent = e1 + e2 + e3
+    const trackable = Math.max(0, totalSent - 188)
+    const elOpened     = document.getElementById('stat-opened')
+    const elRate       = document.getElementById('stat-openrate')
+    const elRateAdj    = document.getElementById('stat-openrate-adj')
+    const elRateAdjSub = document.getElementById('stat-openrate-adj-sub')
+    if (elOpened)     elOpened.textContent     = realOpenCount
+    if (elRate && totalSent > 0)   elRate.textContent   = Math.round(realOpenCount / totalSent * 100) + '%'
+    if (elRateAdj && trackable > 0) elRateAdj.textContent = Math.round(realOpenCount / trackable * 100) + '%'
+    if (elRateAdjSub) elRateAdjSub.textContent = `${realOpenCount} real opens / ${trackable} trackable sent (scanners filtered)`
   } catch(e) { opensMap = {}; lastOpenMap = {}; openEventsMap = {}; heatScores = {} }
 
   renderList()
