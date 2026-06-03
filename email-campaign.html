@@ -796,11 +796,11 @@ async function draftFollowUpEmail(leadId, email, firstName) {
   const body = encodeURIComponent(
 `Hi ${name},
 
-I know emails are a pain. I can see you have been interested in my messages by the read receipts.
+You've seen the information. The only question left is whether the numbers actually work for your situation specifically, and that takes about 10 minutes.
 
-Really simple, lets jump on a quick call and I can answer any questions you have. It's so easy and it really does make you money.
+No slides, no pressure. Just whether it makes sense for you.
 
-When is a good time to speak?
+Worth a quick call?
 
 Samuel`)
   window.location.href = `mailto:${email}?cc=${cc}&subject=${subject}&body=${body}`
