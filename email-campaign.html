@@ -409,6 +409,12 @@
     <div style="margin-bottom:2rem;">
       <div class="li-section-title">Real Opens Queue</div>
       <p class="li-section-sub">Leads who genuinely opened an email (scanner opens filtered) with a phone number — prime candidates for a personal WhatsApp message.</p>
+      <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+        <button class="cm-filter active" data-wafilter="all"       onclick="setWaFilter('all')">All</button>
+        <button class="cm-filter"        data-wafilter="hot"       onclick="setWaFilter('hot')">🔥 Hot (2+ opens)</button>
+        <button class="cm-filter"        data-wafilter="verified"  onclick="setWaFilter('verified')">✓ Verified WA</button>
+        <button class="cm-filter"        data-wafilter="untouched" onclick="setWaFilter('untouched')">No contact yet</button>
+      </div>
       <div id="wa-opens-list"><div class="cm-loading">Loading…</div></div>
     </div>
 
@@ -1460,6 +1466,13 @@ function toggleCoCard(company) {
 
 // ── WhatsApp real opens queue ─────────────────────────────────────────────────
 
+let activeWaFilter = 'all'
+function setWaFilter(f) {
+  activeWaFilter = f
+  document.querySelectorAll('[data-wafilter]').forEach(b => b.classList.toggle('active', b.dataset.wafilter === f))
+  loadWaOpensQueue()
+}
+
 async function setWaStatus(leadId, status) {
   const lead = allLeads.find(l => l.lead_id === leadId)
   if (!trackerMap[leadId]) trackerMap[leadId] = { lead_id: leadId }
@@ -1486,8 +1499,16 @@ async function loadWaOpensQueue() {
     .filter(l => (openEventsMap[l.lead_id] || []).length > 0 && l.phone)
     .sort((a, b) => (heatScores[b.lead_id] || 0) - (heatScores[a.lead_id] || 0))
 
-  const candidates    = allCandidates.filter(l => (trackerMap[l.lead_id]?.wa_status || '') !== 'no_whatsapp')
-  const notOnWaLeads  = allCandidates.filter(l => trackerMap[l.lead_id]?.wa_status === 'no_whatsapp')
+  let candidates = allCandidates.filter(l => (trackerMap[l.lead_id]?.wa_status || '') !== 'no_whatsapp')
+  const notOnWaLeads = allCandidates.filter(l => trackerMap[l.lead_id]?.wa_status === 'no_whatsapp')
+
+  // Apply active filter
+  if (activeWaFilter === 'hot')       candidates = candidates.filter(l => (openEventsMap[l.lead_id]||[]).length >= 2)
+  if (activeWaFilter === 'verified')  candidates = candidates.filter(l => trackerMap[l.lead_id]?.wa_status === 'whatsapp')
+  if (activeWaFilter === 'untouched') candidates = candidates.filter(l => {
+    const t = trackerMap[l.lead_id] || {}
+    return !t.inmail_sent_at && !t.linkedin_requested_at && !t.manual_email_sent_at && (!t.status || t.status === 'pending')
+  })
 
   // Fetch existing whatsapp_conversations to know who's already been messaged
   let contactedPhones = new Set()
@@ -1536,7 +1557,7 @@ async function loadWaOpensQueue() {
         <div style="width:38px;height:38px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0;">${(l.first_name||'?')[0].toUpperCase()}</div>
         <div class="wa-open-info">
           <div class="wa-open-name">${l.first_name} <span style="font-weight:400;color:var(--muted);">${l.company || ''}</span></div>
-          <div class="wa-open-meta">${opens.length} real open${opens.length > 1 ? 's' : ''} · Heat ${heat}/10${lastOpen ? ' · Last opened ' + lastOpen : ''} · ${l.phone}</div>
+          <div class="wa-open-meta">${opens.length} email open${opens.length > 1 ? 's' : ''} · Heat ${heat}/10${l.employee_count ? ' · ' + l.employee_count.toLocaleString() + ' staff' : ''}${lastOpen ? ' · Last opened ' + lastOpen : ''} · ${l.phone}</div>
           ${signalRow}
         </div>
         <div style="display:flex;flex-direction:column;gap:.4rem;align-items:flex-end;flex-shrink:0;">
