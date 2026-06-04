@@ -408,7 +408,7 @@
     <!-- Real opens queue -->
     <div style="margin-bottom:2rem;">
       <div class="li-section-title">Real Opens Queue</div>
-      <p class="li-section-sub">All leads with a phone number, sorted by engagement — genuine email opens at the top, uncontacted leads below. Use filters to focus on the warmest.</p>
+      <p class="li-section-sub">Confirmed WhatsApp numbers only, sorted by engagement — genuine email opens at the top. Numbers still being verified will appear here automatically as the checker runs.</p>
       <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;">
         <button class="cm-filter active" data-wafilter="all"       onclick="setWaFilter('all')">All</button>
         <button class="cm-filter"        data-wafilter="hot"       onclick="setWaFilter('hot')">🔥 Hot (2+ opens)</button>
@@ -1493,17 +1493,17 @@ async function loadWaOpensQueue() {
   if (!el) return
   if (!allLeads.length) { el.innerHTML = '<div class="cm-loading">Waiting for lead data…</div>'; setTimeout(loadWaOpensQueue, 600); return }
 
-  // All leads with a phone number, not confirmed non-WhatsApp
-  // Sorted: genuine opens first (by heat), then the rest alphabetically
+  // Only confirmed WhatsApp numbers, sorted warm first
   const allCandidates = allLeads
-    .filter(l => l.phone && (trackerMap[l.lead_id]?.wa_status || '') !== 'no_whatsapp')
+    .filter(l => l.phone && trackerMap[l.lead_id]?.wa_status === 'whatsapp')
     .sort((a, b) => {
       const ha = heatScores[a.lead_id] || 0, hb = heatScores[b.lead_id] || 0
       if (hb !== ha) return hb - ha
       return (a.company || '').localeCompare(b.company || '')
     })
 
-  const notOnWaLeads = allLeads.filter(l => l.phone && trackerMap[l.lead_id]?.wa_status === 'no_whatsapp')
+  const notOnWaLeads   = allLeads.filter(l => l.phone && trackerMap[l.lead_id]?.wa_status === 'no_whatsapp')
+  const unverifiedCount = allLeads.filter(l => l.phone && !trackerMap[l.lead_id]?.wa_status).length
 
   // Apply active filter
   let candidates = allCandidates
@@ -1526,7 +1526,9 @@ async function loadWaOpensQueue() {
   const sent   = candidates.filter(l => contactedPhones.has(l.phone))
 
   if (!allCandidates.length) {
-    el.innerHTML = '<div class="cm-empty">No genuine-open leads with phone numbers yet.</div>'
+    el.innerHTML = `<div class="cm-empty" style="text-align:left;padding:1.5rem;">
+      No confirmed WhatsApp numbers yet.${unverifiedCount > 0 ? `<br><span style="font-size:.8rem;color:var(--muted);margin-top:.4rem;display:block;">⏳ ${unverifiedCount.toLocaleString()} numbers still being verified — this list will populate as the checker runs.</span>` : ''}
+    </div>`
     return
   }
 
@@ -1599,6 +1601,10 @@ async function loadWaOpensQueue() {
       <summary style="font-size:.8rem;color:var(--muted);cursor:pointer;padding:.5rem 0;">${sent.length} already messaged — click to expand</summary>
       <div style="margin-top:.5rem;">${sent.map(l => renderCard(l, true)).join('')}</div>
     </details>`
+  }
+
+  if (unverifiedCount > 0) {
+    html += `<div style="font-size:.8rem;color:var(--muted);padding:.75rem 0;">⏳ ${unverifiedCount.toLocaleString()} numbers still being verified — more will appear here as the checker runs.</div>`
   }
 
   if (notOnWaLeads.length) {
