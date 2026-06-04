@@ -129,6 +129,34 @@
     .open-event{font-size:.8rem;color:var(--text);padding:.2rem 0;border-left:2px solid var(--green);padding-left:.6rem;margin-bottom:.3rem;}
     .open-event span{color:var(--muted);font-size:.75rem;margin-left:.4rem;}
 
+    /* companies tab */
+    .co-card{background:#fff;border-radius:var(--radius);box-shadow:0 2px 10px rgba(0,0,0,.06);margin-bottom:.75rem;overflow:hidden;}
+    .co-card-top{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;cursor:pointer;}
+    .co-card-top:hover{background:var(--off-white);}
+    .co-name{font-weight:600;font-size:.95rem;}
+    .co-meta{font-size:.8rem;color:var(--muted);margin-top:.15rem;}
+    .co-badges{display:flex;gap:.4rem;flex-shrink:0;align-items:center;}
+    .co-badge-count{padding:.2rem .6rem;border-radius:99px;font-size:.72rem;font-weight:600;background:#f0f0f0;color:#666;}
+    .co-badge-opens{padding:.2rem .6rem;border-radius:99px;font-size:.72rem;font-weight:600;background:#dcfce7;color:#166534;}
+    .co-badge-multi{padding:.2rem .6rem;border-radius:99px;font-size:.72rem;font-weight:600;background:#fef3c7;color:#92400e;}
+    .co-detail{display:none;border-top:1px solid #f0f0f0;}
+    .co-detail.open{display:block;}
+    .co-lead-row{display:flex;align-items:center;gap:.75rem;padding:.6rem 1.25rem;border-bottom:1px solid #f9f9f9;font-size:.85rem;}
+    .co-lead-row:last-child{border-bottom:none;}
+    .co-lead-name{flex:1;font-weight:500;}
+    .co-lead-title{flex:2;color:var(--muted);font-size:.78rem;}
+    .co-lead-signal{flex-shrink:0;font-size:.75rem;}
+    .co-primary-btn{padding:.25rem .7rem;border-radius:6px;border:1.5px solid var(--green);color:var(--green-dark);background:#fff;font-size:.75rem;font-family:inherit;cursor:pointer;flex-shrink:0;}
+    .co-primary-btn.active{background:var(--green);color:#fff;}
+    /* wa opens queue */
+    .wa-open-card{background:#fff;border-radius:var(--radius);box-shadow:0 2px 10px rgba(0,0,0,.06);padding:.9rem 1.25rem;margin-bottom:.6rem;display:flex;align-items:center;gap:1rem;}
+    .wa-open-info{flex:1;min-width:0;}
+    .wa-open-name{font-weight:600;font-size:.9rem;}
+    .wa-open-meta{font-size:.78rem;color:var(--muted);margin-top:.15rem;}
+    .wa-open-btn{padding:.4rem .9rem;border-radius:6px;border:1.5px solid #25d366;color:#25d366;background:#fff;font-size:.8rem;font-family:inherit;cursor:pointer;flex-shrink:0;transition:all .15s;}
+    .wa-open-btn:hover{background:#25d366;color:#fff;}
+    .wa-open-btn.sent{background:#f0f0f0;color:#888;border-color:#e0e0e0;cursor:default;}
+
     /* linkedin tab */
     .li-section-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:400;margin-bottom:.25rem;}
     .li-section-sub{font-size:.85rem;color:var(--muted);margin-bottom:1.25rem;}
@@ -203,6 +231,7 @@
     <button class="nav-tab" onclick="showPage('linkedin')">🔗 LinkedIn</button>
     <button class="nav-tab" onclick="showPage('whatsapp')">💬 WhatsApp</button>
     <button class="nav-tab" onclick="showPage('replies')" id="tab-replies">📩 Replies</button>
+    <button class="nav-tab" onclick="showPage('companies')">🏢 Companies</button>
   </div>
 
   <!-- OVERVIEW -->
@@ -373,8 +402,20 @@
   <div class="page" id="page-whatsapp">
     <div class="page-header">
       <h1>WhatsApp Outreach</h1>
-      <p>Replies from your weekly batch. Select a conversation to respond. Sending replies requires your Mac to be running the listener.</p>
+      <p>Leads with genuine email opens ready to message, plus active conversation threads.</p>
     </div>
+
+    <!-- Real opens queue -->
+    <div style="margin-bottom:2rem;">
+      <div class="li-section-title">Real Opens Queue</div>
+      <p class="li-section-sub">Leads who genuinely opened an email (scanner opens filtered) with a phone number — prime candidates for a personal WhatsApp message.</p>
+      <div id="wa-opens-list"><div class="cm-loading">Loading…</div></div>
+    </div>
+
+    <hr style="margin:0 0 2rem;">
+
+    <div class="li-section-title" style="margin-bottom:.5rem;">Active Conversations</div>
+    <p class="li-section-sub">Replies from your batch. Select a conversation to respond. Requires your Mac WhatsApp listener to be running.</p>
     <div style="display:flex;gap:1.5rem;align-items:flex-start;">
 
       <!-- Conversation list -->
@@ -391,6 +432,21 @@
       </div>
 
     </div>
+  </div>
+
+  <!-- COMPANIES -->
+  <div class="page" id="page-companies">
+    <div class="page-header">
+      <h1>Companies</h1>
+      <p>Multi-contact companies — pick one point of contact per company rather than blasting everyone.</p>
+    </div>
+    <div class="cm-toolbar" style="margin-bottom:1rem;">
+      <input class="cm-search" id="co-search" type="text" placeholder="Search company…" oninput="renderCompanies()" />
+      <button class="cm-filter active" data-cofilter="all" onclick="setCoFilter('all')">All</button>
+      <button class="cm-filter" data-cofilter="multi" onclick="setCoFilter('multi')">5+ contacts</button>
+      <button class="cm-filter" data-cofilter="opens" onclick="setCoFilter('opens')">Has real opens</button>
+    </div>
+    <div id="co-list"><div class="cm-loading">Loading…</div></div>
   </div>
 
   <!-- EMAIL REPLIES -->
@@ -463,9 +519,10 @@ function showPage(id) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'))
   document.getElementById('page-'+id).classList.add('active')
   event.target.classList.add('active')
-  if (id === 'linkedin') loadLinkedIn()
-  if (id === 'whatsapp') loadWhatsApp()
+  if (id === 'linkedin')  loadLinkedIn()
+  if (id === 'whatsapp') { loadWhatsApp(); loadWaOpensQueue() }
   if (id === 'replies')  loadReplies()
+  if (id === 'companies') loadCompanies()
 }
 
 // ── Overview stats ──────────────────────────────────────────
@@ -1306,6 +1363,150 @@ function exportPhantombusterCSV() {
   const a    = document.createElement('a')
   a.href = url; a.download = `phantombuster-connections-${new Date().toISOString().slice(0,10)}.csv`
   a.click(); URL.revokeObjectURL(url)
+}
+
+// ── Companies ─────────────────────────────────────────────────────────────────
+
+let activeCoFilter = 'all'
+let openCoCard = null
+
+function setCoFilter(f) {
+  activeCoFilter = f
+  document.querySelectorAll('[data-cofilter]').forEach(b => b.classList.toggle('active', b.dataset.cofilter === f))
+  renderCompanies()
+}
+
+function loadCompanies() {
+  if (!allLeads.length) { setTimeout(loadCompanies, 400); return }
+  renderCompanies()
+}
+
+function renderCompanies() {
+  const q = (document.getElementById('co-search')?.value || '').toLowerCase()
+
+  // Group leads by company
+  const groups = {}
+  for (const l of allLeads) {
+    const co = l.company || 'Unknown'
+    if (!groups[co]) groups[co] = []
+    groups[co].push(l)
+  }
+
+  let entries = Object.entries(groups)
+    .map(([company, leads]) => {
+      const realOpenLeads = leads.filter(l => (openEventsMap[l.lead_id] || []).length > 0)
+      const totalRealOpens = leads.reduce((s, l) => s + (openEventsMap[l.lead_id] || []).length, 0)
+      const maxEmp = Math.max(...leads.map(l => l.employee_count || 0))
+      return { company, leads, realOpenLeads, totalRealOpens, maxEmp }
+    })
+    .filter(g => {
+      if (q && !g.company.toLowerCase().includes(q)) return false
+      if (activeCoFilter === 'multi' && g.leads.length < 5) return false
+      if (activeCoFilter === 'opens' && g.realOpenLeads.length === 0) return false
+      return true
+    })
+    .sort((a, b) => b.leads.length - a.leads.length)
+
+  const list = document.getElementById('co-list')
+  if (!entries.length) { list.innerHTML = '<div class="cm-empty">No companies match this filter.</div>'; return }
+
+  list.innerHTML = entries.map(g => {
+    const multiTag = g.leads.length >= 5 ? `<span class="co-badge-multi">${g.leads.length} contacts</span>` : `<span class="co-badge-count">${g.leads.length} contact${g.leads.length > 1 ? 's' : ''}</span>`
+    const opensTag = g.totalRealOpens > 0 ? `<span class="co-badge-opens">${g.totalRealOpens} open${g.totalRealOpens > 1 ? 's' : ''}</span>` : ''
+    const empLabel = g.maxEmp ? `${g.maxEmp.toLocaleString()} staff` : ''
+    const cats = [...new Set(g.leads.map(l => l.category).filter(Boolean))].join(', ')
+
+    const rows = g.leads.map(l => {
+      const opens = openEventsMap[l.lead_id] || []
+      const signal = opens.length > 0 ? `<span style="color:var(--green-dark);font-weight:600;">${opens.length} open${opens.length > 1 ? 's' : ''}</span>` : '<span style="color:#ccc;">no opens</span>'
+      const isPrimary = trackerMap[l.lead_id]?.is_primary_contact
+      return `<div class="co-lead-row">
+        <div class="co-lead-name">${l.first_name || ''} <span style="font-weight:400;color:var(--muted);">${l.full_name?.split(' ').slice(1).join(' ') || ''}</span></div>
+        <div class="co-lead-title">${l.category || ''}</div>
+        <div class="co-lead-signal">${signal}</div>
+        <a href="mailto:${l.email}" style="font-size:.75rem;color:var(--green-dark);text-decoration:none;flex-shrink:0;">✉</a>
+        <button class="cm-mail-btn" style="padding:.2rem .5rem;font-size:.75rem;" title="Draft follow-up" onclick="event.stopPropagation();draftFollowUpEmail('${l.lead_id}','${l.email}','${l.first_name||''}')">✉ Draft</button>
+      </div>`
+    }).join('')
+
+    return `<div class="co-card" id="co-card-${g.company.replace(/[^a-z0-9]/gi,'_')}">
+      <div class="co-card-top" onclick="toggleCoCard('${g.company.replace(/'/g,"\\'")}')">
+        <div style="flex:1;min-width:0;">
+          <div class="co-name">${g.company}</div>
+          <div class="co-meta">${[empLabel, cats].filter(Boolean).join(' · ')}</div>
+        </div>
+        <div class="co-badges">${opensTag}${multiTag}</div>
+      </div>
+      <div class="co-detail" id="co-detail-${g.company.replace(/[^a-z0-9]/gi,'_')}">${rows}</div>
+    </div>`
+  }).join('')
+}
+
+function toggleCoCard(company) {
+  const safeId = company.replace(/[^a-z0-9]/gi,'_')
+  const detail = document.getElementById('co-detail-' + safeId)
+  if (!detail) return
+  if (openCoCard && openCoCard !== safeId) {
+    const prev = document.getElementById('co-detail-' + openCoCard)
+    if (prev) prev.classList.remove('open')
+  }
+  detail.classList.toggle('open')
+  openCoCard = detail.classList.contains('open') ? safeId : null
+}
+
+// ── WhatsApp real opens queue ─────────────────────────────────────────────────
+
+async function loadWaOpensQueue() {
+  const el = document.getElementById('wa-opens-list')
+  if (!el) return
+  if (!allLeads.length) { el.innerHTML = '<div class="cm-loading">Waiting for lead data…</div>'; setTimeout(loadWaOpensQueue, 600); return }
+
+  // Leads with genuine opens + phone number, sorted by heat
+  const candidates = allLeads
+    .filter(l => (openEventsMap[l.lead_id] || []).length > 0 && l.phone)
+    .sort((a, b) => (heatScores[b.lead_id] || 0) - (heatScores[a.lead_id] || 0))
+
+  // Fetch existing whatsapp_conversations to know who's already been messaged
+  let contactedPhones = new Set()
+  try {
+    const res = await sb('whatsapp_conversations?select=lead_phone')
+    const rows = await res.json()
+    if (Array.isArray(rows)) rows.forEach(r => contactedPhones.add(r.lead_phone))
+  } catch(e) {}
+
+  const unsent = candidates.filter(l => !contactedPhones.has(l.phone))
+  const sent   = candidates.filter(l => contactedPhones.has(l.phone))
+
+  if (!candidates.length) {
+    el.innerHTML = '<div class="cm-empty">No genuine-open leads with phone numbers yet.</div>'
+    return
+  }
+
+  const renderCard = (l, alreadySent) => {
+    const opens = openEventsMap[l.lead_id] || []
+    const heat = heatScores[l.lead_id] || 0
+    const waUrl = `https://wa.me/${l.phone.replace(/[^0-9]/g, '')}`
+    const lastOpen = opens[0] ? new Date(opens[0].opened_at).toLocaleDateString('en-GB', { day:'numeric', month:'short' }) : ''
+    return `<div class="wa-open-card">
+      <div style="width:38px;height:38px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0;">${(l.first_name||'?')[0].toUpperCase()}</div>
+      <div class="wa-open-info">
+        <div class="wa-open-name">${l.first_name} <span style="font-weight:400;color:var(--muted);">${l.company || ''}</span></div>
+        <div class="wa-open-meta">${opens.length} real open${opens.length > 1 ? 's' : ''} · Heat ${heat}/10${lastOpen ? ' · Last opened ' + lastOpen : ''} · ${l.phone}</div>
+      </div>
+      <a href="${waUrl}" target="_blank"><button class="wa-open-btn ${alreadySent ? 'sent' : ''}">${alreadySent ? '✓ Messaged' : '💬 Open WhatsApp'}</button></a>
+    </div>`
+  }
+
+  let html = unsent.map(l => renderCard(l, false)).join('')
+
+  if (sent.length) {
+    html += `<details style="margin-top:.75rem;">
+      <summary style="font-size:.8rem;color:var(--muted);cursor:pointer;padding:.5rem 0;">${sent.length} already messaged — click to expand</summary>
+      <div style="margin-top:.5rem;">${sent.map(l => renderCard(l, true)).join('')}</div>
+    </details>`
+  }
+
+  el.innerHTML = html
 }
 
 // ── WhatsApp ──────────────────────────────────────────────────────────────────
