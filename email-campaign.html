@@ -998,6 +998,10 @@ Samuel`
   return { subject, body }
 }
 
+function whatsappTemplate(lead) {
+  return `Hi ${lead.first_name}, Samuel here. I emailed you at ${lead.company} a couple of weeks back about a federal wellness benefit. Wanted to reach out here in case it's easier — worth a quick 10 min call to see if the numbers make sense for you?`
+}
+
 function connectTemplate(lead) {
   const s = savings(lead.employee_count)
   // LinkedIn connection note — max 300 chars
@@ -1500,14 +1504,20 @@ async function loadWaOpensQueue() {
     if (t.manual_email_sent_at)        signals.push('<span style="background:#f0f7f4;color:var(--green-dark);border:1px solid var(--green);padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">Email drafted</span>')
     const signalRow = signals.length ? `<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem;">${signals.join('')}</div>` : ''
 
-    return `<div class="wa-open-card">
-      <div style="width:38px;height:38px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0;">${(l.first_name||'?')[0].toUpperCase()}</div>
-      <div class="wa-open-info">
-        <div class="wa-open-name">${l.first_name} <span style="font-weight:400;color:var(--muted);">${l.company || ''}</span></div>
-        <div class="wa-open-meta">${opens.length} real open${opens.length > 1 ? 's' : ''} · Heat ${heat}/10${lastOpen ? ' · Last opened ' + lastOpen : ''} · ${l.phone}</div>
-        ${signalRow}
+    const waMsg = whatsappTemplate(l)
+    const waMsgEscaped = waMsg.replace(/`/g, "'")
+    return `<div class="wa-open-card" style="flex-direction:column;align-items:stretch;gap:.75rem;">
+      <div style="display:flex;align-items:center;gap:1rem;">
+        <div style="width:38px;height:38px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0;">${(l.first_name||'?')[0].toUpperCase()}</div>
+        <div class="wa-open-info">
+          <div class="wa-open-name">${l.first_name} <span style="font-weight:400;color:var(--muted);">${l.company || ''}</span></div>
+          <div class="wa-open-meta">${opens.length} real open${opens.length > 1 ? 's' : ''} · Heat ${heat}/10${lastOpen ? ' · Last opened ' + lastOpen : ''} · ${l.phone}</div>
+          ${signalRow}
+        </div>
+        <a href="${waUrl}" target="_blank" style="flex-shrink:0;"><button class="wa-open-btn ${alreadySent ? 'sent' : ''}">${alreadySent ? '✓ Messaged' : '💬 Open WhatsApp'}</button></a>
       </div>
-      <a href="${waUrl}" target="_blank"><button class="wa-open-btn ${alreadySent ? 'sent' : ''}">${alreadySent ? '✓ Messaged' : '💬 Open WhatsApp'}</button></a>
+      <div style="background:var(--off-white);border-radius:8px;padding:.75rem 1rem;font-size:.85rem;line-height:1.6;color:var(--text);border:1px solid #e8ede9;white-space:pre-wrap;">${waMsg}</div>
+      <button class="li-copy-btn" style="align-self:flex-start;" onclick="navigator.clipboard.writeText(\`${waMsgEscaped}\`).then(()=>{const b=event.target;b.textContent='Copied!';setTimeout(()=>b.textContent='Copy message',1500)})">Copy message</button>
     </div>`
   }
 
