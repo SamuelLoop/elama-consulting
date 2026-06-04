@@ -1487,11 +1487,25 @@ async function loadWaOpensQueue() {
     const heat = heatScores[l.lead_id] || 0
     const waUrl = `https://wa.me/${l.phone.replace(/[^0-9]/g, '')}`
     const lastOpen = opens[0] ? new Date(opens[0].opened_at).toLocaleDateString('en-GB', { day:'numeric', month:'short' }) : ''
+    const t = trackerMap[l.lead_id] || {}
+
+    // Build channel signal pills
+    const signals = []
+    if (t.status === 'interested')     signals.push('<span style="background:#dcfce7;color:#166534;padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">Interested</span>')
+    if (t.status === 'called')         signals.push('<span style="background:#dbeafe;color:#1d4ed8;padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">Called</span>')
+    if (t.status === 'no_answer')      signals.push('<span style="background:#fef9c3;color:#854d0e;padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">No answer</span>')
+    if (t.status === 'not_interested') signals.push('<span style="background:#fee2e2;color:#991b1b;padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">Not interested</span>')
+    if (t.inmail_sent_at)              signals.push('<span style="background:#ede9fe;color:#5b21b6;padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">LinkedIn InMail</span>')
+    if (t.linkedin_requested_at)       signals.push('<span style="background:#e0f2fe;color:#0369a1;padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">LI Connected</span>')
+    if (t.manual_email_sent_at)        signals.push('<span style="background:#f0f7f4;color:var(--green-dark);border:1px solid var(--green);padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">Email drafted</span>')
+    const signalRow = signals.length ? `<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem;">${signals.join('')}</div>` : ''
+
     return `<div class="wa-open-card">
       <div style="width:38px;height:38px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0;">${(l.first_name||'?')[0].toUpperCase()}</div>
       <div class="wa-open-info">
         <div class="wa-open-name">${l.first_name} <span style="font-weight:400;color:var(--muted);">${l.company || ''}</span></div>
         <div class="wa-open-meta">${opens.length} real open${opens.length > 1 ? 's' : ''} · Heat ${heat}/10${lastOpen ? ' · Last opened ' + lastOpen : ''} · ${l.phone}</div>
+        ${signalRow}
       </div>
       <a href="${waUrl}" target="_blank"><button class="wa-open-btn ${alreadySent ? 'sent' : ''}">${alreadySent ? '✓ Messaged' : '💬 Open WhatsApp'}</button></a>
     </div>`
