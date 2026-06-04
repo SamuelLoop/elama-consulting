@@ -408,7 +408,7 @@
     <!-- Real opens queue -->
     <div style="margin-bottom:2rem;">
       <div class="li-section-title">Real Opens Queue</div>
-      <p class="li-section-sub">Leads who genuinely opened an email (scanner opens filtered) with a phone number — prime candidates for a personal WhatsApp message.</p>
+      <p class="li-section-sub">All leads with a phone number, sorted by engagement — genuine email opens at the top, uncontacted leads below. Use filters to focus on the warmest.</p>
       <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;">
         <button class="cm-filter active" data-wafilter="all"       onclick="setWaFilter('all')">All</button>
         <button class="cm-filter"        data-wafilter="hot"       onclick="setWaFilter('hot')">🔥 Hot (2+ opens)</button>
@@ -1493,16 +1493,20 @@ async function loadWaOpensQueue() {
   if (!el) return
   if (!allLeads.length) { el.innerHTML = '<div class="cm-loading">Waiting for lead data…</div>'; setTimeout(loadWaOpensQueue, 600); return }
 
-  // Leads with genuine opens + phone number, sorted by heat
-  // Exclude confirmed non-WhatsApp numbers
+  // All leads with a phone number, not confirmed non-WhatsApp
+  // Sorted: genuine opens first (by heat), then the rest alphabetically
   const allCandidates = allLeads
-    .filter(l => (openEventsMap[l.lead_id] || []).length > 0 && l.phone)
-    .sort((a, b) => (heatScores[b.lead_id] || 0) - (heatScores[a.lead_id] || 0))
+    .filter(l => l.phone && (trackerMap[l.lead_id]?.wa_status || '') !== 'no_whatsapp')
+    .sort((a, b) => {
+      const ha = heatScores[a.lead_id] || 0, hb = heatScores[b.lead_id] || 0
+      if (hb !== ha) return hb - ha
+      return (a.company || '').localeCompare(b.company || '')
+    })
 
-  let candidates = allCandidates.filter(l => (trackerMap[l.lead_id]?.wa_status || '') !== 'no_whatsapp')
-  const notOnWaLeads = allCandidates.filter(l => trackerMap[l.lead_id]?.wa_status === 'no_whatsapp')
+  const notOnWaLeads = allLeads.filter(l => l.phone && trackerMap[l.lead_id]?.wa_status === 'no_whatsapp')
 
   // Apply active filter
+  let candidates = allCandidates
   if (activeWaFilter === 'hot')       candidates = candidates.filter(l => (openEventsMap[l.lead_id]||[]).length >= 2)
   if (activeWaFilter === 'verified')  candidates = candidates.filter(l => trackerMap[l.lead_id]?.wa_status === 'whatsapp')
   if (activeWaFilter === 'untouched') candidates = candidates.filter(l => {
