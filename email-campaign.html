@@ -605,7 +605,7 @@ async function loadCallManager() {
   }
 
   // Fetch call tracker records — select only needed columns
-  const trackerRes = await sb('call_tracker?select=lead_id,status,notes,linkedin_requested_at,inmail_sent_at,called_at,manual_email_sent_at,updated_at')
+  const trackerRes = await sb('call_tracker?select=lead_id,status,notes,linkedin_requested_at,inmail_sent_at,called_at,manual_email_sent_at,wa_status,updated_at')
   const tracker = await trackerRes.json()
   trackerMap = Object.fromEntries(tracker.map(t => [t.lead_id, t]))
 
@@ -1460,15 +1460,34 @@ function toggleCoCard(company) {
 
 // ── WhatsApp real opens queue ─────────────────────────────────────────────────
 
+async function setWaStatus(leadId, status) {
+  const lead = allLeads.find(l => l.lead_id === leadId)
+  if (!trackerMap[leadId]) trackerMap[leadId] = { lead_id: leadId }
+  trackerMap[leadId].wa_status = status
+  await sb('call_tracker?on_conflict=lead_id', {
+    method: 'POST',
+    headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+    body: JSON.stringify({
+      lead_id: leadId, email: lead?.email || '', first_name: lead?.first_name || '',
+      company: lead?.company || '', wa_status: status, updated_at: new Date().toISOString(),
+    })
+  })
+  loadWaOpensQueue()
+}
+
 async function loadWaOpensQueue() {
   const el = document.getElementById('wa-opens-list')
   if (!el) return
   if (!allLeads.length) { el.innerHTML = '<div class="cm-loading">Waiting for lead data…</div>'; setTimeout(loadWaOpensQueue, 600); return }
 
   // Leads with genuine opens + phone number, sorted by heat
-  const candidates = allLeads
+  // Exclude confirmed non-WhatsApp numbers
+  const allCandidates = allLeads
     .filter(l => (openEventsMap[l.lead_id] || []).length > 0 && l.phone)
     .sort((a, b) => (heatScores[b.lead_id] || 0) - (heatScores[a.lead_id] || 0))
+
+  const candidates    = allCandidates.filter(l => (trackerMap[l.lead_id]?.wa_status || '') !== 'no_whatsapp')
+  const notOnWaLeads  = allCandidates.filter(l => trackerMap[l.lead_id]?.wa_status === 'no_whatsapp')
 
   // Fetch existing whatsapp_conversations to know who's already been messaged
   let contactedPhones = new Set()
@@ -1481,7 +1500,7 @@ async function loadWaOpensQueue() {
   const unsent = candidates.filter(l => !contactedPhones.has(l.phone))
   const sent   = candidates.filter(l => contactedPhones.has(l.phone))
 
-  if (!candidates.length) {
+  if (!allCandidates.length) {
     el.innerHTML = '<div class="cm-empty">No genuine-open leads with phone numbers yet.</div>'
     return
   }
@@ -1490,11 +1509,15 @@ async function loadWaOpensQueue() {
     const opens = openEventsMap[l.lead_id] || []
     const heat = heatScores[l.lead_id] || 0
     const waUrl = `https://wa.me/${l.phone.replace(/[^0-9]/g, '')}`
+    const smsUrl = `sms:${l.phone}`
     const lastOpen = opens[0] ? new Date(opens[0].opened_at).toLocaleDateString('en-GB', { day:'numeric', month:'short' }) : ''
     const t = trackerMap[l.lead_id] || {}
+    const waStatus = t.wa_status || null
 
     // Build channel signal pills
     const signals = []
+    if (waStatus === 'whatsapp')       signals.push('<span style="background:#dcfce7;color:#166534;padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">✓ On WhatsApp</span>')
+    if (!waStatus)                     signals.push('<span style="background:#f5f5f5;color:#888;padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">Unverified</span>')
     if (t.status === 'interested')     signals.push('<span style="background:#dcfce7;color:#166534;padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">Interested</span>')
     if (t.status === 'called')         signals.push('<span style="background:#dbeafe;color:#1d4ed8;padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">Called</span>')
     if (t.status === 'no_answer')      signals.push('<span style="background:#fef9c3;color:#854d0e;padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">No answer</span>')
@@ -1506,6 +1529,8 @@ async function loadWaOpensQueue() {
 
     const waMsg = whatsappTemplate(l)
     const waMsgEscaped = waMsg.replace(/`/g, "'")
+    const notWaBtn = `<button onclick="event.stopPropagation();setWaStatus('${l.lead_id}','no_whatsapp')" style="padding:.25rem .65rem;border-radius:6px;border:1.5px solid #e0e0e0;font-size:.72rem;font-family:inherit;cursor:pointer;color:#888;background:#fff;flex-shrink:0;" title="Remove from WhatsApp queue">Not on WA</button>`
+
     return `<div class="wa-open-card" style="flex-direction:column;align-items:stretch;gap:.75rem;">
       <div style="display:flex;align-items:center;gap:1rem;">
         <div style="width:38px;height:38px;border-radius:50%;background:#25d366;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0;">${(l.first_name||'?')[0].toUpperCase()}</div>
@@ -1514,10 +1539,31 @@ async function loadWaOpensQueue() {
           <div class="wa-open-meta">${opens.length} real open${opens.length > 1 ? 's' : ''} · Heat ${heat}/10${lastOpen ? ' · Last opened ' + lastOpen : ''} · ${l.phone}</div>
           ${signalRow}
         </div>
-        <a href="${waUrl}" target="_blank" style="flex-shrink:0;"><button class="wa-open-btn ${alreadySent ? 'sent' : ''}">${alreadySent ? '✓ Messaged' : '💬 Open WhatsApp'}</button></a>
+        <div style="display:flex;flex-direction:column;gap:.4rem;align-items:flex-end;flex-shrink:0;">
+          <a href="${waUrl}" target="_blank"><button class="wa-open-btn ${alreadySent ? 'sent' : ''}">${alreadySent ? '✓ Messaged' : '💬 Open WhatsApp'}</button></a>
+          ${notWaBtn}
+        </div>
       </div>
       <div style="background:var(--off-white);border-radius:8px;padding:.75rem 1rem;font-size:.85rem;line-height:1.6;color:var(--text);border:1px solid #e8ede9;white-space:pre-wrap;">${waMsg}</div>
       <button class="li-copy-btn" style="align-self:flex-start;" onclick="navigator.clipboard.writeText(\`${waMsgEscaped}\`).then(()=>{const b=event.target;b.textContent='Copied!';setTimeout(()=>b.textContent='Copy message',1500)})">Copy message</button>
+    </div>`
+  }
+
+  const renderSmsCard = (l) => {
+    const opens = openEventsMap[l.lead_id] || []
+    const heat = heatScores[l.lead_id] || 0
+    const smsUrl = `sms:${l.phone}`
+    return `<div class="wa-open-card" style="opacity:.75;border:1.5px dashed #e0e0e0;">
+      <div style="width:38px;height:38px;border-radius:50%;background:#888;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0;">${(l.first_name||'?')[0].toUpperCase()}</div>
+      <div class="wa-open-info">
+        <div class="wa-open-name">${l.first_name} <span style="font-weight:400;color:var(--muted);">${l.company || ''}</span></div>
+        <div class="wa-open-meta">${opens.length} real open${opens.length > 1 ? 's' : ''} · Heat ${heat}/10 · ${l.phone}</div>
+        <div style="margin-top:.3rem;"><span style="background:#fee2e2;color:#991b1b;padding:.15rem .55rem;border-radius:99px;font-size:.7rem;font-weight:600;">Not on WhatsApp</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.4rem;align-items:flex-end;flex-shrink:0;">
+        <a href="${smsUrl}"><button class="wa-open-btn" style="border-color:#888;color:#555;">📱 Send SMS</button></a>
+        <button onclick="setWaStatus('${l.lead_id}','whatsapp')" style="padding:.25rem .65rem;border-radius:6px;border:1.5px solid var(--green);font-size:.72rem;font-family:inherit;cursor:pointer;color:var(--green-dark);background:#fff;">Restore</button>
+      </div>
     </div>`
   }
 
@@ -1527,6 +1573,13 @@ async function loadWaOpensQueue() {
     html += `<details style="margin-top:.75rem;">
       <summary style="font-size:.8rem;color:var(--muted);cursor:pointer;padding:.5rem 0;">${sent.length} already messaged — click to expand</summary>
       <div style="margin-top:.5rem;">${sent.map(l => renderCard(l, true)).join('')}</div>
+    </details>`
+  }
+
+  if (notOnWaLeads.length) {
+    html += `<details style="margin-top:.75rem;">
+      <summary style="font-size:.8rem;color:#c0392b;cursor:pointer;padding:.5rem 0;">✗ ${notOnWaLeads.length} not on WhatsApp — SMS fallback</summary>
+      <div style="margin-top:.5rem;">${notOnWaLeads.map(renderSmsCard).join('')}</div>
     </details>`
   }
 
