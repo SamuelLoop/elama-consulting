@@ -416,7 +416,7 @@
         <button class="cm-filter"        data-wafilter="untouched" onclick="setWaFilter('untouched')">No contact yet</button>
         <div style="margin-left:auto;display:flex;align-items:center;gap:.5rem;">
           <span style="font-size:.8rem;color:var(--muted);font-weight:500;">Queue as:</span>
-          <select id="wa-sender-select" onchange="selectedSender=this.value;loadWaOpensQueue(false)" style="font-size:.8rem;padding:.3rem .6rem;border-radius:6px;border:1.5px solid #e0e0e0;font-family:inherit;cursor:pointer;background:#fff;">
+          <select id="wa-sender-select" onchange="selectedSender=this.value;waPageUnsent=1;loadWaOpensQueue(false)" style="font-size:.8rem;padding:.3rem .6rem;border-radius:6px;border:1.5px solid #e0e0e0;font-family:inherit;cursor:pointer;background:#fff;">
             <option value="samuel">Samuel</option>
             <option value="brett">Brett</option>
             <option value="partner2">Partner 2</option>
@@ -1494,8 +1494,12 @@ let cachedContactedPhones = null
 let cachedQueueByPhone    = null
 
 let activeWaFilter = 'all'
+const WA_PAGE_SIZE  = 50
+let waPageUnsent    = 1   // how many pages of unsent cards are shown
+
 function setWaFilter(f) {
   activeWaFilter = f
+  waPageUnsent = 1
   document.querySelectorAll('[data-wafilter]').forEach(b => b.classList.toggle('active', b.dataset.wafilter === f))
   loadWaOpensQueue()
 }
@@ -1653,7 +1657,17 @@ async function loadWaOpensQueue(forceRefetch = false) {
     </div>`
   }
 
-  let html = unsent.map(l => renderCard(l, false, queueByPhone[l.phone])).join('')
+  // Render only the current page of unsent cards
+  const unsentSlice = unsent.slice(0, waPageUnsent * WA_PAGE_SIZE)
+  const hasMore = unsent.length > unsentSlice.length
+
+  let html = unsentSlice.map(l => renderCard(l, false, queueByPhone[l.phone])).join('')
+
+  if (hasMore) {
+    html += `<button onclick="waPageUnsent++;loadWaOpensQueue(false)" style="margin:1rem 0;padding:.6rem 1.5rem;border-radius:8px;border:1.5px solid #e0e0e0;font-size:.85rem;font-family:inherit;cursor:pointer;background:#fff;color:var(--text);">
+      Load more (${unsent.length - unsentSlice.length} remaining)
+    </button>`
+  }
 
   if (sent.length) {
     html += `<details style="margin-top:.75rem;">
