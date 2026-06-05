@@ -416,7 +416,7 @@
         <button class="cm-filter"        data-wafilter="untouched" onclick="setWaFilter('untouched')">No contact yet</button>
         <div style="margin-left:auto;display:flex;align-items:center;gap:.5rem;">
           <span style="font-size:.8rem;color:var(--muted);font-weight:500;">Queue as:</span>
-          <select id="wa-sender-select" onchange="selectedSender=this.value;loadWaOpensQueue()" style="font-size:.8rem;padding:.3rem .6rem;border-radius:6px;border:1.5px solid #e0e0e0;font-family:inherit;cursor:pointer;background:#fff;">
+          <select id="wa-sender-select" onchange="selectedSender=this.value;loadWaOpensQueue(false)" style="font-size:.8rem;padding:.3rem .6rem;border-radius:6px;border:1.5px solid #e0e0e0;font-family:inherit;cursor:pointer;background:#fff;">
             <option value="samuel">Samuel</option>
             <option value="brett">Brett</option>
             <option value="partner2">Partner 2</option>
@@ -534,7 +534,7 @@ function showPage(id) {
   document.getElementById('page-'+id).classList.add('active')
   event.target.classList.add('active')
   if (id === 'linkedin')  loadLinkedIn()
-  if (id === 'whatsapp') { loadWhatsApp(); loadWaOpensQueue() }
+  if (id === 'whatsapp') { loadWhatsApp(); loadWaOpensQueue(true) }
   if (id === 'replies')  loadReplies()
   if (id === 'companies') loadCompanies()
 }
@@ -618,27 +618,30 @@ async function loadCallManager() {
     if (!sentAtMap[key]) sentAtMap[key] = s.sent_at
   }
 
-  // Fetch call tracker records — paginate to bypass 1000-row server cap
-  const trackerRows = []
-  for (let page = 0; ; page++) {
-    const start = page * 1000, end = start + 999
-    const res = await sb('call_tracker?select=lead_id,status,notes,linkedin_requested_at,inmail_sent_at,called_at,manual_email_sent_at,wa_status,updated_at&order=lead_id.asc', { headers: { Range: `${start}-${end}` } })
-    const rows = await res.json()
-    trackerRows.push(...rows)
-    if (rows.length < 1000) break
-  }
-  trackerMap = Object.fromEntries(trackerRows.map(t => [t.lead_id, t]))
+  // Fetch call tracker records — get total count then fetch all pages in parallel
+  const trackerCountRes = await sb('call_tracker?select=lead_id&order=lead_id.asc', { headers: { Range: '0-0', Prefer: 'count=exact' } })
+  const trackerTotal = parseInt(trackerCountRes.headers.get('content-range')?.split('/')[1] || '1000')
+  const trackerPages = Math.ceil(trackerTotal / 1000)
+  const trackerChunks = await Promise.all(
+    Array.from({ length: trackerPages }, (_, i) => {
+      const start = i * 1000, end = start + 999
+      return sb('call_tracker?select=lead_id,status,notes,linkedin_requested_at,inmail_sent_at,called_at,manual_email_sent_at,wa_status,updated_at&order=lead_id.asc', { headers: { Range: `${start}-${end}` } }).then(r => r.json())
+    })
+  )
+  trackerMap = Object.fromEntries(trackerChunks.flat().map(t => [t.lead_id, t]))
 
-  // Fetch all open events — loop pages of 1000 to bypass server row cap
+  // Fetch all open events — get total count then fetch all pages in parallel
   try {
-    const opens = []
-    for (let page = 0; ; page++) {
-      const start = page * 1000, end = start + 999
-      const res = await sb('email_opens?select=lead_id,sequence_index,opened_at&order=opened_at.desc', { headers: { Range: `${start}-${end}` } })
-      const rows = await res.json()
-      opens.push(...rows)
-      if (rows.length < 1000) break
-    }
+    const opensCountRes = await sb('email_opens?select=lead_id&order=opened_at.desc', { headers: { Range: '0-0', Prefer: 'count=exact' } })
+    const opensTotal = parseInt(opensCountRes.headers.get('content-range')?.split('/')[1] || '1000')
+    const opensPages = Math.ceil(opensTotal / 1000)
+    const opensChunks = await Promise.all(
+      Array.from({ length: opensPages }, (_, i) => {
+        const start = i * 1000, end = start + 999
+        return sb('email_opens?select=lead_id,sequence_index,opened_at&order=opened_at.desc', { headers: { Range: `${start}-${end}` } }).then(r => r.json())
+      })
+    )
+    const opens = opensChunks.flat()
     opensMap = {}; lastOpenMap = {}; openEventsMap = {}
 
     for (const o of opens) {
@@ -1487,6 +1490,8 @@ const WA_SENDERS = [
   { id: 'partner2', label: 'Partner 2' },
 ]
 let selectedSender = 'samuel'
+let cachedContactedPhones = null
+let cachedQueueByPhone    = null
 
 let activeWaFilter = 'all'
 function setWaFilter(f) {
@@ -1510,10 +1515,10 @@ async function setWaStatus(leadId, status) {
   loadWaOpensQueue()
 }
 
-async function loadWaOpensQueue() {
+async function loadWaOpensQueue(forceRefetch = false) {
   const el = document.getElementById('wa-opens-list')
   if (!el) return
-  if (!allLeads.length) { el.innerHTML = '<div class="cm-loading">Waiting for lead data…</div>'; setTimeout(loadWaOpensQueue, 600); return }
+  if (!allLeads.length) { el.innerHTML = '<div class="cm-loading">Waiting for lead data…</div>'; setTimeout(() => loadWaOpensQueue(forceRefetch), 600); return }
 
   // Only confirmed WhatsApp numbers, sorted warm first
   const allCandidates = allLeads
@@ -1536,19 +1541,25 @@ async function loadWaOpensQueue() {
     return !t.inmail_sent_at && !t.linkedin_requested_at && !t.manual_email_sent_at && (!t.status || t.status === 'pending')
   })
 
-  // Fetch existing whatsapp_conversations + queue to know who's already been contacted
-  let contactedPhones = new Set()
-  let queueByPhone = {}   // phone -> { status, sender, id }
-  try {
-    const res = await sb('whatsapp_conversations?select=lead_phone')
-    const rows = await res.json()
-    if (Array.isArray(rows)) rows.forEach(r => contactedPhones.add(r.lead_phone))
-  } catch(e) {}
-  try {
-    const res = await sb('whatsapp_queue?select=id,phone,status,sender&order=created_at.desc')
-    const rows = await res.json()
-    if (Array.isArray(rows)) rows.forEach(r => { if (!queueByPhone[r.phone]) queueByPhone[r.phone] = r })
-  } catch(e) {}
+  // Use cached contact/queue data — only re-fetch on tab open or after a send
+  if (forceRefetch || !cachedContactedPhones) {
+    let contactedPhones = new Set()
+    let queueByPhone = {}
+    try {
+      const res = await sb('whatsapp_conversations?select=lead_phone')
+      const rows = await res.json()
+      if (Array.isArray(rows)) rows.forEach(r => contactedPhones.add(r.lead_phone))
+    } catch(e) {}
+    try {
+      const res = await sb('whatsapp_queue?select=id,phone,status,sender&order=created_at.desc')
+      const rows = await res.json()
+      if (Array.isArray(rows)) rows.forEach(r => { if (!queueByPhone[r.phone]) queueByPhone[r.phone] = r })
+    } catch(e) {}
+    cachedContactedPhones = contactedPhones
+    cachedQueueByPhone    = queueByPhone
+  }
+  const contactedPhones = cachedContactedPhones
+  const queueByPhone    = cachedQueueByPhone
 
   // A lead counts as "messaged" if in conversations or queue (sent/pending)
   const allContactedPhones = new Set([
@@ -1684,6 +1695,8 @@ async function enqueueMessage(leadId, btn) {
     btn.textContent = `⏳ Queued (${senderLabel})`
     btn.style.opacity = '.7'
     btn.style.cursor = 'default'
+    cachedContactedPhones = null  // bust cache so next render picks up the new queue entry
+    cachedQueueByPhone    = null
     window.open(waUrl, '_blank')
   } catch (e) {
     btn.textContent = '💬 Queue Send'
