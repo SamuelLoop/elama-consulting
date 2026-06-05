@@ -1603,7 +1603,7 @@ async function loadWaOpensQueue() {
       const senderLabel = WA_SENDERS.find(s => s.id === queueEntry.sender)?.label || queueEntry.sender
       actionBtn = `<button class="wa-open-btn" style="opacity:.7;cursor:default;" disabled>⏳ Queued (${senderLabel})</button>`
     } else {
-      actionBtn = `<button class="wa-open-btn" onclick="enqueueMessage('${l.lead_id}','${l.phone}',\`${waMsgEscaped}\`,this)">💬 Queue Send</button>`
+      actionBtn = `<button class="wa-open-btn" onclick="enqueueMessage('${l.lead_id}',this)">💬 Queue Send</button>`
     }
 
     return `<div class="wa-open-card" style="flex-direction:column;align-items:stretch;gap:.75rem;">
@@ -1665,21 +1665,26 @@ async function loadWaOpensQueue() {
   el.innerHTML = html
 }
 
-async function enqueueMessage(leadId, phone, message, btn) {
+async function enqueueMessage(leadId, btn) {
+  const lead = allLeads.find(l => l.lead_id === leadId)
+  if (!lead) return
   const sender = selectedSender
   const senderLabel = WA_SENDERS.find(s => s.id === sender)?.label || sender
+  const message = whatsappTemplate(lead)
+  const waUrl = `https://wa.me/${lead.phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(message)}`
   btn.textContent = 'Queueing…'
   btn.disabled = true
   try {
     const res = await sb('whatsapp_queue', {
       method: 'POST',
       headers: { Prefer: 'return=minimal' },
-      body: JSON.stringify({ lead_id: leadId, phone, message, sender, status: 'pending' }),
+      body: JSON.stringify({ lead_id: leadId, phone: lead.phone, message, sender, status: 'pending' }),
     })
     if (!res.ok) throw new Error(await res.text())
     btn.textContent = `⏳ Queued (${senderLabel})`
     btn.style.opacity = '.7'
     btn.style.cursor = 'default'
+    window.open(waUrl, '_blank')
   } catch (e) {
     btn.textContent = '💬 Queue Send'
     btn.disabled = false
