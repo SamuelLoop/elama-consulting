@@ -416,7 +416,7 @@
         <button class="cm-filter"        data-wafilter="untouched" onclick="setWaFilter('untouched')">No contact yet</button>
         <div style="margin-left:auto;display:flex;align-items:center;gap:.5rem;">
           <span style="font-size:.8rem;color:var(--muted);font-weight:500;">Queue as:</span>
-          <select id="wa-sender-select" onchange="selectedSender=this.value;waPageUnsent=1;loadWaOpensQueue(false)" style="font-size:.8rem;padding:.3rem .6rem;border-radius:6px;border:1.5px solid #e0e0e0;font-family:inherit;cursor:pointer;background:#fff;">
+          <select id="wa-sender-select" onchange="selectedSender=this.value;waPageUnsent=1;setTimeout(()=>loadWaOpensQueue(false),0)" style="font-size:.8rem;padding:.3rem .6rem;border-radius:6px;border:1.5px solid #e0e0e0;font-family:inherit;cursor:pointer;background:#fff;">
             <option value="samuel">Samuel</option>
             <option value="brett">Brett</option>
             <option value="partner2">Partner 2</option>
@@ -593,15 +593,17 @@ async function loadStats() {
 
 // ── Call Manager ────────────────────────────────────────────
 async function loadCallManager() {
-  // Fetch all send records — paginate to bypass 1000-row server cap (currently 2000+ rows)
-  const sends = []
-  for (let page = 0; ; page++) {
-    const start = page * 1000, end = start + 999
-    const res = await sb('campaign_sends?select=lead_id,first_name,full_name,company,email,phone,employee_count,category,city,website,linkedin,sequence_index,sent_at&excluded=eq.false&order=sent_at.asc', { headers: { Range: `${start}-${end}` } })
-    const rows = await res.json()
-    sends.push(...rows)
-    if (rows.length < 1000) break
-  }
+  // Fetch all send records — get count then fetch all pages in parallel
+  const sendsCountRes = await sb('campaign_sends?select=lead_id&excluded=eq.false&order=sent_at.asc', { headers: { Range: '0-0', Prefer: 'count=exact' } })
+  const sendsTotal = parseInt(sendsCountRes.headers.get('content-range')?.split('/')[1] || '1000')
+  const sendsPages = Math.ceil(sendsTotal / 1000)
+  const sendsChunks = await Promise.all(
+    Array.from({ length: sendsPages }, (_, i) => {
+      const start = i * 1000, end = start + 999
+      return sb('campaign_sends?select=lead_id,first_name,full_name,company,email,phone,employee_count,category,city,website,linkedin,sequence_index,sent_at&excluded=eq.false&order=sent_at.asc', { headers: { Range: `${start}-${end}` } }).then(r => r.json())
+    })
+  )
+  const sends = sendsChunks.flat()
 
   // Deduplicate — one entry per lead, track which emails were sent
   const leadMap = {}
