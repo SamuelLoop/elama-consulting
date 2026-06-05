@@ -416,7 +416,7 @@
         <button class="cm-filter"        data-wafilter="untouched" onclick="setWaFilter('untouched')">No contact yet</button>
         <div style="margin-left:auto;display:flex;align-items:center;gap:.5rem;">
           <span style="font-size:.8rem;color:var(--muted);font-weight:500;">Queue as:</span>
-          <select id="wa-sender-select" onchange="selectedSender=this.value" style="font-size:.8rem;padding:.3rem .6rem;border-radius:6px;border:1.5px solid #e0e0e0;font-family:inherit;cursor:pointer;background:#fff;">
+          <select id="wa-sender-select" onchange="selectedSender=this.value;loadWaOpensQueue()" style="font-size:.8rem;padding:.3rem .6rem;border-radius:6px;border:1.5px solid #e0e0e0;font-family:inherit;cursor:pointer;background:#fff;">
             <option value="samuel">Samuel</option>
             <option value="brett">Brett</option>
             <option value="partner2">Partner 2</option>
