@@ -1019,7 +1019,8 @@ Samuel`
 }
 
 function whatsappTemplate(lead) {
-  return `Hi ${lead.first_name}, Samuel here. I emailed you at ${lead.company} a couple of weeks back about a federal wellness benefit. Wanted to reach out here in case it's easier — worth a quick 10 min call to see if the numbers make sense for you?`
+  const senderLabel = WA_SENDERS.find(s => s.id === selectedSender)?.label || 'Samuel'
+  return `Hi ${lead.first_name}, ${senderLabel} here. I emailed you at ${lead.company} a couple of weeks back about a federal wellness benefit. Wanted to reach out here in case it's easier — worth a quick 10 min call to see if the numbers make sense for you?`
 }
 
 function connectTemplate(lead) {
