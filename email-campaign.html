@@ -409,11 +409,19 @@
     <div style="margin-bottom:2rem;">
       <div class="li-section-title">Real Opens Queue</div>
       <p class="li-section-sub">Confirmed WhatsApp numbers only, sorted by engagement — genuine email opens at the top. Numbers still being verified will appear here automatically as the checker runs.</p>
-      <div style="display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+      <div style="display:flex;gap:.5rem;margin-bottom:.75rem;flex-wrap:wrap;align-items:center;">
         <button class="cm-filter active" data-wafilter="all"       onclick="setWaFilter('all')">All</button>
         <button class="cm-filter"        data-wafilter="hot"       onclick="setWaFilter('hot')">🔥 Hot (2+ opens)</button>
         <button class="cm-filter"        data-wafilter="verified"  onclick="setWaFilter('verified')">✓ Verified WA</button>
         <button class="cm-filter"        data-wafilter="untouched" onclick="setWaFilter('untouched')">No contact yet</button>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:.5rem;">
+          <span style="font-size:.8rem;color:var(--muted);font-weight:500;">Queue as:</span>
+          <select id="wa-sender-select" onchange="selectedSender=this.value" style="font-size:.8rem;padding:.3rem .6rem;border-radius:6px;border:1.5px solid #e0e0e0;font-family:inherit;cursor:pointer;background:#fff;">
+            <option value="samuel">Samuel</option>
+            <option value="partner1">Partner 1</option>
+            <option value="partner2">Partner 2</option>
+          </select>
+        </div>
       </div>
       <div id="wa-opens-list"><div class="cm-loading">Loading…</div></div>
     </div>
@@ -610,10 +618,16 @@ async function loadCallManager() {
     if (!sentAtMap[key]) sentAtMap[key] = s.sent_at
   }
 
-  // Fetch call tracker records — select only needed columns
-  const trackerRes = await sb('call_tracker?select=lead_id,status,notes,linkedin_requested_at,inmail_sent_at,called_at,manual_email_sent_at,wa_status,updated_at')
-  const tracker = await trackerRes.json()
-  trackerMap = Object.fromEntries(tracker.map(t => [t.lead_id, t]))
+  // Fetch call tracker records — paginate to bypass 1000-row server cap
+  const trackerRows = []
+  for (let page = 0; ; page++) {
+    const start = page * 1000, end = start + 999
+    const res = await sb('call_tracker?select=lead_id,status,notes,linkedin_requested_at,inmail_sent_at,called_at,manual_email_sent_at,wa_status,updated_at&order=lead_id.asc', { headers: { Range: `${start}-${end}` } })
+    const rows = await res.json()
+    trackerRows.push(...rows)
+    if (rows.length < 1000) break
+  }
+  trackerMap = Object.fromEntries(trackerRows.map(t => [t.lead_id, t]))
 
   // Fetch all open events — loop pages of 1000 to bypass server row cap
   try {
@@ -1466,6 +1480,13 @@ function toggleCoCard(company) {
 
 // ── WhatsApp real opens queue ─────────────────────────────────────────────────
 
+const WA_SENDERS = [
+  { id: 'samuel',   label: 'Samuel' },
+  { id: 'partner1', label: 'Partner 1' },
+  { id: 'partner2', label: 'Partner 2' },
+]
+let selectedSender = 'samuel'
+
 let activeWaFilter = 'all'
 function setWaFilter(f) {
   activeWaFilter = f
@@ -1514,16 +1535,28 @@ async function loadWaOpensQueue() {
     return !t.inmail_sent_at && !t.linkedin_requested_at && !t.manual_email_sent_at && (!t.status || t.status === 'pending')
   })
 
-  // Fetch existing whatsapp_conversations to know who's already been messaged
+  // Fetch existing whatsapp_conversations + queue to know who's already been contacted
   let contactedPhones = new Set()
+  let queueByPhone = {}   // phone -> { status, sender, id }
   try {
     const res = await sb('whatsapp_conversations?select=lead_phone')
     const rows = await res.json()
     if (Array.isArray(rows)) rows.forEach(r => contactedPhones.add(r.lead_phone))
   } catch(e) {}
+  try {
+    const res = await sb('whatsapp_queue?select=id,phone,status,sender&order=created_at.desc')
+    const rows = await res.json()
+    if (Array.isArray(rows)) rows.forEach(r => { if (!queueByPhone[r.phone]) queueByPhone[r.phone] = r })
+  } catch(e) {}
 
-  const unsent = candidates.filter(l => !contactedPhones.has(l.phone))
-  const sent   = candidates.filter(l => contactedPhones.has(l.phone))
+  // A lead counts as "messaged" if in conversations or queue (sent/pending)
+  const allContactedPhones = new Set([
+    ...contactedPhones,
+    ...Object.values(queueByPhone).filter(r => r.status === 'sent' || r.status === 'pending').map(r => r.phone),
+  ])
+
+  const unsent = candidates.filter(l => !allContactedPhones.has(l.phone))
+  const sent   = candidates.filter(l => allContactedPhones.has(l.phone))
 
   if (!allCandidates.length) {
     el.innerHTML = `<div class="cm-empty" style="text-align:left;padding:1.5rem;">
@@ -1532,10 +1565,9 @@ async function loadWaOpensQueue() {
     return
   }
 
-  const renderCard = (l, alreadySent) => {
+  const renderCard = (l, alreadySent, queueEntry) => {
     const opens = openEventsMap[l.lead_id] || []
     const heat = heatScores[l.lead_id] || 0
-    const waUrl = `https://wa.me/${l.phone.replace(/[^0-9]/g, '')}`
     const smsUrl = `sms:${l.phone}`
     const lastOpen = opens[0] ? new Date(opens[0].opened_at).toLocaleDateString('en-GB', { day:'numeric', month:'short' }) : ''
     const t = trackerMap[l.lead_id] || {}
@@ -1555,8 +1587,20 @@ async function loadWaOpensQueue() {
     const signalRow = signals.length ? `<div style="display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.4rem;">${signals.join('')}</div>` : ''
 
     const waMsg = whatsappTemplate(l)
-    const waMsgEscaped = waMsg.replace(/`/g, "'")
+    const waMsgEscaped = waMsg.replace(/`/g, "'").replace(/\\/g, '\\\\')
     const notWaBtn = `<button onclick="event.stopPropagation();setWaStatus('${l.lead_id}','no_whatsapp')" style="padding:.25rem .65rem;border-radius:6px;border:1.5px solid #e0e0e0;font-size:.72rem;font-family:inherit;cursor:pointer;color:#888;background:#fff;flex-shrink:0;" title="Remove from WhatsApp queue">Not on WA</button>`
+
+    // Queue button: show status if already queued, else show Queue button
+    let actionBtn
+    if (queueEntry && queueEntry.status === 'sent') {
+      const senderLabel = WA_SENDERS.find(s => s.id === queueEntry.sender)?.label || queueEntry.sender
+      actionBtn = `<button class="wa-open-btn sent" disabled>✓ Sent (${senderLabel})</button>`
+    } else if (queueEntry && queueEntry.status === 'pending') {
+      const senderLabel = WA_SENDERS.find(s => s.id === queueEntry.sender)?.label || queueEntry.sender
+      actionBtn = `<button class="wa-open-btn" style="opacity:.7;cursor:default;" disabled>⏳ Queued (${senderLabel})</button>`
+    } else {
+      actionBtn = `<button class="wa-open-btn" onclick="enqueueMessage('${l.lead_id}','${l.phone}',\`${waMsgEscaped}\`,this)">💬 Queue Send</button>`
+    }
 
     return `<div class="wa-open-card" style="flex-direction:column;align-items:stretch;gap:.75rem;">
       <div style="display:flex;align-items:center;gap:1rem;">
@@ -1567,7 +1611,7 @@ async function loadWaOpensQueue() {
           ${signalRow}
         </div>
         <div style="display:flex;flex-direction:column;gap:.4rem;align-items:flex-end;flex-shrink:0;">
-          <a href="${waUrl}" target="_blank"><button class="wa-open-btn ${alreadySent ? 'sent' : ''}">${alreadySent ? '✓ Messaged' : '💬 Open WhatsApp'}</button></a>
+          ${actionBtn}
           ${notWaBtn}
         </div>
       </div>
@@ -1594,12 +1638,12 @@ async function loadWaOpensQueue() {
     </div>`
   }
 
-  let html = unsent.map(l => renderCard(l, false)).join('')
+  let html = unsent.map(l => renderCard(l, false, queueByPhone[l.phone])).join('')
 
   if (sent.length) {
     html += `<details style="margin-top:.75rem;">
       <summary style="font-size:.8rem;color:var(--muted);cursor:pointer;padding:.5rem 0;">${sent.length} already messaged — click to expand</summary>
-      <div style="margin-top:.5rem;">${sent.map(l => renderCard(l, true)).join('')}</div>
+      <div style="margin-top:.5rem;">${sent.map(l => renderCard(l, true, queueByPhone[l.phone])).join('')}</div>
     </details>`
   }
 
@@ -1615,6 +1659,28 @@ async function loadWaOpensQueue() {
   }
 
   el.innerHTML = html
+}
+
+async function enqueueMessage(leadId, phone, message, btn) {
+  const sender = selectedSender
+  const senderLabel = WA_SENDERS.find(s => s.id === sender)?.label || sender
+  btn.textContent = 'Queueing…'
+  btn.disabled = true
+  try {
+    const res = await sb('whatsapp_queue', {
+      method: 'POST',
+      headers: { Prefer: 'return=minimal' },
+      body: JSON.stringify({ lead_id: leadId, phone, message, sender, status: 'pending' }),
+    })
+    if (!res.ok) throw new Error(await res.text())
+    btn.textContent = `⏳ Queued (${senderLabel})`
+    btn.style.opacity = '.7'
+    btn.style.cursor = 'default'
+  } catch (e) {
+    btn.textContent = '💬 Queue Send'
+    btn.disabled = false
+    alert('Failed to queue: ' + e.message)
+  }
 }
 
 // ── WhatsApp ──────────────────────────────────────────────────────────────────
