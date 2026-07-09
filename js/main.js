@@ -170,9 +170,18 @@ const TEAM_FALLBACK = [
     name: 'Samuel Barlow',
     title: 'Founder, Elama Consulting',
     synopsis: 'Technology-driven business strategist, growth consultant, and executive advisor',
-    about: 'Samuel Barlow is a technology-driven business strategist, growth consultant, and executive advisor with a strong background in software, AI, and commercial operations. With expertise spanning business development, systems design, automation, and strategic scaling, Samuel helps founders and leadership teams break through growth ceilings, streamline operations, and build businesses that perform efficiently without constant owner involvement.\n\nCombining technical insight with commercial execution, Samuel works with companies to modernise workflows, improve profitability, strengthen sales performance, and unlock new revenue opportunities. His approach blends practical business strategy with emerging technology, enabling organisations to scale smarter in an increasingly digital economy.\n\nIn addition to consulting, Samuel brings a unique advantage to U.S. businesses through access to the PCMP (Preventive Care Management Program), a federally funded wellness and benefits solution that can save employers $620+ per employee annually with zero reduction in employee take-home pay. This allows companies to improve workforce wellbeing while reducing operating costs.',
+    about: 'Samuel Barlow is a technology-driven business strategist, growth consultant, and executive advisor with a strong background in software, AI, and commercial operations. With expertise spanning business development, systems design, automation, and strategic scaling, Samuel helps founders and leadership teams break through growth ceilings, streamline operations, and build businesses that perform efficiently without constant owner involvement.\n\nCombining technical insight with commercial execution, Samuel works with companies to modernise workflows, improve profitability, strengthen sales performance, and unlock new revenue opportunities. His approach blends practical business strategy with emerging technology, enabling organisations to scale smarter in an increasingly digital economy.',
     image_data: 'images/samuel.jpg',
     display_order: 0,
+  },
+  {
+    id: 'ian-valentine',
+    name: 'Ian Valentine',
+    title: 'Strategic Technologist',
+    synopsis: 'Technology strategist with deep expertise in digital transformation and enterprise architecture.',
+    about: 'Ian Valentine is a seasoned Strategic Technologist with a career built on bridging the gap between complex technology and real-world business outcomes. He works with organisations to design and implement technology strategies that drive meaningful transformation, improve operational efficiency, and create sustainable competitive advantage.\n\nWith a deep understanding of enterprise architecture, digital systems, and emerging technologies, Ian helps leadership teams make confident, informed decisions about their technology investments. His pragmatic approach ensures that innovation is always in service of clear business goals.',
+    image_data: 'images/ian_valentine.png',
+    display_order: 1,
   },
 ];
 
