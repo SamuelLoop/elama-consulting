@@ -240,6 +240,19 @@ body {
   border-color: var(--ec-green-dark);
 }
 
+/* Tighten nav between lg and xl so the full service list fits on one line */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .ec-nav .nav-link {
+    font-size: 0.74rem;
+    letter-spacing: 0.06em;
+    padding: 0.5rem 0.4rem;
+    white-space: nowrap;
+  }
+  .ec-nav .ec-btn-gold { font-size: 0.7rem; padding: 0.45rem 0.9rem; white-space: nowrap; }
+  .ec-brand { font-size: 1.15rem; letter-spacing: 0.12em; }
+  .brand-consulting { font-size: 0.9rem; }
+}
+
 /* ---- Parallax backgrounds ---- */
 .parallax-bg {
   background-image:
@@ -698,6 +711,409 @@ body {
 
 .ec-photo-bw {
   filter: grayscale(1);
+}
+
+/* ============================================================
+   LITIGATION INTELLIGENCE PAGE (litigation-intelligence.html)
+   Prefix: .li-*   Palette and fonts inherited from :root above.
+   ============================================================ */
+
+/* ---- Hero ---- */
+.li-hero {
+  background:
+    linear-gradient(135deg, #101D18 0%, var(--ec-section-dark) 55%, #24463A 100%);
+  padding: 160px 0 90px;
+  position: relative;
+}
+.li-hero .ec-eyebrow { color: var(--ec-mint); }
+
+.li-hero-title {
+  font-family: var(--ec-font-heading);
+  font-size: clamp(2.6rem, 6vw, 4.4rem);
+  font-weight: 300;
+  color: var(--ec-white);
+  line-height: 1.08;
+  letter-spacing: 0.02em;
+}
+
+.li-hero-tagline {
+  font-family: var(--ec-font-heading);
+  font-style: italic;
+  font-size: clamp(1.15rem, 2.6vw, 1.6rem);
+  font-weight: 400;
+  color: var(--ec-mint);
+  line-height: 1.5;
+}
+
+.li-hero-lede {
+  font-size: 1.02rem;
+  font-weight: 300;
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.76);
+  max-width: 640px;
+}
+
+.li-hero-rule {
+  width: 64px;
+  height: 2px;
+  background: var(--ec-green);
+  border: 0;
+  opacity: 1;
+}
+
+/* ---- Section eyebrow rule (shared) ---- */
+.li-section-head { max-width: 760px; }
+
+.li-lede {
+  font-family: var(--ec-font-heading);
+  font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ec-dark);
+}
+.li-lede-light { color: var(--ec-mint); }
+
+/* ---- Body copy on light sections ---- */
+.li-prose p {
+  font-size: 1rem;
+  line-height: 1.85;
+  color: var(--ec-text-muted);
+  margin-bottom: 1.1rem;
+}
+.li-prose p:last-child { margin-bottom: 0; }
+
+/* ---- Pull quote ---- */
+.li-quote {
+  background: var(--ec-off-white2);
+  border-left: 3px solid var(--ec-green);
+  border-radius: 0 var(--ec-radius) var(--ec-radius) 0;
+  padding: 1.6rem 1.9rem;
+  font-family: var(--ec-font-heading);
+  font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--ec-dark);
+  margin: 0;
+}
+
+/* ---- Stat tiles ---- */
+.li-stat {
+  background: var(--ec-white);
+  border: 1px solid rgba(112, 193, 154, 0.28);
+  border-top: 3px solid var(--ec-green);
+  border-radius: 0 0 var(--ec-radius) var(--ec-radius);
+  padding: 1.6rem 1.4rem;
+  height: 100%;
+}
+.li-stat-figure {
+  font-family: var(--ec-font-heading);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 500;
+  color: var(--ec-green-dark);
+  line-height: 1.15;
+  margin-bottom: 0.4rem;
+}
+.li-stat-caption {
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--ec-text-muted);
+  margin: 0;
+}
+
+/* ---- Methodology steps ---- */
+.li-step {
+  border-top: 1px solid rgba(112, 193, 154, 0.35);
+  padding: 1.6rem 0 0;
+  height: 100%;
+}
+.li-step-number {
+  font-family: var(--ec-font-heading);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--ec-green);
+  line-height: 1;
+  margin-bottom: 0.7rem;
+}
+.li-step-title {
+  font-family: var(--ec-font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ec-dark);
+  margin-bottom: 0.7rem;
+}
+.li-step-text {
+  font-size: 0.93rem;
+  line-height: 1.72;
+  color: var(--ec-text-muted);
+  margin: 0;
+}
+
+/* ---- Deliverable cards ---- */
+.li-deliverable {
+  background: var(--ec-white);
+  border: 1px solid rgba(112, 193, 154, 0.28);
+  border-radius: var(--ec-radius);
+  padding: 1.75rem;
+  height: 100%;
+  transition: transform var(--ec-transition), border-color var(--ec-transition),
+              box-shadow var(--ec-transition);
+}
+.li-deliverable:hover {
+  transform: translateY(-4px);
+  border-color: var(--ec-green);
+  box-shadow: 0 14px 40px rgba(91, 158, 127, 0.14);
+}
+.li-deliverable-icon {
+  font-size: 1.5rem;
+  color: var(--ec-green);
+  margin-bottom: 0.9rem;
+  display: block;
+}
+.li-deliverable-title {
+  font-family: var(--ec-font-heading);
+  font-size: 1.18rem;
+  font-weight: 500;
+  color: var(--ec-dark);
+  margin-bottom: 0.55rem;
+  letter-spacing: 0.01em;
+}
+.li-deliverable-text {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: var(--ec-text-muted);
+  margin: 0;
+}
+
+/* ---- Engagement panel (dark band) ---- */
+.li-panel {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(200, 248, 225, 0.18);
+  border-radius: var(--ec-radius-lg);
+  padding: 2.25rem;
+  height: 100%;
+}
+.li-panel-title {
+  font-family: var(--ec-font-heading);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--ec-mint);
+  margin-bottom: 1.3rem;
+  letter-spacing: 0.02em;
+}
+.li-list { list-style: none; padding: 0; margin: 0; }
+.li-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  font-size: 0.93rem;
+  line-height: 1.68;
+  color: rgba(255, 255, 255, 0.78);
+  margin-bottom: 0.9rem;
+}
+.li-list li:last-child { margin-bottom: 0; }
+.li-list li i { color: var(--ec-mint); flex-shrink: 0; margin-top: 4px; }
+.li-list li strong { color: var(--ec-white); font-weight: 600; }
+
+.li-timing { width: 100%; border-collapse: collapse; }
+.li-timing th,
+.li-timing td {
+  padding: 0.7rem 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  border-bottom: 1px solid rgba(200, 248, 225, 0.14);
+  vertical-align: top;
+}
+.li-timing th {
+  font-family: var(--ec-font-body);
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: left;
+  padding-right: 1rem;
+}
+.li-timing td { color: var(--ec-mint); text-align: right; white-space: nowrap; }
+.li-timing tr:last-child th,
+.li-timing tr:last-child td { border-bottom: 0; }
+
+/* ---- Pricing tiers ---- */
+.li-tier {
+  background: var(--ec-white);
+  border: 1px solid rgba(112, 193, 154, 0.3);
+  border-radius: var(--ec-radius);
+  padding: 2rem 1.75rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.li-tier-featured {
+  border-color: var(--ec-green);
+  border-width: 2px;
+  box-shadow: 0 18px 48px rgba(91, 158, 127, 0.16);
+}
+.li-tier-flag {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ec-green-dark);
+  margin-bottom: 0.75rem;
+}
+.li-tier-name {
+  font-family: var(--ec-font-heading);
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--ec-dark);
+  margin-bottom: 0.65rem;
+  letter-spacing: 0.01em;
+}
+.li-tier-fee {
+  font-family: var(--ec-font-heading);
+  font-size: 1.55rem;
+  font-weight: 500;
+  color: var(--ec-green-dark);
+  line-height: 1.2;
+  margin-bottom: 0.25rem;
+}
+.li-tier-fee-note {
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ec-text-muted);
+  margin-bottom: 1.1rem;
+}
+.li-tier-text {
+  font-size: 0.92rem;
+  line-height: 1.72;
+  color: var(--ec-text-muted);
+  margin: 0;
+}
+
+.li-rate-strip {
+  background: var(--ec-off-white2);
+  border: 1px solid rgba(112, 193, 154, 0.28);
+  border-radius: var(--ec-radius);
+  padding: 1.75rem;
+}
+.li-rate-figure {
+  font-family: var(--ec-font-heading);
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--ec-dark);
+  line-height: 1.2;
+  margin-bottom: 0.2rem;
+}
+.li-rate-caption {
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--ec-text-muted);
+  margin: 0;
+}
+
+.li-note {
+  font-size: 0.88rem;
+  line-height: 1.75;
+  color: var(--ec-text-muted);
+}
+.li-note strong { color: var(--ec-text); font-weight: 600; }
+
+/* ---- Regulatory footnote ---- */
+.li-regulatory {
+  background: var(--ec-off-white);
+  border-left: 3px solid var(--ec-green);
+  border-radius: 0 var(--ec-radius) var(--ec-radius) 0;
+  padding: 1.5rem 1.75rem;
+}
+.li-regulatory-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ec-green-dark);
+  margin-bottom: 0.55rem;
+}
+.li-regulatory p {
+  font-size: 0.89rem;
+  line-height: 1.75;
+  color: var(--ec-text-muted);
+  margin: 0;
+}
+
+/* ---- Founder note ---- */
+.li-founder {
+  background: var(--ec-white);
+  border: 1px solid rgba(112, 193, 154, 0.28);
+  border-radius: var(--ec-radius-lg);
+  padding: 2.25rem;
+}
+.li-founder-name {
+  font-family: var(--ec-font-heading);
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--ec-dark);
+  margin-bottom: 0.15rem;
+}
+.li-founder-role {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ec-green);
+  margin-bottom: 1rem;
+}
+
+/* ---- Closing CTA ---- */
+.li-cta {
+  background: linear-gradient(135deg, var(--ec-green-dark) 0%, var(--ec-green) 65%, #5DB88A 100%);
+  padding: 90px 0;
+}
+.li-cta-title {
+  font-family: var(--ec-font-heading);
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 300;
+  color: var(--ec-white);
+  letter-spacing: 0.02em;
+}
+.li-cta-text {
+  font-size: 1.02rem;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 620px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.li-cta-email {
+  font-family: var(--ec-font-body);
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  color: var(--ec-white);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  transition: border-color var(--ec-transition);
+}
+.li-cta-email:hover { color: var(--ec-white); border-bottom-color: var(--ec-white); }
+
+.li-cta .btn.ec-btn-gold {
+  background: var(--ec-white);
+  border-color: var(--ec-white);
+  color: var(--ec-green-dark);
+}
+.li-cta .btn.ec-btn-gold:hover {
+  background: var(--ec-section-dark);
+  border-color: var(--ec-section-dark);
+  color: var(--ec-white);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+
+/* ---- Responsive: litigation page ---- */
+@media (max-width: 767.98px) {
+  .li-hero    { padding: 130px 0 70px; }
+  .li-cta     { padding: 70px 0; }
+  .li-panel,
+  .li-founder { padding: 1.75rem; }
+  .li-tier    { padding: 1.6rem 1.4rem; }
+  .li-timing td { white-space: normal; }
 }
 
 /* ---- Responsive: carousel ---- */
