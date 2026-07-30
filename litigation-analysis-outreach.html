@@ -1,0 +1,1340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Outreach Console | Elama Consulting</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ec-green:#70C19A; --ec-green-dark:#4FA07A; --ec-mint:#C8F8E1;
+      --ec-blue:#9FCEFF; --ec-dark:#1C1C1C; --ec-text:#2E2E2E;
+      --ec-muted:#6B7B74; --ec-off-white:#F4F8F6; --ec-off-white2:#EEF5F2;
+      --ec-line:#E4EDE8; --ec-warn:#8A6D1F; --ec-warn-bg:#FDF6E3;
+      --ec-stop:#8C2F2F; --ec-stop-bg:#FBEDED;
+      --ec-heading:'Cormorant Garamond',Georgia,serif;
+      --ec-body:'Inter',system-ui,sans-serif;
+      --radius:12px; --radius-lg:20px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:var(--ec-body);background:var(--ec-off-white);color:var(--ec-text);min-height:100vh;font-size:15px;}
+
+    /* ── brand mark ─────────────────────────────────────────── */
+    .ec-logo-mark{display:inline-flex;align-items:center;gap:5px;margin-right:10px;vertical-align:middle;}
+    .ec-dot{width:9px;height:9px;border-radius:50%;display:inline-block;}
+    .ec-dot-1{background:#70C19A;}.ec-dot-2{background:#C8F8E1;}.ec-dot-3{background:#9FCEFF;}
+    .ec-brand{font-family:var(--ec-heading);font-size:1.15rem;font-weight:300;letter-spacing:.18em;
+      text-transform:uppercase;display:flex;align-items:center;color:var(--ec-dark);text-decoration:none;}
+    .brand-consulting{opacity:.6;font-size:.9rem;margin-left:.4rem;}
+
+    /* ── sign in ────────────────────────────────────────────── */
+    #gate{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem;}
+    .gate-card{background:#fff;border-radius:var(--radius-lg);padding:2.75rem 2.5rem;max-width:420px;width:100%;
+      box-shadow:0 4px 32px rgba(0,0,0,.08);}
+    .gate-card .ec-brand{justify-content:center;margin-bottom:1.75rem;}
+    .gate-card h1{font-family:var(--ec-heading);font-size:1.75rem;font-weight:400;margin-bottom:.4rem;text-align:center;}
+    .gate-card .gate-sub{font-size:.85rem;color:var(--ec-muted);margin-bottom:1.75rem;text-align:center;line-height:1.6;}
+    .gate-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ec-muted);
+      display:block;margin-bottom:.35rem;}
+    .gate-input{width:100%;padding:.7rem .9rem;border:1.5px solid var(--ec-line);border-radius:var(--radius);
+      font-size:.95rem;font-family:inherit;outline:none;margin-bottom:1.1rem;transition:border-color .2s;background:#fff;color:var(--ec-text);}
+    .gate-input:focus{border-color:var(--ec-green);}
+    .gate-btn{width:100%;padding:.75rem;background:var(--ec-green);color:#fff;border:none;border-radius:var(--radius);
+      font-size:.95rem;font-family:inherit;font-weight:500;cursor:pointer;transition:background .2s;}
+    .gate-btn:hover{background:var(--ec-green-dark);}
+    .gate-btn:disabled{opacity:.6;cursor:default;}
+    .gate-msg{font-size:.85rem;margin-top:.9rem;text-align:center;display:none;line-height:1.5;}
+    .gate-msg.err{color:var(--ec-stop);display:block;}
+    .gate-msg.ok{color:var(--ec-green-dark);display:block;}
+    .gate-foot{margin-top:1.5rem;padding-top:1.25rem;border-top:1px solid var(--ec-line);
+      font-size:.75rem;color:var(--ec-muted);line-height:1.6;text-align:center;}
+    .gate-link{background:none;border:none;color:var(--ec-green-dark);font-family:inherit;font-size:.75rem;
+      cursor:pointer;text-decoration:underline;padding:0;}
+
+    /* ── shell ──────────────────────────────────────────────── */
+    #console{display:none;}
+    .top{display:flex;align-items:center;gap:1rem;padding:1rem 2rem;background:#fff;border-bottom:1px solid var(--ec-line);flex-wrap:wrap;}
+    .top-spacer{flex:1;}
+    .top-who{font-size:.78rem;color:var(--ec-muted);}
+    .top-btn{padding:.35rem .85rem;border-radius:6px;border:1.5px solid var(--ec-line);background:#fff;
+      font-size:.78rem;font-family:inherit;cursor:pointer;color:var(--ec-text);}
+    .top-btn:hover{border-color:var(--ec-green);color:var(--ec-green-dark);}
+    #pw-panel{display:none;background:#fff;border-bottom:1px solid var(--ec-line);padding:1.5rem 2rem;}
+    #pw-panel.open{display:block;}
+    .pw-inner{max-width:420px;}
+    .pw-title{font-family:var(--ec-heading);font-size:1.3rem;font-weight:400;color:var(--ec-dark);margin-bottom:.4rem;}
+    .pw-note{font-size:.8rem;color:var(--ec-muted);line-height:1.6;margin-bottom:1.1rem;}
+    #pw-panel .gate-msg{text-align:left;}
+    .nav-tabs{display:flex;gap:.4rem;padding:.85rem 2rem;background:#fff;border-bottom:1px solid var(--ec-line);
+      position:sticky;top:0;z-index:10;flex-wrap:wrap;}
+    .nav-tab{padding:.45rem 1.1rem;border-radius:6px;border:none;background:transparent;font-size:.85rem;
+      font-weight:500;font-family:inherit;color:var(--ec-muted);cursor:pointer;transition:all .2s;}
+    .nav-tab:hover{background:var(--ec-off-white2);}
+    .nav-tab.active{background:var(--ec-green);color:#fff;}
+    .nav-tab .count{opacity:.75;font-weight:400;margin-left:.3rem;}
+    .page{display:none;padding:2rem;max-width:900px;margin:auto;}
+    .page.active{display:block;}
+    .page-header{margin-bottom:1.75rem;}
+    .page-header h1{font-family:var(--ec-heading);font-size:2rem;font-weight:400;color:var(--ec-dark);}
+    .page-header p{color:var(--ec-muted);font-size:.85rem;margin-top:.35rem;line-height:1.65;max-width:60ch;}
+
+    /* ── cards ──────────────────────────────────────────────── */
+    .card{background:#fff;border-radius:var(--radius);box-shadow:0 2px 12px rgba(0,0,0,.06);
+      margin-bottom:1rem;overflow:hidden;}
+    .card-top{display:flex;align-items:flex-start;gap:1rem;padding:1.1rem 1.35rem .9rem;}
+    .avatar{width:38px;height:38px;border-radius:50%;background:var(--ec-off-white2);display:flex;
+      align-items:center;justify-content:center;font-weight:600;font-size:.9rem;color:var(--ec-green-dark);flex-shrink:0;}
+    .who{flex:1;min-width:0;}
+    .who-name{font-weight:600;font-size:.98rem;color:var(--ec-dark);}
+    .who-role{font-size:.82rem;color:var(--ec-muted);margin-top:.1rem;}
+    .who-known{font-size:.82rem;color:var(--ec-text);margin-top:.5rem;line-height:1.6;}
+    .who-known span{color:var(--ec-muted);}
+    .tier{padding:.2rem .6rem;border-radius:99px;font-size:.7rem;font-weight:600;letter-spacing:.06em;flex-shrink:0;}
+    .tier-W1{background:#DFF3E9;color:#2C6B4F;}
+    .tier-W2{background:#E6F0F9;color:#2E5A80;}
+    .tier-W3{background:#F0F0F0;color:#666;}
+    .tier-C{background:#F0F0F0;color:#999;}
+
+    .msg-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:var(--ec-muted);
+      margin:0 1.35rem .4rem;}
+    .msg-subject{margin:0 1.35rem .5rem;font-size:.88rem;color:var(--ec-dark);}
+    .msg-subject strong{font-weight:600;}
+    .msg-box{margin:0 1.35rem;background:var(--ec-off-white);border:1px solid var(--ec-line);border-radius:8px;
+      padding:.9rem 1rem;font-size:.85rem;line-height:1.65;white-space:pre-wrap;color:var(--ec-text);
+      max-height:19rem;overflow-y:auto;}
+    .msg-none{margin:0 1.35rem;background:var(--ec-warn-bg);border:1px solid #EFE0B8;border-radius:8px;
+      padding:.8rem 1rem;font-size:.83rem;line-height:1.6;color:var(--ec-warn);}
+
+    .actions{display:flex;gap:.5rem;flex-wrap:wrap;padding:1rem 1.35rem .35rem;align-items:center;}
+    .act{padding:.45rem .95rem;border-radius:6px;border:1.5px solid var(--ec-line);background:#fff;
+      font-size:.82rem;font-family:inherit;cursor:pointer;color:var(--ec-text);transition:all .15s;white-space:nowrap;}
+    .act:hover{border-color:var(--ec-green);color:var(--ec-green-dark);background:var(--ec-off-white);}
+    .act.primary{background:var(--ec-green);border-color:var(--ec-green);color:#fff;}
+    .act.primary:hover{background:var(--ec-green-dark);color:#fff;}
+    .act.sent{background:#F0F7F4;border-color:var(--ec-green);color:var(--ec-green-dark);font-weight:600;}
+    .act.sent:hover{background:var(--ec-stop-bg);border-color:#E0B4B4;color:var(--ec-stop);}
+    .act.off{background:#FAFAFA;border-color:#EEE;color:#AAA;cursor:not-allowed;}
+    .act.off:hover{background:#FAFAFA;border-color:#EEE;color:#AAA;}
+    .act.link{border:none;background:none;color:var(--ec-green-dark);text-decoration:underline;padding:.45rem .2rem;}
+    .act.link:hover{background:none;}
+
+    .meta-row{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;padding:.35rem 1.35rem 1.1rem;}
+    .sel{padding:.4rem .7rem;border-radius:6px;border:1.5px solid var(--ec-line);background:#fff;
+      font-size:.8rem;font-family:inherit;color:var(--ec-text);cursor:pointer;outline:none;}
+    .sel:focus{border-color:var(--ec-green);}
+    .phone-in{padding:.4rem .7rem;border-radius:6px;border:1.5px solid var(--ec-line);font-size:.8rem;
+      font-family:inherit;outline:none;width:11rem;}
+    .phone-in:focus{border-color:var(--ec-green);}
+    .notes{width:calc(100% - 2.7rem);margin:0 1.35rem 1.1rem;padding:.65rem .85rem;border:1.5px solid var(--ec-line);
+      border-radius:var(--radius);font-size:.85rem;font-family:inherit;resize:vertical;min-height:56px;outline:none;
+      line-height:1.6;color:var(--ec-text);}
+    .notes:focus{border-color:var(--ec-green);}
+    .card-err{margin:0 1.35rem 1rem;padding:.6rem .85rem;background:var(--ec-stop-bg);border-radius:8px;
+      font-size:.8rem;color:var(--ec-stop);display:none;}
+    .card-err.on{display:block;}
+
+    .flag{margin:0 1.35rem 1rem;padding:.7rem .95rem;border-radius:8px;font-size:.82rem;line-height:1.6;}
+    .flag-hold{background:var(--ec-warn-bg);color:var(--ec-warn);}
+    .flag-stop{background:var(--ec-stop-bg);color:var(--ec-stop);}
+
+    /* ── contacted list ─────────────────────────────────────── */
+    .row{display:flex;align-items:center;gap:1rem;padding:.75rem 1.35rem;border-bottom:1px solid #F4F7F5;
+      font-size:.86rem;flex-wrap:wrap;}
+    .row:last-child{border-bottom:none;}
+    .row-name{flex:1;min-width:9rem;font-weight:500;color:var(--ec-dark);}
+    .row-firm{flex:1;min-width:9rem;color:var(--ec-muted);font-size:.8rem;}
+    .row-ch{display:flex;gap:.35rem;flex-wrap:wrap;}
+    .chip{padding:.15rem .55rem;border-radius:99px;font-size:.7rem;background:var(--ec-off-white2);
+      color:var(--ec-muted);border:none;font-family:inherit;display:inline-block;}
+    .chip.on{background:#DFF3E9;color:#2C6B4F;font-weight:500;cursor:pointer;transition:all .15s;}
+    .chip.on:hover{background:var(--ec-stop-bg);color:var(--ec-stop);}
+    .row-status{font-size:.75rem;color:var(--ec-muted);min-width:7rem;text-align:right;}
+
+    .empty{text-align:center;padding:3rem 2rem;color:var(--ec-muted);font-size:.9rem;line-height:1.7;
+      background:#fff;border-radius:var(--radius);box-shadow:0 2px 12px rgba(0,0,0,.06);}
+    .loading{text-align:center;padding:2.5rem;color:var(--ec-muted);font-size:.875rem;}
+    .group-head{font-family:var(--ec-heading);font-size:1.3rem;font-weight:400;color:var(--ec-dark);
+      margin:2rem 0 .75rem;}
+    .group-head:first-child{margin-top:0;}
+    .group-note{font-size:.8rem;color:var(--ec-muted);margin-bottom:1rem;line-height:1.6;}
+    .footnote{font-size:.78rem;color:var(--ec-muted);line-height:1.7;margin-top:2rem;padding-top:1.25rem;
+      border-top:1px solid var(--ec-line);}
+
+    @media (max-width:640px){
+      .page{padding:1.25rem;}
+      .nav-tabs,.top{padding-left:1.25rem;padding-right:1.25rem;}
+      .notes{width:calc(100% - 2rem);margin-left:1rem;margin-right:1rem;}
+      .card-top,.actions,.meta-row{padding-left:1rem;padding-right:1rem;}
+      .msg-box,.msg-none,.msg-label,.msg-subject,.flag,.card-err{margin-left:1rem;margin-right:1rem;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ SIGN IN ══════════════════════════════════════════════ -->
+<div id="gate">
+  <div class="gate-card">
+    <div class="ec-brand">
+      <span class="ec-logo-mark"><span class="ec-dot ec-dot-1"></span><span class="ec-dot ec-dot-2"></span><span class="ec-dot ec-dot-3"></span></span>
+      <span>El&auml;m&auml;</span><span class="brand-consulting">Consulting</span>
+    </div>
+    <h1>Outreach console</h1>
+    <p class="gate-sub">Litigation Intelligence. Named contacts and private notes, so this is behind a real account rather than a shared password.</p>
+
+    <label class="gate-label" for="gate-email">Email</label>
+    <input class="gate-input" id="gate-email" type="email" autocomplete="username" placeholder="samuel@elamaconsulting.com" />
+
+    <label class="gate-label" for="gate-pw">Password</label>
+    <input class="gate-input" id="gate-pw" type="password" autocomplete="current-password" />
+
+    <button class="gate-btn" id="gate-btn" onclick="signIn()">Sign in</button>
+    <div class="gate-msg" id="gate-msg"></div>
+
+    <div class="gate-foot">
+      <button class="gate-link" onclick="sendReset()">Send a password reset link</button><br />
+      Nothing on this page is readable without signing in. The anon key alone
+      returns nothing from any table behind it.
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONSOLE ══════════════════════════════════════════════ -->
+<div id="console">
+  <div class="top">
+    <div class="ec-brand">
+      <span class="ec-logo-mark"><span class="ec-dot ec-dot-1"></span><span class="ec-dot ec-dot-2"></span><span class="ec-dot ec-dot-3"></span></span>
+      <span>El&auml;m&auml;</span><span class="brand-consulting">Consulting</span>
+    </div>
+    <div class="top-spacer"></div>
+    <span class="top-who" id="top-who"></span>
+    <button class="top-btn" onclick="togglePassword()">Change password</button>
+    <button class="top-btn" onclick="loadAll()">Refresh</button>
+    <button class="top-btn" onclick="signOut()">Sign out</button>
+  </div>
+
+  <!-- Changing the password needs no email and no redirect configuration. It is
+       a PUT on the signed-in user, so it works from localhost and from
+       production alike. -->
+  <div id="pw-panel">
+    <div class="pw-inner">
+      <div class="pw-title">Change the console password</div>
+      <p class="pw-note">The password this account was created with was generated
+        by a build session and written to a transcript. Replace it here, then
+        store the new one in a password manager.</p>
+      <input class="gate-input" id="pw-new" type="password" autocomplete="new-password"
+             placeholder="New password, at least 12 characters" />
+      <input class="gate-input" id="pw-again" type="password" autocomplete="new-password"
+             placeholder="Type it again" />
+      <button class="gate-btn" id="pw-save" onclick="changePassword()">Save the new password</button>
+      <div class="gate-msg" id="pw-msg"></div>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="nav-tab active" data-page="queue"     onclick="showPage('queue')">Queue<span class="count" id="c-queue"></span></button>
+    <button class="nav-tab"        data-page="followup"  onclick="showPage('followup')">Follow-up due<span class="count" id="c-followup"></span></button>
+    <button class="nav-tab"        data-page="contacted" onclick="showPage('contacted')">Contacted<span class="count" id="c-contacted"></span></button>
+    <button class="nav-tab"        data-page="hold"      onclick="showPage('hold')">On hold<span class="count" id="c-hold"></span></button>
+  </div>
+
+  <div class="page active" id="page-queue">
+    <div class="page-header">
+      <h1>Queue</h1>
+      <p>Everyone not yet contacted, W1 first. The message below each name is what
+         will open in Mail. Read it, send it, then edit freely in Mail. The log
+         records that a message went out, not its exact wording.</p>
+    </div>
+    <div id="queue-list"><div class="loading">Loading</div></div>
+  </div>
+
+  <div class="page" id="page-followup">
+    <div class="page-header">
+      <h1>Follow-up due</h1>
+      <p>Contacted more than seven days ago with no reply logged. Same thread, same
+         subject. Log a reply by setting the status to Replied and the contact drops
+         out of here.</p>
+    </div>
+    <div id="followup-list"><div class="loading">Loading</div></div>
+  </div>
+
+  <div class="page" id="page-contacted">
+    <div class="page-header">
+      <h1>Contacted</h1>
+      <p>Everyone touched, with the channel and the date, so coverage is visible at
+         a glance.</p>
+    </div>
+    <div id="contacted-list"><div class="loading">Loading</div></div>
+  </div>
+
+  <div class="page" id="page-hold">
+    <div class="page-header">
+      <h1>On hold</h1>
+      <p>Blocked on something external. Nothing goes to anyone here until the stated
+         block is resolved. Clear the block, set the status to Not contacted, and
+         they rejoin the queue.</p>
+    </div>
+    <div id="hold-list"><div class="loading">Loading</div></div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   Litigation Intelligence outreach console
+
+   A launcher and a log, not a sender. Every message is sent by hand from
+   Samuel's own mailbox. There is no Resend integration, no tracking pixel and
+   no open rate anywhere in this file, because none of those exist in this
+   project.
+
+   Security. Supabase Auth with one account, and RLS on every lit_ table keyed
+   on that account's uid. The key below is the public anon key. On its own it
+   returns nothing from lit_targets, lit_tracker or lit_suppression. The service
+   role key is never in this file.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+const SB_URL  = 'https://bosvbnjhsimqtnwkkcvn.supabase.co'
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvc3Zibmpoc2ltcXRud2trY3ZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNjA0OTMsImV4cCI6MjA5MTkzNjQ5M30.4F1XJarCvJ2ESpL71h-0wMBF1iH5VAesx-EANMhTbyg'
+
+const SESSION_KEY     = 'lit_console_session'
+const FOLLOWUP_DAYS   = 7
+const SENDER_SIGNOFF  = 'Samuel\nsamuel@elamaconsulting.com'
+
+const STATUS_LABELS = {
+  not_contacted:  'Not contacted',
+  on_hold:        'On hold',
+  contacted:      'Contacted',
+  replied:        'Replied',
+  call_booked:    'Call booked',
+  referred_on:    'Referred on',
+  not_interested: 'Not interested',
+  do_not_contact: 'Do not contact',
+}
+
+let session   = null
+let targets   = []
+let trackers  = {}   // target_id -> tracker row
+let suppressed = new Set()   // normalised emails, lit_suppression plus Ignite unsubscribes
+let currentPage = 'queue'
+
+/* ── contacts with a rule of their own ─────────────────────────────────────
+   All four sets come from warm-messages.md. They are addresses rather than
+   names because an address is what the tracker keys on. */
+
+// Currently instructed on the flat sale. Selling into a live retainer is the
+// wrong move, so she gets the referral message at 4e instead of 4a.
+const DOWNS = 'rebecca.downs@rll-legal.com'
+
+// Their own practice will never buy this: US corporate, US immigration. Section
+// 5 sends them the referral ask at section 7 instead of the tier message.
+const REFERRAL_ONLY = new Set([
+  'rkrug@hsplegal.com',
+  'dartaev@padilla.law',
+  'kevin@cottlawgroup.com',
+  'carlos@rodfel.law',
+])
+
+// Section 6a. A W3 approach must name the connection specifically. Four can,
+// and no message renders for a W3 who cannot.
+const W3_NAMING = {
+  'victoria.wright@wablegal.com':
+    'In December 2021 I asked you to take on an urgent corporate matter and you had no capacity. You were straight with me about it.',
+  'amber.stobbs@rll-legal.com':
+    'Your firm is handling the sale of my flat at the moment, so my name may be vaguely familiar.',
+  'rc@helix-law.com':
+    'You were on the Helix Law correspondence for my tribunal matter in late 2021.',
+  'laura.whitelock@robertlunnlowth.co.uk':
+    'I asked your firm for a conveyancing quote in June, so this is close to a cold email. I will keep it short.',
+}
+
+// Sections 4d and 5d. WhatsApp is opt-in by judgement, not by default. These
+// are the only contacts for whom it was already the working channel.
+const WHATSAPP_OK = new Set([
+  'br@helix-law.com',
+  'mzierenberg.law@gmail.com',
+  'marc@ellul.gi',
+])
+
+/* ── templates ─────────────────────────────────────────────────────────────
+   Verbatim from warm-messages.md. Email bodies are plain ASCII because they
+   are URL-encoded into a mailto link, so GBP rather than the pound sign and
+   Elama rather than the diaeresis form. LinkedIn and WhatsApp messages are
+   pasted by hand and use Elämä correctly.
+
+   {{first_name}} appears once, in the greeting, and falls back to "there". */
+
+const T = {}
+
+T.w1_email = { subject: 'the document work', body: (n) =>
+`Hi ${n},
+
+When you acted for me, the chronology and the indexed bundle you worked
+from were mine. I built them because there was no budget to have anyone
+else do it. You saw the state that record was in when we started and
+what it took to make it usable.
+
+That is now what I sell to firms. The record goes in and a structured
+pack comes back: chronology, evidence schedule, party map, witness
+statement drafts, and an argument matrix tying each contention to the
+documents behind it. Fixed fee, from GBP 1,500 for a triage. I am not a
+law firm and I give no advice, so it is prepared for the instructing
+firm's own judgement.
+
+You know how I handle a record. Is there a matter where that would take
+review time out, yours or someone else's at the firm?
+
+${SENDER_SIGNOFF}` }
+
+T.w1_followup = { subject: null, body: (n) =>
+`Hi ${n},
+
+One thing I left out. Most firms start with a triage rather than a full
+build: two or three days on the record, and you get a document
+inventory, a skeleton chronology and an issues list. GBP 1,500 to GBP
+2,500 fixed, delivered in three to five working days.
+
+It is sized to be approved without a committee and it answers whether
+anything larger is worth doing. If a costs budget is due on something
+document-heavy, a fixed disbursement is also easier to defend than an
+estimate for review time.
+
+Shall I send the brochure? The redacted sample deliverables are bound
+into the back of it.
+
+Samuel` }
+
+T.w1_linkedin = (n) =>
+`Hi ${n}. The chronology and bundle you worked from on my matter were mine to build. That is now the business: structured evidence packs for firms, fixed fee from GBP 1,500. Any matter on your desk where the documents are the problem?`
+
+T.w1_whatsapp = (n) =>
+`Hi ${n}. Not chasing anything, and no reply needed. Just so you know what I do now: the document and chronology work on my own matter is a service for firms, structured evidence packs at a fixed fee. If something document-heavy lands and the review looks unaffordable, I am worth a word.`
+
+T.downs_email = { subject: 'something separate from the sale', body: (n) =>
+`Hi ${n},
+
+Separate from the conveyancing, and no urgency on it.
+
+When I sent you the account of the neighbour dispute in June, that was
+a small version of what I do for a living. I take the full documentary
+record of a dispute and return a structured pack: chronology, evidence
+schedule, party map and an argument matrix tying each contention to its
+documents. It is sold to firms rather than to clients, at a fixed fee
+from GBP 1,500 for a triage. Elama Consulting is not a law firm and
+gives no legal advice.
+
+You referred my matter to Ruth Godfrey. Would you pass this on to her
+as well?
+
+${SENDER_SIGNOFF}` }
+
+T.w2_email = { subject: 'what I do now', body: (n) =>
+`Hi ${n},
+
+You did work for me some years ago, so this arrives out of nowhere.
+
+Since then I had a shareholder and director dispute of my own. I could
+not fund the review it needed, so I built the entire documentary case
+myself: raw email archives, company filings and financial records
+through to an evidence schedule, a chronology, a relationship map and
+counsel analyses. Seven individuals across seventeen years of records,
+resolved to single identities.
+
+It held up, and it is now what I do for law firms. Same pack, fixed
+fee, from GBP 1,500 for a triage. Elama Consulting is not a law firm
+and gives no legal advice.
+
+Can I send you the brochure? It has redacted samples of the actual
+deliverables in it.
+
+${SENDER_SIGNOFF}` }
+
+T.w2_followup = { subject: null, body: (n) =>
+`Hi ${n},
+
+One number that makes the case better than I did. Document review runs
+at 60% to 70% of the cost of a document-heavy matter, and what it buys
+a firm is organisation rather than analysis. A fixed disbursement turns
+that line into a figure the firm can budget, quote to a client and
+defend in costs management.
+
+If it is easier to hear than to read, 30 minutes tells you whether any
+of it fits how you work.
+
+Samuel` }
+
+T.w2_linkedin = (n) =>
+`Hi ${n}. You acted for me some years back. I now build litigation intelligence packs for firms: chronology, evidence schedule, party map and argument matrix, built from the raw record at a fixed fee from GBP 1,500. Can I send you the brochure?`
+
+T.w2_whatsapp = (n) =>
+`Hi ${n}. Samuel Barlow, from a few years back. I build litigation intelligence packs for law firms now: the full document record in, a structured evidence pack and chronology out, fixed fee. Can I send you the brochure? Happy to be told it is not relevant.`
+
+T.w3_email = { subject: 'what I do now', body: (n, namingLine) =>
+`Hi ${n},
+
+${namingLine}
+
+To be plain about where this came from: I had a shareholder and
+director dispute of my own. I could not fund the review it needed, so I
+built the whole documentary case myself, from raw email archives and
+filings through to an evidence schedule, chronology and counsel
+analyses. That is now the business. A firm sends the record and gets
+back a structured pack its own fee earners can open and use, at a fixed
+fee from GBP 1,500 for a triage. Elama Consulting is not a law firm and
+gives no legal advice.
+
+Can I send you the brochure? The redacted samples in it are the fastest
+way to judge the work.
+
+${SENDER_SIGNOFF}` }
+
+T.w3_followup = { subject: null, body: (n) =>
+`Hi ${n},
+
+Adding the part that matters most to a smaller team. The whole point of
+the fixed fee is that the firm does not carry the review hours. Two or
+three days of my time produces the triage, GBP 1,500 to GBP 2,500, and
+the firm decides from there. No platform to licence, no seats to learn,
+and nothing to commit beyond the triage itself.
+
+If nobody there has a document-heavy matter running, say so and I will
+leave it.
+
+Samuel` }
+
+T.w3_linkedin = (n) =>
+`Hi ${n}. We crossed paths briefly a while back. I build litigation intelligence packs for law firms: full document record in, structured evidence schedule and chronology out, fixed fee from GBP 1,500. Worth sending you the brochure?`
+
+T.referral_email = { subject: 'a specific ask', body: (n) =>
+`Hi ${n},
+
+Nothing to buy here. The useful version of this is usually somebody
+else's matter, so let me be exact about when.
+
+A firm takes on a case with a documentary record bigger than it
+normally handles. Then disclosure is ordered, or a costs budget falls
+due, and somebody has to put a defensible number on reading several
+thousand documents with no spare fee earner to do it. That is the
+moment I am worth a name, and it is the only moment. Anything else is
+too early.
+
+If someone you know is sitting in that week, would you forward this to
+them? That is the whole request.
+
+${SENDER_SIGNOFF}` }
+
+T.referral_linkedin = (n) =>
+`Hi ${n}. Not selling to you. If a colleague has a matter where disclosure has just been ordered and the document review has no budget behind it, that is the week I am useful. Fixed fee from GBP 1,500. Worth an introduction?`
+
+/* ── template selection ─────────────────────────────────────────────────── */
+
+function firstName(t) {
+  // The rule from warm-messages.md section 1: an empty field renders "Hi there,"
+  // and every body still reads correctly.
+  return (t.first_name || '').trim() || 'there'
+}
+
+// Returns { subject, body } or { blocked: 'reason' }.
+function emailFor(t, stage) {
+  const n = firstName(t)
+  const email = (t.email || '').toLowerCase()
+  const tier = t.tier
+
+  if (REFERRAL_ONLY.has(email)) {
+    if (stage === 'followup') return { blocked:
+      'The referral ask is the whole message for this contact, and section 7 is explicit that it is one ask on its own. There is no follow-up.' }
+    return { subject: T.referral_email.subject, body: T.referral_email.body(n) }
+  }
+
+  if (email === DOWNS) {
+    if (stage === 'followup') return { blocked:
+      'No follow-up written. She is instructed on the flat sale, the message is a referral ask rather than a pitch, and chasing it mid-retainer would undo the point of sending it.' }
+    return { subject: T.downs_email.subject, body: T.downs_email.body(n) }
+  }
+
+  if (tier === 'W1') {
+    return stage === 'followup'
+      ? { subject: T.w1_email.subject, body: T.w1_followup.body(n) }
+      : { subject: T.w1_email.subject, body: T.w1_email.body(n) }
+  }
+
+  if (tier === 'W2') {
+    return stage === 'followup'
+      ? { subject: T.w2_email.subject, body: T.w2_followup.body(n) }
+      : { subject: T.w2_email.subject, body: T.w2_email.body(n) }
+  }
+
+  if (tier === 'W3') {
+    const line = W3_NAMING[email]
+    if (!line) return { blocked:
+      'No naming line. A W3 approach has to name the connection specifically, and warm-messages.md section 6 moves anyone who cannot to the cold list. Session 06 writes that sequence.' }
+    return stage === 'followup'
+      ? { subject: T.w3_email.subject, body: T.w3_followup.body(n) }
+      : { subject: T.w3_email.subject, body: T.w3_email.body(n, line) }
+  }
+
+  return { blocked: 'Cold contact. The cold sequence is session 06 and no copy exists for it yet.' }
+}
+
+function linkedinFor(t) {
+  const n = firstName(t)
+  const email = (t.email || '').toLowerCase()
+  if (REFERRAL_ONLY.has(email)) return { body: T.referral_linkedin(n) }
+  if (email === DOWNS) return { blocked:
+    'No LinkedIn message. The approach to her is a single deliberate email about a referral, and a second channel would read as a chase.' }
+  if (t.tier === 'W1') return { body: T.w1_linkedin(n) }
+  if (t.tier === 'W2') return { body: T.w2_linkedin(n) }
+  if (t.tier === 'W3') return { body: T.w3_linkedin(n) }
+  return { blocked: 'Cold contact. Session 06 writes this copy.' }
+}
+
+function whatsappFor(t) {
+  const n = firstName(t)
+  const email = (t.email || '').toLowerCase()
+  if (!WHATSAPP_OK.has(email)) return { blocked:
+    'WhatsApp is not an available channel for this contact. Sections 4d, 5d and 6d limit it to the few people for whom it was already the working channel.' }
+  if (!t.phone) return { blocked: 'No number on file. Add one below and the button opens.' }
+  if (t.tier === 'W1') return { body: T.w1_whatsapp(n) }
+  return { body: T.w2_whatsapp(n) }
+}
+
+/* ── Supabase ──────────────────────────────────────────────────────────── */
+
+function saveSession(s) {
+  session = s
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify(s))
+}
+
+function loadSession() {
+  try { session = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null') }
+  catch (e) { session = null }
+  return session
+}
+
+async function auth(path, body) {
+  const res = await fetch(`${SB_URL}/auth/v1/${path}`, {
+    method: 'POST',
+    headers: { apikey: SB_ANON, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.error_description || data.msg || data.message || 'Sign in failed')
+  return data
+}
+
+async function refreshSession() {
+  if (!session?.refresh_token) return false
+  try {
+    const data = await auth('token?grant_type=refresh_token', { refresh_token: session.refresh_token })
+    saveSession(data)
+    return true
+  } catch (e) { return false }
+}
+
+// PostgREST call carrying the signed-in user's token. A 401 or 403 means the
+// token expired, so refresh once and retry before giving up.
+async function sb(path, opts = {}, retry = true) {
+  const { headers: extra, ...rest } = opts
+  const res = await fetch(`${SB_URL}/rest/v1/${path}`, {
+    headers: {
+      apikey: SB_ANON,
+      Authorization: `Bearer ${session?.access_token || SB_ANON}`,
+      'Content-Type': 'application/json',
+      ...extra,
+    },
+    ...rest,
+  })
+  if ((res.status === 401 || res.status === 403) && retry) {
+    if (await refreshSession()) return sb(path, opts, false)
+    signOut('Session expired. Sign in again.')
+    throw new Error('Session expired')
+  }
+  if (!res.ok) throw new Error(`${res.status} ${await res.text()}`)
+  return res
+}
+
+/* ── sign in and out ───────────────────────────────────────────────────── */
+
+function gateMsg(text, kind) {
+  const el = document.getElementById('gate-msg')
+  el.textContent = text
+  el.className = 'gate-msg ' + (kind || '')
+}
+
+async function signIn() {
+  const email = document.getElementById('gate-email').value.trim()
+  const password = document.getElementById('gate-pw').value
+  if (!email || !password) { gateMsg('Email and password, both.', 'err'); return }
+
+  const btn = document.getElementById('gate-btn')
+  btn.disabled = true; btn.textContent = 'Signing in'
+  gateMsg('', '')
+  try {
+    const data = await auth('token?grant_type=password', { email, password })
+    saveSession(data)
+    document.getElementById('gate-pw').value = ''
+    await openConsole()
+  } catch (e) {
+    gateMsg(e.message || 'Sign in failed.', 'err')
+  } finally {
+    btn.disabled = false; btn.textContent = 'Sign in'
+  }
+}
+
+// The reset link has to come back to this page, otherwise it lands somewhere
+// with no form on it. This URL must also be on the redirect allow list in
+// Supabase Auth, or the link will bounce to the project's Site URL instead.
+function recoveryRedirect() {
+  return location.origin + location.pathname
+}
+
+async function sendReset() {
+  const email = document.getElementById('gate-email').value.trim()
+  if (!email) { gateMsg('Enter the email address first.', 'err'); return }
+  try {
+    await auth(`recover?redirect_to=${encodeURIComponent(recoveryRedirect())}`, { email })
+    gateMsg('If that address has an account, a reset link is on its way. Open it on this machine and it comes back here.', 'ok')
+  } catch (e) {
+    gateMsg('Could not send a reset link. ' + (e.message || ''), 'err')
+  }
+}
+
+// Supabase returns from a recovery link with the session in the URL fragment.
+// Picking it up here is what turns the emailed link into a working reset.
+function consumeRecoveryLink() {
+  const hash = new URLSearchParams(location.hash.slice(1))
+  if (hash.get('type') !== 'recovery' || !hash.get('access_token')) return false
+  saveSession({
+    access_token: hash.get('access_token'),
+    refresh_token: hash.get('refresh_token'),
+    token_type: 'bearer',
+    user: { email: '' },
+  })
+  history.replaceState(null, '', location.pathname)
+  return true
+}
+
+function togglePassword(force) {
+  const panel = document.getElementById('pw-panel')
+  const open = force === undefined ? !panel.classList.contains('open') : force
+  panel.classList.toggle('open', open)
+  document.getElementById('pw-msg').className = 'gate-msg'
+  if (open) document.getElementById('pw-new').focus()
+}
+
+async function changePassword() {
+  const msg = document.getElementById('pw-msg')
+  const show = (text, kind) => { msg.textContent = text; msg.className = 'gate-msg ' + kind }
+
+  const next = document.getElementById('pw-new').value
+  const again = document.getElementById('pw-again').value
+  if (next.length < 12) { show('At least 12 characters.', 'err'); return }
+  if (next !== again) { show('The two do not match.', 'err'); return }
+
+  const btn = document.getElementById('pw-save')
+  btn.disabled = true; btn.textContent = 'Saving'
+  try {
+    // PUT on the signed-in user. No email, no redirect, no SMTP involved, so
+    // this works the same on localhost as in production. An hour-old token
+    // would be refused, so refresh before asking.
+    if (session?.expires_at && session.expires_at * 1000 < Date.now() + 60000) {
+      await refreshSession()
+    }
+    const res = await fetch(`${SB_URL}/auth/v1/user`, {
+      method: 'PUT',
+      headers: {
+        apikey: SB_ANON,
+        Authorization: `Bearer ${session?.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password: next }),
+    })
+    const data = await res.json().catch(() => ({}))
+    if (!res.ok) throw new Error(data.msg || data.error_description || data.message || `HTTP ${res.status}`)
+    document.getElementById('pw-new').value = ''
+    document.getElementById('pw-again').value = ''
+    show('Changed. Store it in a password manager now. This session stays signed in.', 'ok')
+  } catch (e) {
+    show('Not changed. ' + (e.message || ''), 'err')
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save the new password'
+  }
+}
+
+function signOut(message) {
+  if (session?.access_token) {
+    fetch(`${SB_URL}/auth/v1/logout`, {
+      method: 'POST',
+      headers: { apikey: SB_ANON, Authorization: `Bearer ${session.access_token}` },
+    }).catch(() => {})
+  }
+  session = null
+  sessionStorage.removeItem(SESSION_KEY)
+  targets = []; trackers = {}; suppressed = new Set()
+  document.getElementById('console').style.display = 'none'
+  document.getElementById('gate').style.display = 'flex'
+  // An expired recovery link lands here with the change-password panel already
+  // open. Close it, otherwise it floats over the sign-in card.
+  togglePassword(false)
+  document.getElementById('pw-new').value = ''
+  document.getElementById('pw-again').value = ''
+  if (message) gateMsg(message, 'err')
+}
+
+async function openConsole() {
+  document.getElementById('gate').style.display = 'none'
+  document.getElementById('console').style.display = 'block'
+  document.getElementById('top-who').textContent = session?.user?.email || ''
+  await loadAll()
+}
+
+/* ── data ──────────────────────────────────────────────────────────────── */
+
+async function loadAll() {
+  try {
+    const [targetsRes, trackersRes, suppRes] = await Promise.all([
+      sb('lit_targets?select=*&order=tier.asc,messages_exchanged.desc.nullslast'),
+      sb('lit_tracker?select=*'),
+      sb('lit_suppression?select=email_normalised'),
+    ])
+    targets = await targetsRes.json()
+    trackers = Object.fromEntries((await trackersRes.json()).map(r => [r.target_id, r]))
+    suppressed = new Set((await suppRes.json()).map(r => r.email_normalised))
+
+    // Cross-campaign suppression. The Ignite campaign shares this Supabase
+    // project, so anyone who unsubscribed there is flagged here. Read only,
+    // and nothing on the Ignite side is written or changed.
+    try {
+      const unsub = await (await sb('unsubscribes?select=email')).json()
+      for (const u of unsub) if (u.email) suppressed.add(u.email.trim().toLowerCase())
+    } catch (e) { /* table absent or not readable, flag simply does not show */ }
+
+    render()
+  } catch (e) {
+    if (e.message !== 'Session expired') {
+      document.getElementById('queue-list').innerHTML =
+        `<div class="empty">Could not load. ${esc(e.message)}</div>`
+    }
+  }
+}
+
+function trackerOf(t) {
+  return trackers[t.id] || { target_id: t.id, status: 'not_contacted' }
+}
+
+function isSuppressed(t) {
+  return suppressed.has((t.email || '').trim().toLowerCase())
+}
+
+/* ── writes ────────────────────────────────────────────────────────────── */
+
+async function patchTracker(targetId, patch) {
+  const res = await sb(`lit_tracker?target_id=eq.${targetId}`, {
+    method: 'PATCH',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify(patch),
+  })
+  const rows = await res.json()
+  if (rows[0]) trackers[targetId] = rows[0]
+  return rows[0]
+}
+
+const TIMESTAMP_FIELDS = [
+  'manual_email_sent_at', 'followup_sent_at', 'linkedin_sent_at',
+  'whatsapp_sent_at', 'called_at',
+]
+
+// Every action records its own timestamp, moves the contact to contacted, and
+// stamps last_contacted_at, which is what the follow-up queue counts from.
+async function recordAction(targetId, field, channel) {
+  const now = new Date().toISOString()
+  const tracker = trackers[targetId] || {}
+  const patch = { [field]: now, last_contacted_at: now }
+  if (channel) patch.channel = channel
+  if (!tracker.status || tracker.status === 'not_contacted') patch.status = 'contacted'
+  else patch.status = tracker.status
+  await patchTracker(targetId, patch)
+}
+
+// Click-to-undo. Clearing a timestamp rolls last_contacted_at back to whatever
+// is still standing, and if nothing is, the contact returns to the queue. A
+// status Samuel set by hand is left alone.
+async function clearAction(targetId, field) {
+  const tracker = trackers[targetId] || {}
+  const remaining = TIMESTAMP_FIELDS
+    .filter(f => f !== field && tracker[f])
+    .map(f => tracker[f])
+    .sort()
+  const patch = { [field]: null }
+  patch.last_contacted_at = remaining.length ? remaining[remaining.length - 1] : null
+  if (!remaining.length) {
+    if (tracker.status === 'contacted') patch.status = 'not_contacted'
+    patch.channel = null
+  }
+  await patchTracker(targetId, patch)
+}
+
+async function withCard(targetId, fn) {
+  const err = document.getElementById(`err-${targetId}`)
+  if (err) { err.className = 'card-err'; err.textContent = '' }
+  try {
+    await fn()
+    render()
+  } catch (e) {
+    if (e.message === 'Session expired') return
+    const el = document.getElementById(`err-${targetId}`)
+    if (el) { el.className = 'card-err on'; el.textContent = 'Not saved. ' + e.message }
+    else alert('Not saved. ' + e.message)
+  }
+}
+
+/* ── actions ───────────────────────────────────────────────────────────── */
+
+// A mailto: opened from inside the click handler keeps the user gesture, so
+// Mail comes up reliably. The write follows and reports its own failure rather
+// than silently losing the record.
+function launchMailto(to, subject, body) {
+  const url = `mailto:${encodeURIComponent(to)}`
+    + `?subject=${encodeURIComponent(subject)}`
+    + `&body=${encodeURIComponent(body)}`
+  const a = document.createElement('a')
+  a.href = url
+  a.style.display = 'none'
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+}
+
+function openInMail(targetId, stage) {
+  const t = targets.find(x => x.id === targetId)
+  const tpl = emailFor(t, stage)
+  if (tpl.blocked) return
+  launchMailto(t.email, tpl.subject, tpl.body)
+  const field = stage === 'followup' ? 'followup_sent_at' : 'manual_email_sent_at'
+  withCard(targetId, () => recordAction(targetId, field, 'email'))
+}
+
+// navigator.clipboard refuses when the window is not focused, and is absent
+// altogether outside a secure context, so there is a fallback behind it. A copy
+// that fails must say so rather than leave an empty clipboard and a logged send.
+async function copyText(text) {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text)
+      return true
+    }
+  } catch (e) { /* fall through */ }
+  try {
+    const ta = document.createElement('textarea')
+    ta.value = text
+    ta.setAttribute('readonly', '')
+    ta.style.position = 'fixed'
+    ta.style.opacity = '0'
+    document.body.appendChild(ta)
+    ta.select()
+    const ok = document.execCommand('copy')
+    ta.remove()
+    return ok
+  } catch (e) { return false }
+}
+
+function cardError(targetId, message) {
+  const el = document.getElementById(`err-${targetId}`)
+  if (el) { el.className = 'card-err on'; el.textContent = message }
+}
+
+async function copyEmailBody(targetId, stage) {
+  const t = targets.find(x => x.id === targetId)
+  const tpl = emailFor(t, stage)
+  if (tpl.blocked) return
+  const btn = document.getElementById(`copybody-${targetId}`)
+  if (await copyText(`Subject: ${tpl.subject}\n\n${tpl.body}`)) {
+    if (btn) { btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = 'Copy the text' }, 1500) }
+  } else {
+    cardError(targetId, 'The browser refused the clipboard. Select the message above and copy it by hand.')
+  }
+}
+
+// The copy and the log are one action, so nothing is logged unless the message
+// actually reached the clipboard.
+async function copyLinkedIn(targetId) {
+  const t = targets.find(x => x.id === targetId)
+  const tpl = linkedinFor(t)
+  if (tpl.blocked) return
+  if (!await copyText(tpl.body)) {
+    cardError(targetId, 'The browser refused the clipboard, so nothing was logged. Open the LinkedIn message below and copy it by hand.')
+    return
+  }
+  withCard(targetId, () => recordAction(targetId, 'linkedin_sent_at', 'linkedin'))
+}
+
+function openWhatsApp(targetId) {
+  const t = targets.find(x => x.id === targetId)
+  const tpl = whatsappFor(t)
+  if (tpl.blocked) return
+  const number = (t.phone || '').replace(/[^0-9]/g, '')
+  window.open(`https://wa.me/${number}?text=${encodeURIComponent(tpl.body)}`, '_blank', 'noopener')
+  withCard(targetId, () => recordAction(targetId, 'whatsapp_sent_at', 'whatsapp'))
+}
+
+function logCall(targetId) {
+  withCard(targetId, () => recordAction(targetId, 'called_at', null))
+}
+
+function undo(targetId, field) {
+  withCard(targetId, () => clearAction(targetId, field))
+}
+
+async function setStatus(targetId, status) {
+  await withCard(targetId, async () => {
+    await patchTracker(targetId, { status })
+    // do_not_contact is permanent, so it is written to the suppression table as
+    // well as the tracker. Nothing removes it automatically.
+    if (status === 'do_not_contact') {
+      const t = targets.find(x => x.id === targetId)
+      const already = suppressed.has((t.email || '').toLowerCase())
+      if (!already) {
+        await sb('lit_suppression', {
+          method: 'POST',
+          headers: { Prefer: 'return=minimal,resolution=ignore-duplicates' },
+          body: JSON.stringify({ email: t.email, reason: 'Set to do not contact from the console.' }),
+        })
+        suppressed.add((t.email || '').toLowerCase())
+      }
+    }
+  })
+}
+
+function saveNotes(targetId, value) {
+  withCard(targetId, () => patchTracker(targetId, { notes: value || null }))
+}
+
+function savePhone(targetId, value) {
+  const clean = (value || '').trim()
+  withCard(targetId, async () => {
+    await sb(`lit_targets?id=eq.${targetId}`, {
+      method: 'PATCH',
+      headers: { Prefer: 'return=representation' },
+      body: JSON.stringify({ phone: clean || null }),
+    }).then(r => r.json()).then(rows => {
+      const i = targets.findIndex(x => x.id === targetId)
+      if (rows[0] && i > -1) targets[i] = rows[0]
+    })
+  })
+}
+
+/* ── rendering ─────────────────────────────────────────────────────────── */
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]))
+}
+
+function attr(s) { return esc(s).replace(/\n/g, '&#10;') }
+
+function shortDate(iso) {
+  if (!iso) return ''
+  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+}
+
+function longDate(iso) {
+  if (!iso) return ''
+  return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+function initials(name) {
+  return (name || '?').trim().charAt(0).toUpperCase() || '?'
+}
+
+function knownFor(t) {
+  const bits = []
+  if (t.matter_context) bits.push(esc(t.matter_context))
+  const stats = []
+  if (t.messages_exchanged != null) stats.push(`${t.messages_exchanged} message${t.messages_exchanged === 1 ? '' : 's'} exchanged`)
+  if (t.last_contact_date) stats.push(`last contact ${longDate(t.last_contact_date)}`)
+  if (stats.length) bits.push(`<span>${esc(stats.join(', '))}</span>`)
+  return bits.join('<br />')
+}
+
+// One button per channel. Unsent it fires the action, sent it shows the date and
+// clicking it undoes the timestamp, which is the call_tracker behaviour the
+// Ignite console already uses. Blocked it explains itself on hover.
+function actionBtn(targetId, opts) {
+  const { field, action, sent, onclick, blocked, primary } = opts
+  const tracker = trackers[targetId] || {}
+  if (tracker[field]) {
+    return `<button class="act sent" title="Click to undo"
+      onclick="undo('${targetId}','${field}')">${esc(sent)} ${esc(shortDate(tracker[field]))}</button>`
+  }
+  if (blocked) {
+    return `<button class="act off" title="${attr(blocked)}" disabled>${esc(action)}</button>`
+  }
+  return `<button class="act${primary ? ' primary' : ''}" onclick="${onclick}">${esc(action)}</button>`
+}
+
+function statusSelect(targetId, status) {
+  const opts = Object.entries(STATUS_LABELS)
+    .map(([k, v]) => `<option value="${k}"${k === status ? ' selected' : ''}>${esc(v)}</option>`)
+    .join('')
+  return `<select class="sel" onchange="setStatus('${targetId}', this.value)">${opts}</select>`
+}
+
+function messageBlock(tpl, label) {
+  if (tpl.blocked) {
+    return `<div class="msg-label">${esc(label)}</div>
+            <div class="msg-none">${esc(tpl.blocked)}</div>`
+  }
+  return `<div class="msg-label">${esc(label)}</div>
+          ${tpl.subject ? `<div class="msg-subject">Subject: <strong>${esc(tpl.subject)}</strong></div>` : ''}
+          <div class="msg-box">${esc(tpl.body)}</div>`
+}
+
+function card(t, stage) {
+  const tracker = trackerOf(t)
+  const emailTpl = emailFor(t, stage)
+  const liTpl = linkedinFor(t)
+  const waTpl = whatsappFor(t)
+  const emailField = stage === 'followup' ? 'followup_sent_at' : 'manual_email_sent_at'
+  const emailLabel = stage === 'followup' ? 'Follow-up sent' : 'Sent'
+
+  const flags = []
+  if (isSuppressed(t)) flags.push(
+    `<div class="flag flag-stop">On the suppression list. Do not contact.</div>`)
+  if (t.tier === 'W1' && stage === 'first' && !emailTpl.blocked && !t.matter_context) flags.push(
+    `<div class="flag flag-hold">No matter context on file, and the W1 message opens by referring to it. Check before sending.</div>`)
+
+  return `
+  <div class="card" id="card-${t.id}">
+    <div class="card-top">
+      <div class="avatar">${esc(initials(t.name))}</div>
+      <div class="who">
+        <div class="who-name">${esc(t.name)}</div>
+        <div class="who-role">${esc([t.role, t.firm].filter(Boolean).join(', '))} &nbsp;&middot;&nbsp; ${esc(t.email)}</div>
+        <div class="who-known">${knownFor(t)}</div>
+      </div>
+      <span class="tier tier-${esc(t.tier)}">${esc(t.tier)}</span>
+    </div>
+
+    ${flags.join('')}
+    ${messageBlock(emailTpl, stage === 'followup' ? 'Follow-up, same thread' : 'Email that will open in Mail')}
+
+    <div class="actions">
+      ${actionBtn(t.id, { field: emailField, action: 'Open in Mail', sent: emailLabel,
+        onclick: `openInMail('${t.id}','${stage}')`, blocked: emailTpl.blocked, primary: true })}
+      ${emailTpl.blocked ? '' :
+        `<button class="act link" id="copybody-${t.id}" onclick="copyEmailBody('${t.id}','${stage}')">Copy the text</button>`}
+      ${actionBtn(t.id, { field: 'linkedin_sent_at', action: 'Copy LinkedIn message',
+        sent: 'LinkedIn', onclick: `copyLinkedIn('${t.id}')`, blocked: liTpl.blocked })}
+      ${actionBtn(t.id, { field: 'whatsapp_sent_at', action: 'Open WhatsApp',
+        sent: 'WhatsApp', onclick: `openWhatsApp('${t.id}')`, blocked: waTpl.blocked })}
+      ${actionBtn(t.id, { field: 'called_at', action: 'Log a call',
+        sent: 'Called', onclick: `logCall('${t.id}')` })}
+    </div>
+
+    ${liTpl.blocked ? '' : `
+      <details style="margin:.5rem 1.35rem 0;">
+        <summary style="font-size:.78rem;color:var(--ec-muted);cursor:pointer;">LinkedIn message</summary>
+        <div class="msg-box" style="margin:.5rem 0 0;">${esc(liTpl.body)}</div>
+      </details>`}
+    ${waTpl.blocked ? '' : `
+      <details style="margin:.5rem 1.35rem 0;">
+        <summary style="font-size:.78rem;color:var(--ec-muted);cursor:pointer;">WhatsApp message</summary>
+        <div class="msg-box" style="margin:.5rem 0 0;">${esc(waTpl.body)}</div>
+      </details>`}
+
+    <div class="meta-row">
+      ${statusSelect(t.id, tracker.status || 'not_contacted')}
+      ${WHATSAPP_OK.has((t.email || '').toLowerCase())
+        ? `<input class="phone-in" type="tel" placeholder="WhatsApp number"
+             value="${attr(t.phone || '')}" onchange="savePhone('${t.id}', this.value)" />`
+        : ''}
+      ${tracker.next_action_at
+        ? `<span class="top-who">Follow-up due ${esc(longDate(tracker.next_action_at))}</span>` : ''}
+    </div>
+
+    <textarea class="notes" placeholder="Notes. What they actually said matters more than the status."
+      onchange="saveNotes('${t.id}', this.value)">${esc(tracker.notes || '')}</textarea>
+    <div class="card-err" id="err-${t.id}"></div>
+  </div>`
+}
+
+const TIER_ORDER = { W1: 0, W2: 1, W3: 2, C: 3 }
+
+function sortForQueue(a, b) {
+  const ta = TIER_ORDER[a.tier] ?? 9, tb = TIER_ORDER[b.tier] ?? 9
+  if (ta !== tb) return ta - tb
+  return (b.messages_exchanged || 0) - (a.messages_exchanged || 0)
+}
+
+function renderQueue() {
+  const rows = targets
+    .filter(t => {
+      const s = trackerOf(t).status
+      return s === 'not_contacted' && !isSuppressed(t)
+    })
+    .sort(sortForQueue)
+
+  const el = document.getElementById('queue-list')
+  document.getElementById('c-queue').textContent = rows.length ? ` ${rows.length}` : ''
+
+  if (!rows.length) {
+    el.innerHTML = `<div class="empty">Nothing waiting. Every contact is either
+      already contacted, on hold, or suppressed.</div>`
+    return
+  }
+
+  let html = ''
+  let tier = null
+  for (const t of rows) {
+    if (t.tier !== tier) {
+      tier = t.tier
+      html += `<div class="group-head">Tier ${esc(tier)}</div>
+               <div class="group-note">${esc(tierNote(tier))}</div>`
+    }
+    html += card(t, 'first')
+  }
+  el.innerHTML = html
+}
+
+function tierNote(tier) {
+  if (tier === 'W1') return 'Instructed on Samuel own matters. They worked from chronologies and bundles he assembled, which is what the message claims and all it claims.'
+  if (tier === 'W2') return 'Prior relationship, does not know the work. Worth naming the actual matter in the opening line by hand before sending.'
+  if (tier === 'W3') return 'Weak tie. The message only renders where the connection can be named specifically.'
+  return 'Cold. Session 06 writes this sequence.'
+}
+
+function renderFollowup() {
+  const now = Date.now()
+  const rows = targets
+    .filter(t => {
+      const tr = trackerOf(t)
+      return tr.status === 'contacted'
+        && tr.next_action_at
+        && new Date(tr.next_action_at).getTime() <= now
+        && !tr.followup_sent_at
+        && !isSuppressed(t)
+    })
+    .sort((a, b) => new Date(trackerOf(a).next_action_at) - new Date(trackerOf(b).next_action_at))
+
+  const el = document.getElementById('followup-list')
+  document.getElementById('c-followup').textContent = rows.length ? ` ${rows.length}` : ''
+
+  if (!rows.length) {
+    el.innerHTML = `<div class="empty">Nothing due. A contact appears here
+      ${FOLLOWUP_DAYS} days after the first message, unless a reply has been logged.</div>`
+    return
+  }
+  el.innerHTML = rows.map(t => card(t, 'followup')).join('')
+}
+
+function renderContacted() {
+  const rows = targets
+    .filter(t => TIMESTAMP_FIELDS.some(f => trackerOf(t)[f]))
+    .sort((a, b) => new Date(trackerOf(b).last_contacted_at || 0) - new Date(trackerOf(a).last_contacted_at || 0))
+
+  const el = document.getElementById('contacted-list')
+  document.getElementById('c-contacted').textContent = rows.length ? ` ${rows.length}` : ''
+
+  if (!rows.length) {
+    el.innerHTML = `<div class="empty">Nobody contacted yet. Every channel here fills
+      itself in as the buttons in the queue are used.</div>`
+    return
+  }
+
+  // A contact leaves the queue the moment the first action is logged, so this
+  // is where click-to-undo has to live. A set chip is a button that clears its
+  // own timestamp, and a contact with nothing left standing returns to the queue.
+  const chip = (targetId, field, on, label) => on
+    ? `<button class="chip on" title="Click to undo"
+         onclick="undo('${targetId}','${field}')">${esc(label)} ${esc(shortDate(on))}</button>`
+    : `<span class="chip">${esc(label)}</span>`
+
+  el.innerHTML = `<div class="card">` + rows.map(t => {
+    const tr = trackerOf(t)
+    return `<div class="row">
+      <div class="row-name">${esc(t.name)}</div>
+      <div class="row-firm">${esc(t.firm || '')}</div>
+      <div class="row-ch">
+        ${chip(t.id, 'manual_email_sent_at', tr.manual_email_sent_at, 'Email')}
+        ${chip(t.id, 'followup_sent_at', tr.followup_sent_at, 'Follow-up')}
+        ${chip(t.id, 'linkedin_sent_at', tr.linkedin_sent_at, 'LinkedIn')}
+        ${chip(t.id, 'whatsapp_sent_at', tr.whatsapp_sent_at, 'WhatsApp')}
+        ${chip(t.id, 'called_at', tr.called_at, 'Call')}
+      </div>
+      <div class="row-status">${esc(STATUS_LABELS[tr.status] || tr.status)}</div>
+      <div class="card-err" id="err-${t.id}"></div>
+    </div>`
+  }).join('') + `</div>
+  <div class="footnote">Channel and date only. There is no open rate in this project
+  and no tracking pixel in any message, so nothing here claims to know whether
+  anything was read. A dated chip is click-to-undo: clearing the last one standing
+  puts the contact back in the queue.</div>`
+}
+
+function renderHold() {
+  const rows = targets
+    .filter(t => trackerOf(t).status === 'on_hold' || isSuppressed(t))
+    .sort(sortForQueue)
+
+  const el = document.getElementById('hold-list')
+  document.getElementById('c-hold').textContent = rows.length ? ` ${rows.length}` : ''
+
+  if (!rows.length) {
+    el.innerHTML = `<div class="empty">Nobody on hold.</div>`
+    return
+  }
+
+  el.innerHTML = rows.map(t => {
+    const tr = trackerOf(t)
+    return `<div class="card" id="card-${t.id}">
+      <div class="card-top">
+        <div class="avatar">${esc(initials(t.name))}</div>
+        <div class="who">
+          <div class="who-name">${esc(t.name)}</div>
+          <div class="who-role">${esc([t.role, t.firm].filter(Boolean).join(', '))} &nbsp;&middot;&nbsp; ${esc(t.email)}</div>
+        </div>
+        <span class="tier tier-${esc(t.tier)}">${esc(t.tier)}</span>
+      </div>
+      <div class="flag ${isSuppressed(t) ? 'flag-stop' : 'flag-hold'}">${esc(tr.notes || 'On hold, no reason recorded.')}</div>
+      <div class="meta-row">${statusSelect(t.id, tr.status || 'on_hold')}</div>
+      <div class="card-err" id="err-${t.id}"></div>
+    </div>`
+  }).join('')
+}
+
+function render() {
+  renderQueue()
+  renderFollowup()
+  renderContacted()
+  renderHold()
+}
+
+function showPage(id) {
+  currentPage = id
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.dataset.page === id))
+  document.getElementById('page-' + id).classList.add('active')
+}
+
+/* ── boot ──────────────────────────────────────────────────────────────── */
+
+document.getElementById('gate-pw').addEventListener('keydown', e => { if (e.key === 'Enter') signIn() })
+document.getElementById('gate-email').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('gate-pw').focus() })
+
+;(async () => {
+  // Arriving from a password reset email: the session is in the fragment, so
+  // open straight into the change-password panel.
+  if (consumeRecoveryLink()) {
+    await openConsole()
+    // openConsole signs out again if the link has already expired, in which
+    // case the sign-in card is showing and there is nothing to change.
+    if (session) togglePassword(true)
+    else gateMsg('That reset link has expired. Send a fresh one.', 'err')
+    return
+  }
+  if (loadSession()?.refresh_token && await refreshSession()) await openConsole()
+})()
+</script>
+</body>
+</html>

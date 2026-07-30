@@ -6,6 +6,7 @@
     { "source": "/health-chat", "destination": "/health-chat.html" },
     { "source": "/chat-logic", "destination": "/chat-logic.html" },
     { "source": "/privacy-policy", "destination": "/privacy-policy.html" },
-    { "source": "/litigation-intelligence", "destination": "/litigation-intelligence.html" }
+    { "source": "/litigation-intelligence", "destination": "/litigation-intelligence.html" },
+    { "source": "/litigation-analysis-outreach", "destination": "/litigation-analysis-outreach.html" }
   ]
 }
