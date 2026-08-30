@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Jared Partnership &middot; El&auml;m&auml; Consulting</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --green: #4FA07A; --green-dk: #3C7C5F; --mint: #C8F8E1; --mint-lt: #EAFBF3;
+    --ink: #24322C; --ink-soft: #55635B; --ink-faint: #869089;
+    --paper: #F5F9F7; --card: #FFFFFF; --line: #E1EAE5; --line-2: #D0DDD6;
+    --gold: #C9A84C;
+    --s-agreed:#2F8F63; --s-agreed-bg:#E4F3EB;
+    --s-answered:#2E7C8F; --s-answered-bg:#E2F0F3;
+    --s-cond:#B07A1B; --s-cond-bg:#F6ECD7;
+    --s-open:#6A7A85; --s-open-bg:#EAEFF1;
+    --s-un:#B23A2E; --s-un-bg:#F6E2DE;
+    --shadow: 0 1px 2px rgba(30,50,40,.05), 0 6px 20px rgba(30,50,40,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --green:#6FC49A; --green-dk:#8AD3B0; --mint:#1E3A2E; --mint-lt:#17241D;
+      --ink:#E7EEE9; --ink-soft:#AAB8B0; --ink-faint:#7C8880;
+      --paper:#121815; --card:#19211D; --line:#28332D; --line-2:#354238;
+      --s-agreed:#63BE8E; --s-agreed-bg:rgba(99,190,142,.14);
+      --s-answered:#5FB4C8; --s-answered-bg:rgba(95,180,200,.14);
+      --s-cond:#D8A552; --s-cond-bg:rgba(216,165,82,.15);
+      --s-open:#9AA9B0; --s-open-bg:rgba(154,169,176,.14);
+      --s-un:#E5806F; --s-un-bg:rgba(229,128,111,.15);
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.34);
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); font-family:"Inter",system-ui,sans-serif; font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3 { font-family:"Cormorant Garamond",Georgia,serif; font-weight:600; letter-spacing:-.01em; margin:0; }
+
+  #lock { position:fixed; inset:0; background:var(--paper); display:grid; place-items:center; z-index:50; padding:1.5rem; }
+  .lock-card { width:100%; max-width:360px; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:2.2rem 1.8rem; box-shadow:var(--shadow); text-align:center; }
+  .lock-mark { font-family:"Cormorant Garamond",serif; font-size:1.9rem; font-weight:700; color:var(--green-dk); letter-spacing:.02em; }
+  .lock-card p { color:var(--ink-soft); font-size:.9rem; margin:.4rem 0 1.6rem; }
+  #pin { width:100%; text-align:center; font-family:"Inter"; font-size:1.15rem; letter-spacing:.14em; padding:.7rem; border:1px solid var(--line-2); border-radius:10px; background:var(--paper); color:var(--ink); }
+  #pin:focus { outline:2px solid var(--green); outline-offset:1px; border-color:var(--green); }
+  .lock-btn { margin-top:1rem; width:100%; padding:.75rem; border:none; border-radius:10px; background:var(--green-dk); color:#fff; font-weight:600; font-size:.9rem; letter-spacing:.03em; cursor:pointer; }
+  .lock-btn[disabled]{ opacity:.6; cursor:default; }
+  .lock-err { color:var(--s-un); font-size:.82rem; margin-top:.7rem; min-height:1.1em; }
+
+  .wrap { max-width:1180px; margin:0 auto; padding:clamp(1.4rem,3vw,2.4rem) clamp(1rem,3vw,2rem) 5rem; }
+  header.top { display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:1rem 1.4rem; padding-bottom:1.3rem; border-bottom:1px solid var(--line); }
+  .eyebrow { font-size:.7rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--green-dk); }
+  header.top h1 { font-size:clamp(2rem,4.5vw,2.9rem); line-height:1.02; margin-top:.25rem; }
+  header.top .sub { color:var(--ink-soft); font-size:.92rem; margin-top:.3rem; max-width:52ch; }
+  .brandmark { font-family:"Cormorant Garamond",serif; font-size:1.05rem; font-weight:600; color:var(--ink-soft); }
+  .brandmark b { color:var(--green-dk); }
+  .savebar { display:flex; align-items:center; justify-content:flex-end; gap:.5rem; font-size:.74rem; color:var(--ink-faint); margin-top:.35rem; }
+  .savebar .dot { width:7px; height:7px; border-radius:50%; background:var(--green); }
+
+  .tabs { display:flex; gap:.3rem; margin-top:1.4rem; flex-wrap:wrap; }
+  .tab { font-size:.83rem; font-weight:500; padding:.5rem .95rem; border-radius:9px 9px 0 0; border:1px solid transparent; border-bottom:none; color:var(--ink-soft); cursor:pointer; background:none; }
+  .tab[aria-selected="true"] { background:var(--card); border-color:var(--line); color:var(--ink); font-weight:600; }
+  .tab .soon { font-size:.62rem; color:var(--ink-faint); margin-left:.35rem; text-transform:uppercase; letter-spacing:.08em; }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:0 12px 12px 12px; box-shadow:var(--shadow); }
+
+  .toolbar { display:flex; flex-wrap:wrap; gap:.6rem; align-items:center; padding:.9rem 1rem; border-bottom:1px solid var(--line); }
+  .toolbar input[type=search], .toolbar select { font-family:inherit; font-size:.83rem; padding:.45rem .6rem; border:1px solid var(--line-2); border-radius:8px; background:var(--paper); color:var(--ink); }
+  .toolbar input[type=search] { flex:1; min-width:160px; }
+  .legend { display:flex; flex-wrap:wrap; gap:.4rem; margin-left:auto; }
+  .pill { display:inline-flex; align-items:center; gap:.35rem; font-size:.68rem; font-weight:600; letter-spacing:.03em; text-transform:uppercase; padding:.2rem .5rem; border-radius:999px; cursor:pointer; border:1px solid transparent; user-select:none; }
+  .pill::before { content:""; width:7px; height:7px; border-radius:50%; background:currentColor; }
+  .pill.agreed{color:var(--s-agreed);background:var(--s-agreed-bg);} .pill.answered{color:var(--s-answered);background:var(--s-answered-bg);}
+  .pill.conditional{color:var(--s-cond);background:var(--s-cond-bg);} .pill.open{color:var(--s-open);background:var(--s-open-bg);}
+  .pill.unanswered{color:var(--s-un);background:var(--s-un-bg);}
+  .pill[aria-pressed="false"]{ opacity:.4; }
+  .pill .n { font-variant-numeric:tabular-nums; opacity:.75; }
+
+  .scroll { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; min-width:900px; }
+  thead th { text-align:left; font-size:.66rem; font-weight:600; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); padding:.7rem .85rem; border-bottom:1px solid var(--line-2); position:sticky; top:0; background:var(--card); z-index:2; }
+  .cat-row td { background:var(--mint-lt); padding:.5rem .85rem; font-family:"Cormorant Garamond",serif; font-size:1.05rem; font-weight:600; color:var(--green-dk); border-bottom:1px solid var(--line); }
+  tbody tr.item { border-bottom:1px solid var(--line); }
+  tbody tr.item:hover { background:var(--mint-lt); }
+  tbody td { padding:.55rem .55rem; vertical-align:top; }
+  .cell { font-size:.84rem; line-height:1.45; color:var(--ink); border-radius:7px; padding:.35rem .45rem; min-height:2em; cursor:text; white-space:pre-wrap; }
+  .cell:hover { background:rgba(79,160,122,.07); }
+  .cell:focus { outline:2px solid var(--green); background:var(--card); }
+  .cell.q { font-weight:500; }
+  .cell.n, .cell.r { color:var(--ink-soft); }
+  td.col-q{width:22%;} td.col-a{width:28%;} td.col-n{width:22%;} td.col-r{width:22%;} td.col-s{width:6%;}
+  .status-sel { font-family:inherit; font-size:.64rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase; padding:.28rem .3rem; border-radius:999px; border:1px solid var(--line-2); cursor:pointer; -webkit-appearance:none; appearance:none; text-align:center; }
+  .status-sel.agreed{color:var(--s-agreed);background:var(--s-agreed-bg);} .status-sel.answered{color:var(--s-answered);background:var(--s-answered-bg);}
+  .status-sel.conditional{color:var(--s-cond);background:var(--s-cond-bg);} .status-sel.open{color:var(--s-open);background:var(--s-open-bg);}
+  .status-sel.unanswered{color:var(--s-un);background:var(--s-un-bg);}
+  .rowdel { border:none; background:none; color:var(--ink-faint); cursor:pointer; font-size:1rem; line-height:1; padding:.2rem .3rem; border-radius:6px; opacity:0; }
+  tr.item:hover .rowdel { opacity:1; }
+  .rowdel:hover { color:var(--s-un); background:var(--s-un-bg); }
+  .foot-actions { padding:.85rem 1rem; display:flex; gap:.6rem; align-items:center; border-top:1px solid var(--line); }
+  .btn { font-family:inherit; font-size:.8rem; font-weight:600; padding:.5rem .85rem; border-radius:8px; border:1px solid var(--line-2); background:var(--paper); color:var(--ink); cursor:pointer; }
+  .btn.primary { background:var(--green-dk); color:#fff; border-color:var(--green-dk); }
+  .count { margin-left:auto; font-size:.76rem; color:var(--ink-faint); }
+  .soon-panel { padding:3rem 2rem; text-align:center; color:var(--ink-soft); }
+  .soon-panel h2 { font-size:1.8rem; color:var(--ink); }
+  .soon-panel p { max-width:48ch; margin:.6rem auto 0; font-size:.92rem; }
+  .soon-list { display:flex; flex-wrap:wrap; gap:.5rem; justify-content:center; margin-top:1.4rem; }
+  .soon-list span { font-size:.76rem; padding:.35rem .7rem; border:1px dashed var(--line-2); border-radius:999px; color:var(--ink-faint); }
+  .hidden { display:none !important; }
+  .note { font-size:.74rem; color:var(--ink-faint); padding:0 1rem 1.1rem; }
+  a { color:var(--green-dk); }
+</style>
+</head>
+<body>
+
+<div id="lock">
+  <div class="lock-card">
+    <div class="lock-mark">El&auml;m&auml; &middot; Partnership</div>
+    <p>Private workspace. Enter the access code.</p>
+    <input id="pin" type="password" autocomplete="off" aria-label="Access code" maxlength="40">
+    <button class="lock-btn" id="unlock">Unlock</button>
+    <div class="lock-err" id="lockerr"></div>
+  </div>
+</div>
+
+<div class="wrap hidden" id="app">
+  <header class="top">
+    <div>
+      <div class="eyebrow">El&auml;m&auml; Consulting &middot; Partnership Workspace</div>
+      <h1 id="h-title">Jared Partnership</h1>
+      <div class="sub" id="h-sub"></div>
+    </div>
+    <div>
+      <div class="brandmark"><b>El&auml;m&auml;</b> Consulting</div>
+      <div class="savebar"><span class="dot"></span><span id="savestate">ready</span> &middot; <span id="h-updated"></span></div>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="matrix">Question Matrix</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="terms">Heads of Terms <span class="soon">soon</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="cashflow">Cash Flow <span class="soon">soon</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="plan">Business Plan <span class="soon">soon</span></button>
+  </div>
+
+  <section class="panel" id="tab-matrix">
+    <div class="toolbar">
+      <input type="search" id="search" placeholder="Search questions, answers, risks...">
+      <select id="catfilter"><option value="">All categories</option></select>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="scroll">
+      <table>
+        <thead><tr>
+          <th class="col-q">Question</th><th class="col-a">Jared's answer</th><th class="col-n">Notes</th><th class="col-r">Risks</th><th class="col-s">Status</th><th style="width:2%"></th>
+        </tr></thead>
+        <tbody id="matrix-body"></tbody>
+      </table>
+    </div>
+    <div class="foot-actions">
+      <button class="btn primary" id="addrow">+ Add question</button>
+      <span class="count" id="count"></span>
+    </div>
+    <div class="note">Click any cell to edit. Changes save automatically to the private workspace and sync to every device with the access code.</div>
+  </section>
+
+  <section class="panel hidden" id="tab-terms"><div class="soon-panel"><h2>Agreed Heads of Terms</h2><p>Who owns what, how much is paid, in what order, and under which conditions. Built from the rows that reach 'agreed' in the matrix. This is the next section to fill.</p><div class="soon-list"><span>Ownership</span><span>Capital &amp; lien</span><span>Waterfall</span><span>Decision rights</span><span>Exit &amp; deadlock</span><span>Conditions precedent</span></div></div></section>
+  <section class="panel hidden" id="tab-cashflow"><div class="soon-panel"><h2>Cash Flow Forecast</h2><p>The 24-month, property-by-property model. Held until enough of the matrix is answered to model it honestly, rather than guessing.</p><div class="soon-list"><span>Capital at risk</span><span>Per-house P&amp;L</span><span>Flip schedule</span><span>Break-even occupancy</span><span>Stress cases</span></div></div></section>
+  <section class="panel hidden" id="tab-plan"><div class="soon-panel"><h2>Business Plan</h2><p>The narrative over the numbers: the model, the mission, the first six months in detail and year three in outline.</p><div class="soon-list"><span>Model</span><span>Market</span><span>Operations</span><span>Milestones</span><span>Risks &amp; controls</span></div></div></section>
+
+  <div class="note" style="padding-top:1.4rem">Private working workspace for Samuel Barlow &middot; El&auml;m&auml; Consulting. Not an offer or an agreement. Legal and tax observations are for framing only and must be confirmed by qualified advisers before capital moves.</div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var SUPABASE_URL = "https://bosvbnjhsimqtnwkkcvn.supabase.co";
+  var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJvc3Zibmpoc2ltcXRud2trY3ZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNjA0OTMsImV4cCI6MjA5MTkzNjQ5M30.4F1XJarCvJ2ESpL71h-0wMBF1iH5VAesx-EANMhTbyg";
+  var STATUSES = ["agreed","answered","conditional","open","unanswered"];
+  var STATUS_LABEL = {agreed:"Agreed",answered:"Answered",conditional:"Conditional",open:"Open",unanswered:"Unanswered"};
+
+  var DEFAULT_STATE = {"meta":{"title":"Jared Partnership","subtitle":"Working the desert recovery-housing deal line by line. Jared answers, we capture note and risk, nothing gets lost.","updated":"2026-08-30"},"rows":[{"c":"Economics","q":"Actual operating cost lines for a running house (utilities, manager, maintenance, supplies, admin)","a":"Not the property's costs. Absorbed by associated businesses: cleaning services, farmers' market booth, coffee distribution, microfarming, egg farm, lavender.","n":"Concedes the costs are real, relocates them off the property P&L. The actual figures from a real house still have not been provided.","r":"Deal now depends on ~6 unproven side businesses run by one person. The ~$1,875/house cost walks back in if they don't cover it.","s":"conditional"},{"c":"Economics","q":"The extra 90% collection deduction in the model","a":"80% occupancy already assumes uncollected rent, so the further 90% was double-counting.","n":"Fair catch. Correct the model.","r":"Low. Legitimate correction.","s":"answered"},{"c":"Economics","q":"Is $500 a mission floor or the market rate? Local sober living is $850","a":"A minimum the market will pay. Conservative place to start. The detox model can push per-client higher.","n":"Answered: a market floor, not a subsidy you would be funding.","r":"It is the weakest revenue line by choice. The $850 version swings a house by roughly $2,150/mo.","s":"answered"},{"c":"Economics","q":"$20K to $4-5K/mo vs ten houses at ~$1K each: which figure do I plan on?","a":"The hybrid: flip some, keep some.","n":"Reconciled via the hybrid model.","r":"The two framings are 4-5x apart. The base case has to be pinned in the cash model.","s":"open"},{"c":"Economics","q":"I can't hold $1M equity and $20K/mo cashflow at once","a":"They coexist. Keep the rentals for cashflow, finance against the equity at ~80% LTV, don't have to sell to realise it.","n":"Correct. Resolves a real confusion.","r":"Doubles scope to 20 projects. Equity is only real if the refi/wholesale actually delivers.","s":"answered"},{"c":"Financing & refinance","q":"Will lenders refinance a group home? Have you done it? Will one put it in writing?","a":"100% false that they won't. Lenders don't need to know it's a group home; no licensing, permitting or certification; the use can be altered at any time.","n":"Coherent theory. No written lender confirmation provided.","r":"Undisclosed use on a cash-out refi is loan fraud, not a technicality. Needs one lender's confirmation in writing.","s":"conditional"},{"c":"Financing & refinance","q":"Is the $250K based on single-family comps? Ten unrelated adults is a different use","a":"Comps are the same as any single-family residence. We value the real asset, not the business.","n":"Holds only if the use is never disclosed.","r":"Same dependency as the refinance.","s":"conditional"},{"c":"Financing & refinance","q":"Getting the money back out","a":"We'll get most or all of it out during construction because I'm running the project. Not waiting for the refi or sale.","n":"Shifts recovery from the refi to construction draws, which is more aggressive.","r":"Depends on the hard-money draw schedule cooperating. The term sheet validates it.","s":"conditional"},{"c":"Financing & refinance","q":"How does the cash actually recycle (flip-and-extract)?","a":"Build a $150K project for actual cost under $130K and pull the $15K margin during construction. Presell at 80% of $250K = $200K, netting ~$50K a flip.","n":"This is the real cash engine. A legitimate technique.","r":"Runs more debt than cost, thinning the equity cushion. Execution risk across many parallel self-performed projects.","s":"open"},{"c":"Financing & refinance","q":"Sight of the hard-money terms before I commit","a":"Agreed.","n":"Agreed. Rate, points, term, guarantees, overrun behaviour.","r":"Not yet provided. Condition precedent.","s":"agreed"},{"c":"Financing & refinance","q":"Who funds an overrun?","a":"Shared 50/50, but there won't be an overrun.","n":"Agreed at 50/50.","r":"'Won't be an overrun' is optimistic across many self-performed projects.","s":"agreed"},{"c":"Financing & refinance","q":"My money in as a recorded loan/lien, not unsecured","a":"You should have a lien on the property for the money you have lent.","n":"Agreed.","r":"Second position behind the hard money. Confirm the position.","s":"agreed"},{"c":"Financing & refinance","q":"Where do I sit if a deal goes wrong? My cash is first in, hard money holds the senior lien","a":"The first deal is the only real risk. Your seed money pops in and out; several deals would have to fail fast for you to lose. Enough equity to wholesale-exit and return your money.","n":"Reduces duration risk, not priority risk.","r":"Recovery depends on the equity being real (loops back to the refi). Still behind the lender.","s":"open"},{"c":"Legal & regulatory","q":"Are residents tenants (formal eviction) or licensees who can be asked to leave?","a":"Sober-living agreements make them guests, not residents. Same-day removal, no eviction.","n":"Enables removal on relapse, which is genuinely useful.","r":"Months-long paying 'guests' can be recharacterised as tenants. Needs the local attorney in writing.","s":"conditional"},{"c":"Legal & regulatory","q":"Occupancy caps on ten unrelated adults; group-home use","a":"Guests, not residents. Short-term-rental rules allow up to 12 guests. Remote 2.5-acre lots, code enforcement unlikely, the guest contract protects us.","n":"Coherent framing.","r":"Same recharacterisation risk. Neighbour complaints still possible.","s":"conditional"},{"c":"Legal & regulatory","q":"What licensing or certification does the state require? NARR?","a":"Sober living doesn't require licensing or certification in CA.","n":"Answered.","r":"Confirm; the 'guest' framing may change the analysis.","s":"answered"},{"c":"Legal & regulatory","q":"Has the city been approached about zoning? What if they push back?","a":"Primarily in the county, not the city. Nothing they can say; we're just living in residential houses.","n":"County framing defuses the zoning fight.","r":"Confirm county rules. Neighbour complaints remain possible.","s":"answered"},{"c":"Legal & regulatory","q":"Which insurer, does the policy name this use, overdose/death position, naloxone protocol?","a":"Narcan in the first-aid kits. Not a treatment centre. Homeowner's insurance with a rental-property rider.","n":"Partial. Rider named.","r":"Does the rider actually name recovery/group use? Overdose and death liability unconfirmed.","s":"open"},{"c":"Legal & regulatory","q":"EKRA and state patient-brokering exposure on referrals","a":"(No response.)","n":"Unaddressed. The single highest-downside legal item in the letter.","r":"The pipeline is industry referrals, which is exactly what EKRA polices. Needs a US healthcare lawyer, early.","s":"unanswered"},{"c":"Legal & regulatory","q":"I shouldn't be on title personally (FIRPTA, US filings, $60K estate exemption)","a":"Get an ITIN, form an LLC, and have the LLC own the property.","n":"Agreed in principle. Solves FIRPTA and estate exposure if structured right.","r":"Needs proper cross-border tax advice before signing.","s":"agreed"},{"c":"Legal & regulatory","q":"Being on title doesn't change lien priority","a":"Title doesn't change priority, but ownership lets you negotiate with the unrealised equity.","n":"Conceded. Fair soft point.","r":"Low.","s":"answered"},{"c":"Program & demand","q":"People in early recovery often have no money. Who physically pays?","a":"The resident pays $500/mo of their own money, always, regardless of any subsidy. Part of a homeless-to-homeownership programme over 12-24 months.","n":"Differentiated and mission-aligned. A strong integrity feature.","r":"'No one won't be able to pay' is optimistic for the population.","s":"answered"},{"c":"Program & demand","q":"What collection rate, and what happens when someone can't pay?","a":"No one won't be able to pay. We give them jobs to earn it; if they choose not to pay they're removed.","n":"A coherent mechanism.","r":"Removing non-payers conflicts with the mission. 100% collection is not a credible base case.","s":"open"},{"c":"Program & demand","q":"State recovery-housing subsidy or rental assistance; are we eligible?","a":"IEHP (Inland Empire Health Plan) has Medicaid money for rent; access unclear, looking into it. Additional to the $500.","n":"Potential upside, access to be determined.","r":"Unquantified. Access mechanism unknown.","s":"open"},{"c":"Program & demand","q":"Are there state-contracted or court-referred beds at $1,500+?","a":"Available. We'll access them as 'gravy' but won't depend on them or the hooks they come with.","n":"The one variable that could change the answer by an order of magnitude, deprioritised on principle.","r":"Deliberately foregone upside. Worth revisiting.","s":"open"},{"c":"Program & demand","q":"How many beds are committed today, by whom, at what rate?","a":"Enough to fill the first house plus a pipeline behind them. Filling house one is a magnet. 'Relatively infinite' pipeline via the recovery industry.","n":"Adequate for house one. Honest about not having fifty renters.","r":"'Infinite pipeline' is an assertion, and the source is the EKRA risk.","s":"open"},{"c":"Program & demand","q":"Sequence the micro-businesses after house one is finished, full and banked","a":"Reasonable, but it's all already happening. Coffee shop open, October festival booked, businesses with homeless people underway. Money accelerates it; I can only slow or stop it.","n":"Already moving, so not the single point of failure.","r":"Execution concentration: ~13 projects plus 6 businesses by February, one person. Your strongest concern, dismissed rather than mitigated.","s":"open"},{"c":"Program & demand","q":"A month-by-month 24-month cash model per property","a":"Something you'll help me build, not something that exists yet. After year one we build it out and raise a fund.","n":"This project builds it.","r":"No existing operating data to ground it.","s":"open"},{"c":"Governance & money","q":"Money released property-by-property against milestones","a":"(No response.)","n":"The key mitigation for your capital.","r":"Silence is not agreement. Must be explicit in the heads of terms.","s":"unanswered"},{"c":"Governance & money","q":"Capital repaid with a return before profits split 50/50","a":"(No response.)","n":"Your compensation for capital-at-risk against his sweat.","r":"Unaddressed, and a core commercial term.","s":"unanswered"},{"c":"Governance & money","q":"Read-only bank access on every account (Mercury/Relay)","a":"(No response.)","n":"Your visibility at 4,000 miles.","r":"Unaddressed.","s":"unanswered"},{"c":"Governance & money","q":"Xero or QuickBooks from day one with full access","a":"(No response.)","n":"Removes the need to ask for numbers.","r":"Unaddressed.","s":"unanswered"},{"c":"Governance & money","q":"No cash rent; everything by ACH, Zelle or portal","a":"(No response.)","n":"Protects him more than you.","r":"Unaddressed.","s":"unanswered"},{"c":"Governance & money","q":"An independent bookkeeper doing the entry","a":"(No response.)","n":"Takes the question off the table permanently.","r":"Unaddressed.","s":"unanswered"},{"c":"Governance & money","q":"Two signatures on payments above a threshold","a":"(No response.)","n":"Standard control.","r":"Unaddressed.","s":"unanswered"},{"c":"Governance & money","q":"Margins on payments to businesses either of us owns, agreed in advance","a":"(No response.)","n":"His company doing the reno is fine; agree the margin first.","r":"Unaddressed.","s":"unanswered"},{"c":"Governance & money","q":"A deadlock clause (either names a price, the other buys or sells)","a":"(No response.)","n":"50/50 with no tiebreaker is how partnerships die.","r":"Unaddressed.","s":"unanswered"},{"c":"Governance & money","q":"An exit formula for either party, agreed up front","a":"(No response.)","n":"A route out at a formula agreed now.","r":"Unaddressed.","s":"unanswered"},{"c":"Governance & money","q":"References in both directions, including one that didn't end well","a":"(No response.)","n":"Two of his, two of yours.","r":"Unaddressed.","s":"unanswered"},{"c":"Governance & money","q":"The 'both of us' decision list (debt, buying/selling property)","a":"(No response.)","n":"Defines your decisions against his.","r":"Unaddressed.","s":"unanswered"}]};
+
+  var STATE = null, PIN = null, saveTimer = null;
+
+  function api(fn, payload){
+    return fetch(SUPABASE_URL+"/rest/v1/rpc/"+fn, {
+      method:"POST",
+      headers:{ "apikey":SUPABASE_ANON_KEY, "Authorization":"Bearer "+SUPABASE_ANON_KEY, "Content-Type":"application/json" },
+      body: JSON.stringify(payload)
+    });
+  }
+  function badge(t){ var b=document.getElementById("savestate"); if(b) b.textContent=t; }
+
+  /* ---- Unlock: the code is checked server-side by the RPC ---- */
+  async function tryUnlock(){
+    var v = document.getElementById("pin").value.trim();
+    var btn = document.getElementById("unlock");
+    if(!v){ return; }
+    btn.disabled = true; btn.textContent = "Checking...";
+    document.getElementById("lockerr").textContent = "";
+    try {
+      var res = await api("jared_ws_get", { p_pin: v });
+      if(res.status === 200){
+        PIN = v;
+        try{ sessionStorage.setItem("jp_pin", v); }catch(e){}
+        var data = await res.json();
+        STATE = (data && data.rows) ? data : null;
+        if(!STATE){ STATE = DEFAULT_STATE; await persist(true); }
+        reveal();
+      } else {
+        document.getElementById("lockerr").textContent = "Incorrect code.";
+        document.getElementById("pin").value = "";
+      }
+    } catch(e){
+      document.getElementById("lockerr").textContent = "Connection problem. Try again.";
+    }
+    btn.disabled = false; btn.textContent = "Unlock";
+  }
+  function reveal(){
+    document.getElementById("lock").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    render();
+  }
+  document.getElementById("unlock").addEventListener("click", tryUnlock);
+  document.getElementById("pin").addEventListener("keydown", function(e){ if(e.key==="Enter") tryUnlock(); });
+  var saved=null; try{ saved=sessionStorage.getItem("jp_pin"); }catch(e){}
+  if(saved){ document.getElementById("pin").value = saved; tryUnlock(); }
+  else { setTimeout(function(){ document.getElementById("pin").focus(); },100); }
+
+  /* ---- Persist ---- */
+  async function persist(silent){
+    if(!PIN || !STATE) return;
+    STATE.meta.updated = new Date().toISOString().slice(0,10);
+    var el=document.getElementById("h-updated"); if(el) el.textContent = "updated "+STATE.meta.updated;
+    if(!silent) badge("saving...");
+    try {
+      var res = await api("jared_ws_set", { p_pin: PIN, p_data: STATE });
+      badge(res.status===200 ? "saved" : "save failed");
+    } catch(e){ badge("save failed"); }
+  }
+  function queueSave(){ badge("editing..."); if(saveTimer) clearTimeout(saveTimer); saveTimer=setTimeout(function(){ persist(false); }, 900); }
+
+  /* ---- Render ---- */
+  var filters = { text:"", cat:"", hidden:{} };
+  function esc(s){ return (s==null?"":String(s)); }
+  function counts(){ var c={}; STATUSES.forEach(function(s){c[s]=0;}); STATE.rows.forEach(function(r){ if(c[r.s]!=null)c[r.s]++; }); return c; }
+
+  function render(){
+    document.getElementById("h-title").textContent = STATE.meta.title || "Partnership";
+    document.getElementById("h-sub").textContent = STATE.meta.subtitle || "";
+    document.getElementById("h-updated").textContent = STATE.meta.updated ? "updated "+STATE.meta.updated : "";
+    var c = counts();
+    var lg = document.getElementById("legend"); lg.innerHTML="";
+    STATUSES.forEach(function(s){
+      var b=document.createElement("button");
+      b.className="pill "+s; b.setAttribute("aria-pressed", filters.hidden[s]?"false":"true");
+      b.innerHTML = STATUS_LABEL[s]+' <span class="n">'+c[s]+'</span>';
+      b.addEventListener("click", function(){ filters.hidden[s]=!filters.hidden[s]; render(); });
+      lg.appendChild(b);
+    });
+    var cats=[]; STATE.rows.forEach(function(r){ if(cats.indexOf(r.c)<0) cats.push(r.c); });
+    var cf=document.getElementById("catfilter"); var cur=cf.value;
+    cf.innerHTML='<option value="">All categories</option>'+cats.map(function(x){return '<option>'+esc(x)+'</option>';}).join("");
+    cf.value = cur;
+    var body=document.getElementById("matrix-body"); body.innerHTML="";
+    var shown=0, lastCat=null;
+    STATE.rows.forEach(function(r, i){
+      if(filters.hidden[r.s]) return;
+      if(filters.cat && r.c!==filters.cat) return;
+      if(filters.text){ var hay=(r.q+" "+r.a+" "+r.n+" "+r.r+" "+r.c).toLowerCase(); if(hay.indexOf(filters.text)<0) return; }
+      if(r.c!==lastCat){ lastCat=r.c; var cr=document.createElement("tr"); cr.className="cat-row"; cr.innerHTML='<td colspan="6">'+esc(r.c)+'</td>'; body.appendChild(cr); }
+      shown++;
+      var tr=document.createElement("tr"); tr.className="item"; tr.dataset.i=i;
+      tr.appendChild(cellTD("q", r.q, i)); tr.appendChild(cellTD("a", r.a, i));
+      tr.appendChild(cellTD("n", r.n, i)); tr.appendChild(cellTD("r", r.r, i));
+      var st=document.createElement("td"); st.className="col-s";
+      var sel=document.createElement("select"); sel.className="status-sel "+r.s;
+      STATUSES.forEach(function(s){ var o=document.createElement("option"); o.value=s; o.textContent=STATUS_LABEL[s]; if(s===r.s)o.selected=true; sel.appendChild(o); });
+      sel.addEventListener("change", function(){ STATE.rows[i].s=sel.value; queueSave(); render(); });
+      st.appendChild(sel); tr.appendChild(st);
+      var dtd=document.createElement("td");
+      var del=document.createElement("button"); del.className="rowdel"; del.title="Delete row"; del.textContent="×";
+      del.addEventListener("click", function(){ if(confirm("Delete this question?")){ STATE.rows.splice(i,1); queueSave(); render(); } });
+      dtd.appendChild(del); tr.appendChild(dtd);
+      body.appendChild(tr);
+    });
+    document.getElementById("count").textContent = shown+" of "+STATE.rows.length+" shown";
+  }
+  function cellTD(kind, val, i){
+    var map={q:"col-q",a:"col-a",n:"col-n",r:"col-r"};
+    var td=document.createElement("td"); td.className=map[kind];
+    var d=document.createElement("div"); d.className="cell "+kind; d.contentEditable="true"; d.spellcheck=false; d.textContent=val||"";
+    d.addEventListener("input", function(){ STATE.rows[i][kind]=d.textContent; });
+    d.addEventListener("blur", function(){ STATE.rows[i][kind]=d.textContent; queueSave(); });
+    td.appendChild(d); return td;
+  }
+  document.getElementById("search").addEventListener("input", function(e){ filters.text=e.target.value.toLowerCase().trim(); render(); });
+  document.getElementById("catfilter").addEventListener("change", function(e){ filters.cat=e.target.value; render(); });
+  document.getElementById("addrow").addEventListener("click", function(){
+    var cat = filters.cat || (STATE.rows.length? STATE.rows[STATE.rows.length-1].c : "New");
+    STATE.rows.push({c:cat,q:"New question",a:"",n:"",r:"",s:"open"}); queueSave(); render();
+  });
+  Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(t){
+    t.addEventListener("click", function(){
+      Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(x){ x.setAttribute("aria-selected","false"); });
+      t.setAttribute("aria-selected","true");
+      ["matrix","terms","cashflow","plan"].forEach(function(name){ document.getElementById("tab-"+name).classList.toggle("hidden", name!==t.dataset.tab); });
+    });
+  });
+})();
+</script>
+</body>
+</html>
