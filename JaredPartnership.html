@@ -149,6 +149,44 @@
   #tab-cashflow .pos{ color:var(--cf-good); font-weight:600;}
   #tab-cashflow .neg{ color:var(--cf-ref);}
   #tab-cashflow .cf-flag{ margin-top:1rem; padding:.8rem 1rem; border-radius:10px; background:color-mix(in srgb,var(--c-flip) 10%,transparent); border:1px solid color-mix(in srgb,var(--c-flip) 35%,transparent); font-size:.86rem; color:var(--ink);}
+
+  /* ===== Heads of Terms tab ===== */
+  #tab-terms .ht-pad{padding:1.4rem 1.5rem 1.8rem;}
+  #tab-terms * {box-sizing:border-box;}
+  #tab-terms .eyebrow {font-family:"Inter";font-size:.7rem;font-weight:600;letter-spacing:.17em;text-transform:uppercase;color:var(--green-dk);}
+  #tab-terms h1 {font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:clamp(2.3rem,6vw,3.4rem);line-height:1.03;letter-spacing:-.01em;margin:.6rem 0 0;text-wrap:balance;}
+  #tab-terms .dek {font-family:"Cormorant Garamond",serif;font-style:italic;font-size:clamp(1.1rem,2.4vw,1.3rem);color:var(--ink-soft);margin:.9rem 0 0;max-width:56ch;}
+  #tab-terms .meta {display:flex;flex-wrap:wrap;gap:.4rem 1.4rem;margin-top:1.5rem;padding-top:1.1rem;border-top:1px solid var(--line);font-size:.78rem;color:var(--ink-faint);}
+  #tab-terms .meta b {color:var(--ink-soft);font-weight:600;}
+  #tab-terms .status-key {display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.6rem;}
+  #tab-terms .chip {display:inline-flex;align-items:center;gap:.4rem;font-size:.68rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:.22rem .55rem;border-radius:999px;border:1px solid transparent;}
+  #tab-terms .chip::before {content:"";width:7px;height:7px;border-radius:50%;background:currentColor;}
+  #tab-terms .chip.agreed {color:var(--s-agreed);background:var(--s-agreed-bg);}
+  #tab-terms .chip.open {color:var(--s-open);background:var(--s-open-bg);}
+  #tab-terms .chip.cp {color:var(--s-answered);background:var(--s-answered-bg);}
+  #tab-terms section {margin-top:2.6rem;}
+  #tab-terms h2 {font-family:"Cormorant Garamond",serif;font-weight:600;font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.12;letter-spacing:-.005em;margin:0;display:flex;align-items:baseline;gap:.7rem;}
+  #tab-terms h2 .n {font-family:"Inter";font-size:.85rem;font-weight:600;color:var(--green-dk);letter-spacing:.04em;}
+  #tab-terms .clause {margin-top:1.1rem;padding:1.15rem 1.3rem;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);}
+  #tab-terms .clause + .clause {margin-top:.7rem;}
+  #tab-terms .clause .head {display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;justify-content:space-between;}
+  #tab-terms .clause h3 {font-family:"Inter";font-weight:600;font-size:1rem;margin:0;color:var(--ink);}
+  #tab-terms .clause p {margin:.55rem 0 0;color:var(--ink-soft);font-size:.94rem;max-width:64ch;}
+  #tab-terms .clause p strong {color:var(--ink);font-weight:600;}
+  #tab-terms .clause .src {font-size:.72rem;color:var(--ink-faint);margin-top:.6rem;font-style:italic;}
+  #tab-terms .highlight {border-left:3px solid var(--gold);}
+  #tab-terms .figure-row {display:flex;flex-wrap:wrap;gap:.7rem;margin-top:.8rem;}
+  #tab-terms .fig {flex:1;min-width:150px;background:var(--mint-lt);border:1px solid var(--line);border-radius:10px;padding:.75rem .9rem;}
+  #tab-terms .fig .lbl {font-size:.68rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);}
+  #tab-terms .fig .val {font-family:"Cormorant Garamond",serif;font-size:1.5rem;font-weight:600;color:var(--ink);margin-top:.15rem;line-height:1;}
+  #tab-terms .fig .cap {font-size:.78rem;color:var(--ink-soft);margin-top:.3rem;}
+  #tab-terms .flag {margin-top:.85rem;padding:.8rem 1rem;border-radius:10px;background:var(--s-open-bg);border:1px solid var(--s-open);color:var(--ink);font-size:.9rem;}
+  #tab-terms .flag b {color:var(--s-open);}
+  #tab-terms ul {margin:.6rem 0 0;padding-left:0;list-style:none;}
+  #tab-terms ul li {position:relative;padding-left:1.35rem;margin-top:.45rem;color:var(--ink-soft);font-size:.94rem;}
+  #tab-terms ul li::before {content:"";position:absolute;left:.25rem;top:.62rem;width:6px;height:6px;background:var(--green);border-radius:1px;transform:rotate(45deg);}
+  #tab-terms .foot {margin-top:3.2rem;padding-top:1.3rem;border-top:1px solid var(--line);font-size:.8rem;color:var(--ink-faint);}
+  #tab-terms a {color:var(--green-dk);}
 </style>
 </head>
 <body>
@@ -204,7 +242,157 @@
     <div class="note">Click any cell to edit. Changes save automatically to the private workspace and sync to every device with the access code.</div>
   </section>
 
-  <section class="panel hidden" id="tab-terms"><div class="soon-panel"><h2>Agreed Heads of Terms</h2><p>Who owns what, how much is paid, in what order, and under which conditions. Built from the rows that reach 'agreed' in the matrix. This is the next section to fill.</p><div class="soon-list"><span>Ownership</span><span>Capital &amp; lien</span><span>Waterfall</span><span>Decision rights</span><span>Exit &amp; deadlock</span><span>Conditions precedent</span></div></div></section>
+<section class="panel hidden" id="tab-terms"><div class="ht-pad"><header>
+    <div class="eyebrow">El&auml;m&auml; Consulting &middot; Private draft for discussion</div>
+    <h1>Heads of Terms</h1>
+    <p class="dek">The desert recovery-housing partnership. Drawn from the fifteen points now agreed in the question matrix, with the open commercial questions marked rather than hidden.</p>
+    <div class="meta">
+      <span><b>Between</b> Samuel Barlow (capital) &amp; Jared (operator)</span>
+      <span><b>Capital</b> $40,000</span>
+      <span><b>Status</b> Non-binding draft, 31 Aug 2026</span>
+    </div>
+    <div class="status-key">
+      <span class="chip agreed">Agreed in matrix</span>
+      <span class="chip open">Open / to negotiate</span>
+      <span class="chip cp">Condition precedent</span>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="n">1</span> Parties and vehicle</h2>
+    <div class="clause">
+      <div class="head"><h3>1.1 &nbsp;The parties</h3></div>
+      <p><strong>Samuel Barlow</strong> provides capital and builds the reporting and financial oversight. <strong>Jared</strong> sources, acquires, renovates and operates the properties and the associated businesses on the ground.</p>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>1.2 &nbsp;Ownership vehicle</h3><span class="chip agreed">Agreed</span></div>
+      <p>Samuel obtains a US <strong>ITIN</strong> and each property is held by a <strong>US LLC</strong>, so Samuel is not on title personally. This is to be structured on qualified cross-border tax advice before any capital moves, to address FIRPTA, US filing and estate-tax exposure.</p>
+      <p class="src">Matrix: "I shouldn't be on title personally" &mdash; agreed.</p>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>1.3 &nbsp;The venture</h3></div>
+      <p>Two linked workstreams: a <strong>kept portfolio</strong> of recovery-housing rentals, and a <strong>flip portfolio</strong> built and sold to recycle capital. The base-case property is Jared's "Project #2" model: acquire at $150,000&ndash;$200,000, finished value $250,000&ndash;$300,000, ten beds. Project #1 is treated as a one-off and not relied on for the model.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span> Capital and security</h2>
+    <div class="clause">
+      <div class="head"><h3>2.1 &nbsp;Amount and form</h3><span class="chip agreed">Agreed</span></div>
+      <p>Samuel commits <strong>$40,000</strong>, advanced as a <strong>recorded loan secured by a lien</strong> on the relevant property, not an unsecured contribution. The lien sits in second position behind the hard-money lender; the exact position is to be confirmed per deal.</p>
+      <p class="src">Matrix: "My money in as a recorded loan/lien" &mdash; agreed.</p>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>2.2 &nbsp;Released against milestones</h3><span class="chip agreed">Agreed</span></div>
+      <p>Capital is released <strong>property by property against agreed milestones</strong> (property identified, contracts signed, renovation budget agreed), not in a single lump. No money is spent or committed without Samuel's prior approval.</p>
+      <p class="src">Matrix: "Money released property-by-property against milestones" &mdash; agreed ("no money will be spent&hellip; that isn't approved prior").</p>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>2.3 &nbsp;Overruns</h3><span class="chip agreed">Agreed</span></div>
+      <p>Any cost overrun is <strong>shared 50/50</strong>.</p>
+      <p class="src">Matrix: "Who funds an overrun?" &mdash; agreed 50/50.</p>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>2.4 &nbsp;Hard-money terms disclosed first</h3><span class="chip agreed">Agreed</span></div>
+      <p>Samuel sees the <strong>hard-money terms</strong> (rate, points, term length, guarantees, overrun behaviour) <strong>before</strong> committing to each deal.</p>
+      <p class="src">Matrix: "Sight of the hard-money terms before I commit" &mdash; agreed.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span> The return, and the $4,000 target</h2>
+    <div class="clause">
+      <div class="head"><h3>3.1 &nbsp;Capital comes back first</h3><span class="chip agreed">Agreed</span></div>
+      <p>There is <strong>no profit split until expenses, including Samuel's capital, are recovered.</strong> Distributable profit is only what remains after that.</p>
+      <p class="src">Matrix: "Capital repaid&hellip; before profits split 50/50" &mdash; agreed ("no profit until expenses&hellip; including capital in are recovered").</p>
+    </div>
+    <div class="clause highlight">
+      <div class="head"><h3>3.2 &nbsp;Priority distribution to Samuel, targeting $4,000/month</h3><span class="chip open">Open</span></div>
+      <p>From available net cashflow, Samuel receives a <strong>priority monthly distribution ahead of Jared's profit share, with a target of $4,000/month</strong>. On the current figures this target is reached in stages, not immediately:</p>
+      <div class="figure-row">
+        <div class="fig"><div class="lbl">House #1, ~month 3</div><div class="val">$2,000&ndash;2,500</div><div class="cap">Samuel's half of one stabilised house (Jared's own figure)</div></div>
+        <div class="fig"><div class="lbl">Target, ongoing</div><div class="val">$4,000</div><div class="cap">Reached as flip proceeds recycle into a 2nd and 3rd rental</div></div>
+      </div>
+      <div class="flag"><b>Feasibility, stated plainly.</b> A guaranteed $4,000/month from month 3 is <b>not supported by $40,000</b> on the current model. One house yields Samuel roughly $2,000&ndash;$2,500; $4,000 needs about two stabilised houses, and $40,000 funds one house plus one flip-in-progress. $4,000/month becomes realistic in <b>months 6&ndash;12</b> as each ~$50,000 flip recycles into another rental &mdash; on the path to the $10,000/month originally discussed.</div>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>3.3 &nbsp;A hard floor is a separate ask</h3><span class="chip open">Open</span></div>
+      <p>If Samuel requires a <strong>contractual $4,000/month floor from month 3 regardless of cashflow</strong>, that is Jared underwriting the gap personally (from the other businesses). It converts Samuel's equity risk into a fixed obligation Jared owes. It is a legitimate term, but it needs either <strong>more capital up front (~$70,000&ndash;$80,000)</strong> or <strong>Jared's explicit personal guarantee</strong>, and must be negotiated as such rather than assumed.</p>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>3.4 &nbsp;Split above the priority</h3></div>
+      <p>Once capital is returned and the priority distribution is met, remaining profit is split <strong>50/50</strong>.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">4</span> Governance and decisions</h2>
+    <div class="clause">
+      <div class="head"><h3>4.1 &nbsp;Joint decisions</h3><span class="chip open">Open</span></div>
+      <p>A short list of decisions needs <strong>both parties</strong>: taking on debt, and buying or selling a property. Everything operational is Jared's alone, without asking. The exact list is to be finalised.</p>
+      <p class="src">Matrix: "'both of us' decision list" &mdash; Jared open to it, sees a tiebreaker as the resolution.</p>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>4.2 &nbsp;Deadlock and a third voice</h3><span class="chip open">Open</span></div>
+      <p>A deadlock clause is agreed: either party may name a price, and the other chooses to buy or sell at it. Jared prefers, in addition, a <strong>third person as tiebreaker</strong> and has suggested Brett taking a small stake.</p>
+      <div class="flag"><b>Decide carefully.</b> A third party changes the 50/50 and introduces a new dependency. Who Brett is, the size and terms of his stake, and his genuine neutrality all need pinning down before this is a protection rather than a complication.</div>
+      <p class="src">Matrix: "deadlock clause" &mdash; agreed, third-person tiebreaker proposed.</p>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>4.3 &nbsp;Exit</h3><span class="chip agreed">Agreed</span></div>
+      <p>A <strong>route out for either party at a formula agreed up front</strong>.</p>
+      <p class="src">Matrix: "An exit formula for either party" &mdash; agreed.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">5</span> Transparency and money handling</h2>
+    <div class="clause">
+      <div class="head"><h3>5.1 &nbsp;Visibility</h3><span class="chip agreed">Agreed</span></div>
+      <p><strong>Read-only bank access</strong> for Samuel on every account, and <strong>Xero or QuickBooks from day one</strong> with full access. Samuel builds the reconciliation and reporting; Jared produces no numbers by hand.</p>
+      <p class="src">Matrix: both agreed.</p>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>5.2 &nbsp;Controls</h3><span class="chip agreed">Agreed</span></div>
+      <ul>
+        <li><strong>No cash rent.</strong> Everything by ACH, Zelle or resident portal, which also builds each resident a mortgage file for the homeownership path.</li>
+        <li><strong>An independent bookkeeper</strong> does the entry, not Jared.</li>
+        <li><strong>Two signatures</strong> on payments above an agreed threshold.</li>
+      </ul>
+      <p class="src">Matrix: all three agreed.</p>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>5.3 &nbsp;Related-party work</h3><span class="chip agreed">Agreed</span></div>
+      <p>Where a business either party owns does work for the venture (for example Jared's team self-performing the renovation), the <strong>margin is agreed in advance and in writing</strong>, not discussed afterwards.</p>
+      <p class="src">Matrix: "Margins on payments to businesses either of us owns" &mdash; agreed.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="n">6</span> Conditions precedent</h2>
+    <p style="color:var(--ink-soft);font-size:.94rem;margin:.3rem 0 0;max-width:64ch;">These are the checks to clear before capital moves. Jared considers the legal ones settled and declines to fund professional review; the first two are cheap relative to their downside and worth Samuel funding regardless.</p>
+    <div class="clause">
+      <div class="head"><h3>6.1 &nbsp;EKRA / patient-brokering opinion</h3><span class="chip cp">Condition</span></div>
+      <p>One US healthcare lawyer confirms the referral model does not trigger EKRA or state patient-brokering. Jared's position is zero exposure (no patients, no referral commission); worth one hour to confirm because it cannot be undone if wrong.</p>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>6.2 &nbsp;Refinance feasibility in writing</h3><span class="chip cp">Condition</span></div>
+      <p>One lender confirms in writing that a cash-out refinance on the finished property is available on the stated basis. The whole recycling engine rests on this.</p>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>6.3 &nbsp;Cross-border tax structure</h3><span class="chip cp">Condition</span></div>
+      <p>ITIN and LLC structure confirmed by a qualified US/UK adviser before signing (clause 1.2).</p>
+    </div>
+    <div class="clause">
+      <div class="head"><h3>6.4 &nbsp;References</h3><span class="chip agreed">Agreed</span></div>
+      <p>Two references each way, including one relationship that did not end well. Samuel goes first.</p>
+      <p class="src">Matrix: "References in both directions" &mdash; agreed.</p>
+    </div>
+  </section>
+
+  <div class="foot">
+    <p>Private draft prepared for Samuel Barlow, El&auml;m&auml; Consulting, 31 August 2026. Non-binding, for discussion only, and not an offer, an agreement, or legal, tax or investment advice. Every clause here should be reviewed by qualified advisers before either party commits capital. Figures are Jared's own where quoted and are to be confirmed by the property-level cash model.</p>
+  </div></div></section>
   <section class="panel hidden" id="tab-cashflow"><div class="cfpad">
     <p class="cf-intro">Not a fixed promise. A schedule of how your $40,000 comes back and the income builds, from the three streams, on assumptions you can move and Jared can commit to. Capital position tracks investment returns only; the support fee is separate earned income.</p>
     <div class="cf-tiles" id="cf-tiles"></div>
