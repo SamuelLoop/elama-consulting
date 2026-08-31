@@ -220,6 +220,46 @@
   #tab-location .loc-src{ margin-top:1.2rem; font-size:.76rem; color:var(--ink-faint); }
   #tab-location .loc-src a{ color:var(--green-dk); }
 
+
+  /* ===== Elama Tracker tab ===== */
+  #tab-tracker .tk-pad{ padding:1.4rem 1.5rem 1.8rem; }
+  #tab-tracker .tk-intro{ color:var(--ink-soft); font-size:.92rem; margin:0 0 1.1rem; max-width:66ch; }
+  #tab-tracker h3.tk-h{ font-family:"Cormorant Garamond",serif; font-weight:600; font-size:1.4rem; margin:1.9rem 0 .3rem; color:var(--ink); }
+  #tab-tracker .tk-gauges{ display:grid; grid-template-columns:1.3fr 1fr 1fr 1fr; gap:.7rem; }
+  @media(max-width:720px){ #tab-tracker .tk-gauges{ grid-template-columns:1fr 1fr; } }
+  #tab-tracker .tk-gauge{ background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:.85rem 1rem; }
+  #tab-tracker .tk-gauge .lbl{ font-size:.66rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); }
+  #tab-tracker .tk-gauge .val{ font-family:"Cormorant Garamond",serif; font-size:2rem; font-weight:600; line-height:1; margin-top:.25rem; font-variant-numeric:tabular-nums; }
+  #tab-tracker .tk-gauge .val small{ font-size:.9rem; color:var(--ink-faint); }
+  #tab-tracker .tk-bar{ height:7px; border-radius:4px; background:var(--line); margin-top:.55rem; overflow:hidden; }
+  #tab-tracker .tk-bar > i{ display:block; height:100%; border-radius:4px; transition:width .35s ease; }
+  #tab-tracker .tk-mwrap{ overflow-x:auto; border:1px solid var(--line); border-radius:12px; margin-top:.4rem; }
+  #tab-tracker table.tk-m{ border-collapse:collapse; width:100%; min-width:780px; background:var(--card); }
+  #tab-tracker table.tk-m th,#tab-tracker table.tk-m td{ border:1px solid var(--line); padding:0; text-align:center; }
+  #tab-tracker table.tk-m thead th{ font-size:.58rem; font-weight:600; color:var(--ink-faint); padding:.4rem .3rem; line-height:1.2; vertical-align:bottom; background:var(--card); }
+  #tab-tracker table.tk-m thead th.cat{ text-transform:uppercase; letter-spacing:.08em; color:var(--green-dk); font-size:.6rem; padding:.35rem; }
+  #tab-tracker table.tk-m .rowh{ font-size:.62rem; font-weight:600; color:var(--ink-soft); padding:.3rem .5rem; text-align:left; white-space:nowrap; background:var(--card); }
+  #tab-tracker .tk-cell{ width:100%; height:100%; min-height:42px; display:flex; align-items:center; justify-content:center; padding:.25rem; font-size:.56rem; line-height:1.15; color:var(--ink); cursor:default; }
+  #tab-tracker .tk-cell.s2{ background:var(--s-agreed-bg); color:var(--s-agreed); font-weight:600; }
+  #tab-tracker .tk-cell.s1{ background:var(--s-cond-bg); color:var(--s-cond); }
+  #tab-tracker .tk-cell.s0{ background:var(--s-un-bg); color:var(--s-un); }
+  #tab-tracker .tk-cell.sn{ background:transparent; color:var(--ink-faint); }
+  #tab-tracker table.tk-m td.tot{ font-size:.66rem; font-weight:600; font-variant-numeric:tabular-nums; color:var(--ink); background:var(--paper); padding:.3rem; }
+  #tab-tracker table.tk-m tr.totrow td{ background:var(--paper); font-size:.64rem; font-weight:600; font-variant-numeric:tabular-nums; padding:.3rem; color:var(--ink-soft); }
+  #tab-tracker .tk-legend{ display:flex; flex-wrap:wrap; gap:.4rem 1rem; margin:.6rem 0 0; font-size:.74rem; color:var(--ink-soft); }
+  #tab-tracker .tk-legend span{ display:inline-flex; align-items:center; gap:.35rem; }
+  #tab-tracker .tk-legend i{ width:11px; height:11px; border-radius:3px; display:inline-block; }
+  #tab-tracker .tk-step{ margin-top:1.4rem; }
+  #tab-tracker .tk-step > h4{ font-family:"Inter"; font-size:.82rem; font-weight:600; color:var(--green-dk); text-transform:uppercase; letter-spacing:.06em; margin:0 0 .3rem; }
+  #tab-tracker .tk-q{ display:grid; grid-template-columns:1fr auto auto; gap:.6rem; align-items:center; padding:.55rem .2rem; border-bottom:1px solid var(--line); }
+  #tab-tracker .tk-q .qt{ font-size:.86rem; color:var(--ink); }
+  #tab-tracker .tk-q .qt small{ display:block; color:var(--ink-faint); font-size:.68rem; text-transform:uppercase; letter-spacing:.04em; margin-top:.1rem; }
+  #tab-tracker .tk-q select{ font-family:inherit; font-size:.76rem; padding:.35rem .4rem; border:1px solid var(--line-2); border-radius:8px; background:var(--paper); color:var(--ink); cursor:pointer; }
+  #tab-tracker .tk-q select.a-s2{ color:var(--s-agreed); border-color:var(--s-agreed); }
+  #tab-tracker .tk-q select.a-s1{ color:var(--s-cond); border-color:var(--s-cond); }
+  #tab-tracker .tk-q select.a-s0{ color:var(--s-un); border-color:var(--s-un); }
+  #tab-tracker .tk-save{ font-size:.74rem; color:var(--ink-faint); margin-top:1rem; }
+
 </style>
 </head>
 <body>
@@ -252,6 +292,7 @@
     <button class="tab" role="tab" aria-selected="false" data-tab="terms">Heads of Terms</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="cashflow">Cash Flow</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="location">Location</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="tracker">El&auml;m&auml; Tracker</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="plan">Business Plan <span class="soon">soon</span></button>
   </div>
 
@@ -529,6 +570,22 @@
     <div class="loc-src">Sources: San Bernardino County assessor record via the property listing (80553 Indian Trail); Zillow and Homes.com (Wonder Valley / 92277 sales); Redfin (Wonder Valley housing market). Reverse-geocoded via OpenStreetMap.</div>
   </div></section>
 
+  <section class="panel hidden" id="tab-tracker"><div class="tk-pad">
+    <p class="tk-intro">A live business self-assessment. Rate each of the fifty questions and the matrix at the top scores itself in real time, across the three drivers &mdash; Vision, Velocity and Value &mdash; and the five owner levels. It saves and syncs with the rest of the workspace.</p>
+    <div class="tk-gauges" id="tk-gauges"></div>
+    <h3 class="tk-h">The matrix</h3>
+    <div class="tk-legend">
+      <span><i style="background:var(--s-agreed)"></i> Ideal &middot; 2</span>
+      <span><i style="background:var(--s-cond)"></i> It's ok &middot; 1</span>
+      <span><i style="background:var(--s-un)"></i> Poor &middot; 0</span>
+      <span><i style="background:var(--line-2)"></i> Not rated</span>
+    </div>
+    <div class="tk-mwrap"><table class="tk-m" id="tk-matrix"></table></div>
+    <h3 class="tk-h">The questions</h3>
+    <div id="tk-questions"></div>
+    <div class="tk-save" id="tk-save">ready</div>
+  </div></section>
+
   <section class="panel hidden" id="tab-plan"><div class="soon-panel"><h2>Business Plan</h2><p>The narrative over the numbers: the model, the mission, the first six months in detail and year three in outline.</p><div class="soon-list"><span>Model</span><span>Market</span><span>Operations</span><span>Milestones</span><span>Risks &amp; controls</span></div></div></section>
 
   <div class="note" style="padding-top:1.4rem">Private working workspace for Samuel Barlow &middot; El&auml;m&auml; Consulting. Not an offer or an agreement. Legal and tax observations are for framing only and must be confirmed by qualified advisers before capital moves.</div>
@@ -570,6 +627,9 @@
         var data = await res.json();
         STATE = (data && data.rows) ? data : null;
         if(!STATE){ STATE = DEFAULT_STATE; await persist(true); }
+        if(!STATE.tracker){ STATE.tracker={}; }
+        window.__JP={state:STATE, save:queueSave};
+        if(window.__trackerInit) window.__trackerInit();
         reveal();
       } else {
         document.getElementById("lockerr").textContent = "Incorrect code.";
@@ -668,7 +728,7 @@
     t.addEventListener("click", function(){
       Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(x){ x.setAttribute("aria-selected","false"); });
       t.setAttribute("aria-selected","true");
-      ["matrix","terms","cashflow","location","plan"].forEach(function(name){ document.getElementById("tab-"+name).classList.toggle("hidden", name!==t.dataset.tab); });
+      ["matrix","terms","cashflow","location","tracker","plan"].forEach(function(name){ document.getElementById("tab-"+name).classList.toggle("hidden", name!==t.dataset.tab); });
     });
   });
 })();
@@ -767,6 +827,90 @@
   });
   document.getElementById("cf-recycle").addEventListener("change",function(e){ recycle=e.target.checked; render(); });
   render();
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+  var Q = [{"step": 0, "stepName": "Owner Well Being", "level": "Overwhelm", "comp": "Focus Principles", "q": "Do you have a routine or system to manage stress effectively?", "a": "Poor", "p": "🔴 Urgent"}, {"step": 0, "stepName": "Owner Well Being", "level": "Overworked", "comp": "Time & Energy Management", "q": "Do you feel you have the work life balance you want?", "a": "Ideal", "p": "🟡 High"}, {"step": 0, "stepName": "Owner Well Being", "level": "Organised", "comp": "Improved Habits", "q": "Do you prioritize your tasks based on their importance and urgency?", "a": "It's ok", "p": "🟡 High"}, {"step": 0, "stepName": "Owner Well Being", "level": "Overseer", "comp": "Leadership Qualities", "q": "Are you aware of your strengths and areas for improvement?", "a": "Poor", "p": "🔴 Urgent"}, {"step": 0, "stepName": "Owner Well Being", "level": "Owner", "comp": "Self Understanding", "q": "Do you have personal values that guide your business decisions?", "a": "Ideal", "p": "🟡 High"}, {"step": 1, "stepName": "Alignment Accelerator", "level": "Overwhelm", "comp": "Business Goals", "q": "Is everyone in your leadership team clear about your business vision?", "a": "It's ok", "p": "🟡 High"}, {"step": 1, "stepName": "Alignment Accelerator", "level": "Overworked", "comp": "Clear Communication", "q": "Are all meetings in your business goal-oriented and productive?", "a": "Poor", "p": "🔵 Normal"}, {"step": 1, "stepName": "Alignment Accelerator", "level": "Organised", "comp": "Team Alignment", "q": "Do you have a clear org chart and everyone knows their role to achieve the vision?", "a": "Poor", "p": "🔴 Urgent"}, {"step": 1, "stepName": "Alignment Accelerator", "level": "Overseer", "comp": "Team Meetings", "q": "Do you have a protocol for conducting effective team meetings?", "a": "It's ok", "p": "🔴 Urgent"}, {"step": 1, "stepName": "Alignment Accelerator", "level": "Owner", "comp": "Vision Sharing", "q": "Do you regularly communicate the business vision to your team?", "a": "Ideal", "p": "🔵 Normal"}, {"step": 2, "stepName": "Detailed Strategy", "level": "Overwhelm", "comp": "Offer / Research", "q": "Have you conducted a thorough market research for your product/service?", "a": "Poor", "p": "🟡 High"}, {"step": 2, "stepName": "Detailed Strategy", "level": "Overworked", "comp": "1, 3, 5 Year Plan", "q": "Do you have a clear and detailed strategic plan for the next year?", "a": "It's ok", "p": "🟡 High"}, {"step": 2, "stepName": "Detailed Strategy", "level": "Organised", "comp": "Marketing Plan", "q": "Do you have a comprehensive marketing plan?", "a": "Ideal", "p": "🟡 High"}, {"step": 2, "stepName": "Detailed Strategy", "level": "Overseer", "comp": "Competitive Insight", "q": "Have you done a detailed analysis of your competition?", "a": "Poor", "p": "🔴 Urgent"}, {"step": 2, "stepName": "Detailed Strategy", "level": "Owner", "comp": "Strategy Refinement", "q": "Do you review your business strategy periodically to ensure it's up-to-date?", "a": "Not Rated", "p": "🔵 Normal"}, {"step": 3, "stepName": "Dynamic Planning", "level": "Overwhelm", "comp": "Goal Setting", "q": "Do you have a system in place to track progress towards your goals?", "a": "Not Rated", "p": "🔵 Normal"}, {"step": 3, "stepName": "Dynamic Planning", "level": "Overworked", "comp": "Progress Tracking", "q": "Do you delegate tasks effectively among your team members?", "a": "Not Rated", "p": "🔵 Normal"}, {"step": 3, "stepName": "Dynamic Planning", "level": "Organised", "comp": "90 Day Plan", "q": "Do you have a clear structured plan for the next 90 days?", "a": "Not Rated", "p": "🟡 High"}, {"step": 3, "stepName": "Dynamic Planning", "level": "Overseer", "comp": "Annual Plan", "q": "Have you set long-term objectives to guide your business strategy?", "a": "Not Rated", "p": "🟡 High"}, {"step": 3, "stepName": "Dynamic Planning", "level": "Owner", "comp": "Succession Planning", "q": "Do you have a succession plan in place for your business?", "a": "Not Rated", "p": "🟡 High"}, {"step": 4, "stepName": "Profit & Cash", "level": "Overwhelm", "comp": "Cash Flow", "q": "Do you have a plan to manage cash flow for the next 13 weeks?", "a": "Poor", "p": "🔴 Urgent"}, {"step": 4, "stepName": "Profit & Cash", "level": "Overworked", "comp": "Lean Principles", "q": "Have you implemented measures to reduce waste in your business processes?", "a": "Not Rated", "p": "🔵 Normal"}, {"step": 4, "stepName": "Profit & Cash", "level": "Organised", "comp": "Profit Maximization", "q": "Do you conduct regular profit margin analysis?", "a": "Not Rated", "p": "🟡 High"}, {"step": 4, "stepName": "Profit & Cash", "level": "Overseer", "comp": "Profit First Approach", "q": "Have you implemented the Profit First Approach in your business?", "a": "Not Rated", "p": "🔵 Normal"}, {"step": 4, "stepName": "Profit & Cash", "level": "Owner", "comp": "Financial Optimization", "q": "Do you review and adjust your financial strategy periodically?", "a": "Poor", "p": "🔴 Urgent"}, {"step": 5, "stepName": "Revenue & Marketing", "level": "Overwhelm", "comp": "Target Markets", "q": "Do you have a clear understanding of your target market?", "a": "Poor", "p": "🔵 Normal"}, {"step": 5, "stepName": "Revenue & Marketing", "level": "Overworked", "comp": "Conversion Campaigns", "q": "Do you have a detailed plan in place for future marketing campaigns?", "a": "Poor", "p": "🔴 Urgent"}, {"step": 5, "stepName": "Revenue & Marketing", "level": "Organised", "comp": "Customer Relationships", "q": "Have you established a customer relationship management system?", "a": "It's ok", "p": "🟡 High"}, {"step": 5, "stepName": "Revenue & Marketing", "level": "Overseer", "comp": "Data-Driven Marketing", "q": "Do you use data and analytics to drive your marketing decisions?", "a": "Poor", "p": "🔴 Urgent"}, {"step": 5, "stepName": "Revenue & Marketing", "level": "Owner", "comp": "Marketing Refinement", "q": "Do you consistently review and update your marketing strategy?", "a": "Ideal", "p": "🔵 Normal"}, {"step": 6, "stepName": "Ops & Product", "level": "Overwhelm", "comp": "Process Review", "q": "Do you regularly map out your business processes for better understanding & improvement?", "a": "It's ok", "p": "🔵 Normal"}, {"step": 6, "stepName": "Ops & Product", "level": "Overworked", "comp": "Bottleneck Eradication", "q": "Do you have a process in place to identify and address bottlenecks in your systems?", "a": "It's ok", "p": "🟡 High"}, {"step": 6, "stepName": "Ops & Product", "level": "Organised", "comp": "Product Development", "q": "Do you consistently focus on improving customer experience?", "a": "Not Rated", "p": "🟡 High"}, {"step": 6, "stepName": "Ops & Product", "level": "Overseer", "comp": "Role Alignment", "q": "Have you clearly defined roles and responsibilities within your team?", "a": "Not Rated", "p": "🔵 Normal"}, {"step": 6, "stepName": "Ops & Product", "level": "Owner", "comp": "Product Optimization", "q": "Do you have a system in place to collect and implement customer feedback for product/service improvement?", "a": "Not Rated", "p": "🔵 Normal"}, {"step": 7, "stepName": "Financials & KPIs", "level": "Overwhelm", "comp": "Financial Tracking", "q": "Do you have a basic understanding of bookkeeping?", "a": "Not Rated", "p": "🔵 Normal"}, {"step": 7, "stepName": "Financials & KPIs", "level": "Overworked", "comp": "Set KPIs", "q": "Have you set specific KPIs to measure your business performance?", "a": "Not Rated", "p": "🔴 Urgent"}, {"step": 7, "stepName": "Financials & KPIs", "level": "Organised", "comp": "Revenue Growth Accelerator", "q": "Do you have a tool or system to track your revenue growth?", "a": "Not Rated", "p": "⚪ Low"}, {"step": 7, "stepName": "Financials & KPIs", "level": "Overseer", "comp": "Management Accounts", "q": "Do you have a system in place for management account setup?", "a": "Not Rated", "p": "⚪ Low"}, {"step": 7, "stepName": "Financials & KPIs", "level": "Owner", "comp": "Financial Strategy", "q": "Do you regularly assess financial risks in your business?", "a": "Not Rated", "p": "⚪ Low"}, {"step": 8, "stepName": "Innovation & Management", "level": "Overwhelm", "comp": "Idea Prioritisation", "q": "Do you have a system in place to prioritize ideas and innovations?", "a": "Not Rated", "p": "🔵 Normal"}, {"step": 8, "stepName": "Innovation & Management", "level": "Overworked", "comp": "Learning Principles", "q": "Do you have a strategy in place for team learning and development?", "a": "Not Rated", "p": "🔴 Urgent"}, {"step": 8, "stepName": "Innovation & Management", "level": "Organised", "comp": "Team Training", "q": "Do you encourage your team's training needs and provide learning opportunities?", "a": "Not Rated", "p": "🔴 Urgent"}, {"step": 8, "stepName": "Innovation & Management", "level": "Overseer", "comp": "Collaborative Culture", "q": "Do you conduct team collaboration exercises regularly?", "a": "Not Rated", "p": "🟡 High"}, {"step": 8, "stepName": "Innovation & Management", "level": "Owner", "comp": "Innovation Culture", "q": "Have you successfully fostered a culture of innovation in your business?", "a": "Not Rated", "p": "🔵 Normal"}, {"step": 9, "stepName": "Team & Leadership", "level": "Overwhelm", "comp": "Communication & Engagement", "q": "Do you conduct regular communication skill training for your team?", "a": "Poor", "p": "🔴 Urgent"}, {"step": 9, "stepName": "Team & Leadership", "level": "Overworked", "comp": "Recruitment", "q": "Do you have a well-structured recruitment process in place?", "a": "It's ok", "p": "🔴 Urgent"}, {"step": 9, "stepName": "Team & Leadership", "level": "Organised", "comp": "Onboarding", "q": "Do you have a clear organizational structure with defined roles and responsibilities?", "a": "Poor", "p": "🔴 Urgent"}, {"step": 9, "stepName": "Team & Leadership", "level": "Overseer", "comp": "People Development", "q": "Do you have operational procedures in place for all your key business activities?", "a": "Ideal", "p": "🟡 High"}, {"step": 9, "stepName": "Team & Leadership", "level": "Owner", "comp": "Leadership Development", "q": "Do you invest in regular training and development for your team?", "a": "It's ok", "p": "🔴 Urgent"}];
+  var STEPS = ["Owner Well Being", "Alignment Accelerator", "Detailed Strategy", "Dynamic Planning", "Profit & Cash", "Revenue & Marketing", "Ops & Product", "Financials & KPIs", "Innovation & Management", "Team & Leadership"];
+  var LEVELS = ["Owner","Overseer","Organised","Overworked","Overwhelm"]; // grid top->bottom (5->1)
+  var ANSWERS = ["Ideal","It's ok","Poor","Not Rated"];
+  var PRIOS = ["🔴 Urgent","🟡 High","🔵 Normal","⚪ Low"];
+  var CATS = [["Personal",[0]],["Vision",[1,2,3]],["Velocity",[4,5,6]],["Value",[7,8,9]]];
+  function score(a){ return a==="Ideal"?2 : a==="It's ok"?1 : a==="Poor"?0 : null; }
+  function cls(a){ var s=score(a); return s===2?"s2":s===1?"s1":s===0?"s0":"sn"; }
+
+  var ST=null, SAVE=function(){};
+  // answers live in ST.tracker.ans : array of {a,p} indexed to Q
+  function ans(){ if(!ST.tracker) ST.tracker={}; if(!ST.tracker.ans){ ST.tracker.ans=Q.map(function(q){return {a:q.a||"Not Rated",p:q.p||"🔵 Normal"};}); } return ST.tracker.ans; }
+  function qAt(level,step){ for(var i=0;i<Q.length;i++){ if(Q[i].level===level && Q[i].step===step) return i; } return -1; }
+
+  function render(){
+    var A=ans();
+    // ----- matrix -----
+    var stepTot=STEPS.map(function(_,si){ var t=0; Q.forEach(function(q,i){ if(q.step===si){ var s=score(A[i].a); if(s!=null)t+=s; } }); return t; });
+    var levTot={}; LEVELS.forEach(function(lv){ var t=0; Q.forEach(function(q,i){ if(q.level===lv){ var s=score(A[i].a); if(s!=null)t+=s; } }); levTot[lv]=t; });
+    var m=document.getElementById("tk-matrix"); var h="";
+    // category header
+    h+='<thead><tr><th></th>';
+    CATS.forEach(function(c){ h+='<th class="cat" colspan="'+c[1].length+'">'+c[0]+'</th>'; });
+    h+='<th></th></tr><tr><th class="rowh">Level</th>';
+    STEPS.forEach(function(sn){ h+='<th>'+sn+'</th>'; });
+    h+='<th>/20</th></tr></thead><tbody>';
+    LEVELS.forEach(function(lv){
+      h+='<tr><td class="rowh">'+lv+'</td>';
+      STEPS.forEach(function(_,si){
+        var i=qAt(lv,si); var a=i>=0?A[i].a:"Not Rated"; var q=i>=0?Q[i]:{comp:""};
+        h+='<td><div class="tk-cell '+cls(a)+'" title="'+(q.comp+" — "+(q.q||"")).replace(/"/g,"&quot;")+'">'+q.comp+'</div></td>';
+      });
+      h+='<td class="tot">'+levTot[lv].toFixed(0)+'</td></tr>';
+    });
+    h+='<tr class="totrow"><td class="rowh">Total /10</td>';
+    stepTot.forEach(function(t){ h+='<td>'+t.toFixed(0)+'</td>'; });
+    var grand=stepTot.reduce(function(a,b){return a+b;},0);
+    h+='<td class="tot">'+grand.toFixed(0)+'</td></tr></tbody>';
+    m.innerHTML=h;
+    // ----- gauges -----
+    function catScore(idxs){ var t=0,max=idxs.length*10; idxs.forEach(function(si){ t+=stepTot[si]; }); return {t:t,max:max}; }
+    var overall={t:grand,max:100};
+    var g=[["Overall",overall,"var(--green-dk)"]];
+    CATS.slice(1).forEach(function(c,k){ var col=["var(--s-answered)","var(--s-cond)","var(--s-agreed)"][k]; g.push([c[0],catScore(c[1]),col]); });
+    document.getElementById("tk-gauges").innerHTML=g.map(function(x){
+      var pct=x[1].max? Math.round(x[1].t/x[1].max*100):0;
+      return '<div class="tk-gauge"><div class="lbl">'+x[0]+'</div><div class="val">'+x[1].t.toFixed(0)+'<small>/'+x[1].max+'</small></div><div class="tk-bar"><i style="width:'+pct+'%;background:'+x[2]+'"></i></div></div>';
+    }).join("");
+    // ----- questions grouped by step -----
+    var qc=document.getElementById("tk-questions"); var out="";
+    STEPS.forEach(function(sn,si){
+      out+='<div class="tk-step"><h4>'+(si)+'. '+sn+'</h4>';
+      Q.forEach(function(q,i){
+        if(q.step!==si) return;
+        out+='<div class="tk-q"><div class="qt">'+q.q+'<small>'+q.level+' &middot; '+q.comp+'</small></div>'+
+          '<select class="a-'+cls(A[i].a)+'" data-i="'+i+'" data-k="a">'+ANSWERS.map(function(o){return '<option'+(o===A[i].a?" selected":"")+'>'+o+'</option>';}).join("")+'</select>'+
+          '<select data-i="'+i+'" data-k="p">'+PRIOS.map(function(o){return '<option'+(o===A[i].p?" selected":"")+'>'+o+'</option>';}).join("")+'</select></div>';
+      });
+      out+='</div>';
+    });
+    qc.innerHTML=out;
+    Array.prototype.forEach.call(qc.querySelectorAll("select"),function(sel){
+      sel.addEventListener("change",function(){
+        var i=+sel.dataset.i, k=sel.dataset.k; A[i][k]=sel.value;
+        document.getElementById("tk-save").textContent="saving…"; SAVE();
+        render();
+      });
+    });
+  }
+
+  window.__trackerInit=function(){
+    ST=window.__JP && window.__JP.state; SAVE=(window.__JP && window.__JP.save)||function(){};
+    if(!ST) return;
+    if(!ST.tracker) ST.tracker={}; ans();
+    render();
+    var b=document.getElementById("tk-save"); if(b) b.textContent="synced with workspace";
+  };
+  if(window.__JP) window.__trackerInit();
 })();
 </script>
 </body>
