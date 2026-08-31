@@ -186,6 +186,12 @@
   #tab-terms ul li {position:relative;padding-left:1.35rem;margin-top:.45rem;color:var(--ink-soft);font-size:.94rem;}
   #tab-terms ul li::before {content:"";position:absolute;left:.25rem;top:.62rem;width:6px;height:6px;background:var(--green);border-radius:1px;transform:rotate(45deg);}
   #tab-terms .foot {margin-top:3.2rem;padding-top:1.3rem;border-top:1px solid var(--line);font-size:.8rem;color:var(--ink-faint);}
+  #tab-terms table.cons {width:100%;min-width:0;border-collapse:collapse;margin-top:1rem;font-size:.86rem;}
+  #tab-terms table.cons th, #tab-terms table.cons td {text-align:right;padding:.5rem .65rem;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums;}
+  #tab-terms table.cons th:first-child, #tab-terms table.cons td:first-child {text-align:left;color:var(--ink-soft);}
+  #tab-terms table.cons thead th {font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-faint);font-weight:600;border-bottom:1px solid var(--line-2);}
+  #tab-terms table.cons td.recovered {color:var(--s-agreed);font-weight:600;}
+  #tab-terms table.cons tfoot td {font-weight:600;color:var(--ink);border-top:1px solid var(--line-2);border-bottom:none;}
   #tab-terms a {color:var(--green-dk);}
 </style>
 </head>
@@ -327,6 +333,27 @@
     <div class="clause highlight">
       <div class="head"><h3>3.5 &nbsp;Your return does not depend on your involvement</h3><span class="chip open">Open</span></div>
       <p>Two different things, split by what they pay for. The <strong>investment return</strong> &mdash; capital back, the priority distribution and the equity share &mdash; is payment for <strong>money and risk</strong>, and is <strong>not contingent on Samuel doing any work or staying involved for any period</strong>. It is protected by the lien and the priority regardless. The <strong>business support fee</strong> is payment for <strong>work</strong> (the reporting and oversight El&auml;m&auml; provides) and continues for as long as that service is provided, subject to notice. The effect: ending Samuel's involvement can stop the fee, but <strong>cannot touch his investment economics</strong>.</p>
+    </div>
+    <div class="clause highlight">
+      <div class="head"><h3>3.6 &nbsp;The conservative schedule (the floor to hold to)</h3><span class="chip open">Baseline to agree</span></div>
+      <p>Deliberately cautious assumptions, so this is a floor rather than a target: <strong>$1,500 per house per month</strong> (below Jared's own $2,000&ndash;2,500), a slow occupancy ramp, <strong>six-month builds</strong>, only two flips in the period, and <strong>no speculative refinance</strong>. Even on these, the shape holds:</p>
+      <div class="figure-row">
+        <div class="fig"><div class="lbl">Support fee floor</div><div class="val">$27,000</div><div class="cap">Contractual, 18 months, regardless of performance</div></div>
+        <div class="fig"><div class="lbl">Capital recovered</div><div class="val">~Month 7</div><div class="cap">Your $40,000 back, via the first flip</div></div>
+        <div class="fig"><div class="lbl">Cash to you, 18 mo</div><div class="val">~$127,000</div><div class="cap">Fees + distributions + two flips</div></div>
+      </div>
+      <table class="cons">
+        <thead><tr><th>Period</th><th>Cash to Samuel</th><th>Capital position (end)</th></tr></thead>
+        <tbody>
+          <tr><td>Months 1&ndash;3</td><td>$5,700</td><td>&minus;$36,300</td></tr>
+          <tr><td>Months 4&ndash;6</td><td>$7,950</td><td>&minus;$32,850</td></tr>
+          <tr><td>Months 7&ndash;9 &nbsp;<span style="font-size:.72rem;color:var(--agreed)">capital recovered</span></td><td>$41,800</td><td class="recovered">+$4,450</td></tr>
+          <tr><td>Months 10&ndash;12</td><td>$11,550</td><td>+$11,500</td></tr>
+          <tr><td>Months 13&ndash;18</td><td>$60,550</td><td>+$63,050</td></tr>
+        </tbody>
+        <tfoot><tr><td>18-month total to Samuel</td><td>~$127,550</td><td>&mdash;</td></tr></tfoot>
+      </table>
+      <p class="src">Recurring income (fee + distribution) reaches $4,000/month around month 14 on these conservative inputs, versus month 7 on the base case. The interactive schedule with adjustable assumptions is the Cash Flow tab of the workspace. This is the version proposed as the committed baseline.</p>
     </div>
   </section>
 
