@@ -193,6 +193,33 @@
   #tab-terms table.cons td.recovered {color:var(--s-agreed);font-weight:600;}
   #tab-terms table.cons tfoot td {font-weight:600;color:var(--ink);border-top:1px solid var(--line-2);border-bottom:none;}
   #tab-terms a {color:var(--green-dk);}
+
+  /* ===== Location Analysis tab ===== */
+  #tab-location .locpad{ padding:1.4rem 1.5rem 1.8rem; }
+  #tab-location .loc-intro{ color:var(--ink-soft); font-size:.92rem; margin:0 0 1.1rem; max-width:66ch; }
+  #tab-location h3.loc-h{ font-family:"Cormorant Garamond",serif; font-weight:600; font-size:1.4rem; margin:1.9rem 0 .1rem; color:var(--ink); letter-spacing:-.005em; }
+  #tab-location .loc-tiles{ display:grid; grid-template-columns:repeat(4,1fr); gap:.7rem; }
+  @media(max-width:680px){ #tab-location .loc-tiles{ grid-template-columns:repeat(2,1fr);} }
+  #tab-location .loc-tile{ background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:.85rem .95rem; }
+  #tab-location .loc-tile .lbl{ font-size:.66rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint);}
+  #tab-location .loc-tile .val{ font-family:"Cormorant Garamond",serif; font-size:1.55rem; font-weight:600; line-height:1.05; margin-top:.3rem; font-variant-numeric:tabular-nums;}
+  #tab-location .loc-tile .cap{ font-size:.74rem; color:var(--ink-soft); margin-top:.25rem;}
+  #tab-location table.loc{ width:100%; min-width:0; border-collapse:collapse; margin-top:.8rem; font-size:.86rem; background:var(--card); }
+  #tab-location table.loc th,#tab-location table.loc td{ text-align:left; padding:.55rem .7rem; border-bottom:1px solid var(--line); vertical-align:top; }
+  #tab-location table.loc thead th{ font-size:.64rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); font-weight:600; border-bottom:1px solid var(--line-2); }
+  #tab-location table.loc td.num{ text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
+  #tab-location table.loc td.v{ white-space:nowrap; width:1%; }
+  #tab-location .vchip{ display:inline-flex; align-items:center; gap:.35rem; font-size:.66rem; font-weight:600; letter-spacing:.03em; text-transform:uppercase; padding:.2rem .5rem; border-radius:999px; white-space:nowrap; }
+  #tab-location .vchip::before{ content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
+  #tab-location .vchip.ok{ color:var(--s-agreed); background:var(--s-agreed-bg); }
+  #tab-location .vchip.watch{ color:var(--s-cond); background:var(--s-cond-bg); }
+  #tab-location .vchip.info{ color:var(--s-answered); background:var(--s-answered-bg); }
+  #tab-location .loc-flag{ margin-top:1.1rem; padding:.9rem 1.1rem; border-radius:10px; background:var(--s-cond-bg); border:1px solid var(--s-cond); font-size:.9rem; color:var(--ink); }
+  #tab-location .loc-flag b{ color:var(--s-cond); }
+  #tab-location .loc-note{ margin-top:1rem; padding:.8rem 1rem; border-radius:10px; background:var(--mint-lt); border:1px solid var(--line); font-size:.84rem; color:var(--ink-soft); }
+  #tab-location .loc-src{ margin-top:1.2rem; font-size:.76rem; color:var(--ink-faint); }
+  #tab-location .loc-src a{ color:var(--green-dk); }
+
 </style>
 </head>
 <body>
@@ -224,6 +251,7 @@
     <button class="tab" role="tab" aria-selected="true" data-tab="matrix">Question Matrix</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="terms">Heads of Terms <span class="soon">soon</span></button>
     <button class="tab" role="tab" aria-selected="false" data-tab="cashflow">Cash Flow <span class="soon">soon</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="location">Location</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="plan">Business Plan <span class="soon">soon</span></button>
   </div>
 
@@ -455,6 +483,52 @@
     <div class="cf-scroll"><table><thead><tr><th class="l">Month</th><th class="l">Event</th><th>Support fee</th><th>Distribution</th><th>Flip / refi</th><th>To Samuel</th><th>Capital position</th><th>Cumulative</th></tr></thead><tbody id="cf-tbody"></tbody></table></div>
     <div class="cf-flag" id="cf-verdict"></div>
   </div></section>
+  <section class="panel hidden" id="tab-location"><div class="locpad">
+    <p class="loc-intro">Diligence on the first property's location, from the Google pin Jared sent and San Bernardino County assessor data. The point of this page: separate what is <em>verified public data</em> from what is a <em>market estimate</em>. The location confirms most of Jared's structural claims and sharpens the one number that matters.</p>
+
+    <h3 class="loc-h">Where it is</h3>
+    <div class="loc-tiles">
+      <div class="loc-tile"><div class="lbl">Coordinates</div><div class="val">34.1892&deg;<br>&minus;115.9047&deg;</div><div class="cap">From the pin Jared sent</div></div>
+      <div class="loc-tile"><div class="lbl">Area</div><div class="val">Wonder Valley</div><div class="cap">East of Twentynine Palms, 92277</div></div>
+      <div class="loc-tile"><div class="lbl">Jurisdiction</div><div class="val">San Bernardino</div><div class="cap">Unincorporated county</div></div>
+      <div class="loc-tile"><div class="lbl">Lot size</div><div class="val">2.5 acres</div><div class="cap">Assessor record, confirmed</div></div>
+    </div>
+
+    <h3 class="loc-h">Jared's claims vs what the data shows</h3>
+    <div class="cf-scroll" style="overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin-top:.7rem">
+    <table class="loc">
+      <thead><tr><th>Jared's claim</th><th>What the data shows</th><th class="v">Verdict</th></tr></thead>
+      <tbody>
+        <tr><td>"Primarily in the county, not the city"</td><td>Unincorporated San Bernardino County, 92277. His zoning argument holds here.</td><td class="v"><span class="vchip ok">Confirmed</span></td></tr>
+        <tr><td>"Remote, 2.5-5 acre lots"</td><td>His home parcel (80553 Indian Trail) is <strong>2.50 acres</strong> per the assessor. The first house next door is comparable.</td><td class="v"><span class="vchip ok">Confirmed</span></td></tr>
+        <tr><td>Off-grid activation: septic, solar, water tank</td><td>Wonder Valley is off-grid Mojave; there is often no city water or power to connect. The $20k plan is location-appropriate, not padding.</td><td class="v"><span class="vchip ok">Fits</span></td></tr>
+        <tr><td>IEHP Medicaid rent support</td><td>Inland Empire Health Plan covers San Bernardino County.</td><td class="v"><span class="vchip info">Consistent</span></td></tr>
+        <tr><td>"Comps are the same as any single-family residence"</td><td>Thin market: about <strong>4 sales a month</strong>, price spread $9,500 to $1.4M. Few genuinely comparable sales for an appraiser to lean on.</td><td class="v"><span class="vchip watch">Sharpens risk</span></td></tr>
+        <tr><td>"$250,000-$300,000 finished value"</td><td>Top of what actually trades in Wonder Valley (see anchors below), and well above the assessed basis of neighbouring homes.</td><td class="v"><span class="vchip watch">Aggressive</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3 class="loc-h">The value question, with real anchors</h3>
+    <div class="cf-scroll" style="overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin-top:.7rem">
+    <table class="loc">
+      <thead><tr><th>Anchor</th><th class="num">Figure</th><th>Type</th></tr></thead>
+      <tbody>
+        <tr><td>Jared's home &mdash; 2bd, 2.5 acres (80553 Indian Trail)</td><td class="num">$87,020</td><td>Assessed (tax basis, runs below market)</td></tr>
+        <tr><td>Wonder Valley market</td><td class="num">$175k&ndash;250k</td><td>Actual sale medians (thin, volatile)</td></tr>
+        <tr><td>A 768 sq ft cabin, recent sale</td><td class="num">$250,000</td><td>One actual sale &mdash; shows the ceiling has risen</td></tr>
+        <tr><td>Jared's finished-value assumption</td><td class="num">$250k&ndash;300k</td><td>His projection, top of the market</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="loc-flag"><b>The one risk this leaves.</b> The $250-300k is not fantasy &mdash; a small cabin just sold for $250k &mdash; but it is a <b>top-of-market number resting on thin comps</b>. The refinance (an appraiser) and the flip (a wholesale buyer) both need a third party to sign off on it, in a market with very few comparable sales. This is the single thing to verify with a <b>local agent's comparative market analysis on the specific parcel</b> before relying on the ARV. Cheap to do, and it is the number the whole flip-and-refinance engine turns on.</div>
+
+    <div class="loc-note"><strong>Confidence.</strong> The coordinates, the 2.5-acre lot size and the $87,020 assessed value are hard public data you can re-check. The market range and the ARV read are from thin, volatile sales data and are estimates, not valuations &mdash; treat them as a direction to confirm, not a number to bank.</div>
+
+    <div class="loc-src">Sources: San Bernardino County assessor record via the property listing (80553 Indian Trail); Zillow and Homes.com (Wonder Valley / 92277 sales); Redfin (Wonder Valley housing market). Reverse-geocoded via OpenStreetMap.</div>
+  </div></section>
+
   <section class="panel hidden" id="tab-plan"><div class="soon-panel"><h2>Business Plan</h2><p>The narrative over the numbers: the model, the mission, the first six months in detail and year three in outline.</p><div class="soon-list"><span>Model</span><span>Market</span><span>Operations</span><span>Milestones</span><span>Risks &amp; controls</span></div></div></section>
 
   <div class="note" style="padding-top:1.4rem">Private working workspace for Samuel Barlow &middot; El&auml;m&auml; Consulting. Not an offer or an agreement. Legal and tax observations are for framing only and must be confirmed by qualified advisers before capital moves.</div>
@@ -594,7 +668,7 @@
     t.addEventListener("click", function(){
       Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(x){ x.setAttribute("aria-selected","false"); });
       t.setAttribute("aria-selected","true");
-      ["matrix","terms","cashflow","plan"].forEach(function(name){ document.getElementById("tab-"+name).classList.toggle("hidden", name!==t.dataset.tab); });
+      ["matrix","terms","cashflow","location","plan"].forEach(function(name){ document.getElementById("tab-"+name).classList.toggle("hidden", name!==t.dataset.tab); });
     });
   });
 })();
