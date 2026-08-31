@@ -109,6 +109,46 @@
   .hidden { display:none !important; }
   .note { font-size:.74rem; color:var(--ink-faint); padding:0 1rem 1.1rem; }
   a { color:var(--green-dk); }
+
+  /* ===== Cash Flow tab (embedded return schedule) ===== */
+  :root{ --c-serv:#4C72C0; --c-dist:#3AA06A; --c-flip:#C77D2E; --cf-grid:#EEF1EE; --cf-ref:#B44A3B; --cf-good:#2F8F63; }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){ --c-serv:#6E97E0; --c-dist:#57C08B; --c-flip:#E0A05A; --cf-grid:#222A22; --cf-ref:#E1806F; --cf-good:#66C093; } }
+  #tab-cashflow .cfpad{ padding:1.2rem; }
+  #tab-cashflow .cf-intro{ color:var(--ink-soft); font-size:.9rem; margin:0 0 1rem; max-width:64ch; }
+  #tab-cashflow .cf-tiles{ display:grid; grid-template-columns:repeat(4,1fr); gap:.7rem; }
+  @media(max-width:680px){ #tab-cashflow .cf-tiles{ grid-template-columns:repeat(2,1fr);} }
+  #tab-cashflow .cf-tile{ background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:.85rem .95rem; }
+  #tab-cashflow .cf-tile .lbl{ font-size:.66rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint);}
+  #tab-cashflow .cf-tile .val{ font-family:"Cormorant Garamond",serif; font-size:1.8rem; font-weight:600; line-height:1; margin-top:.3rem; font-variant-numeric:tabular-nums;}
+  #tab-cashflow .cf-tile .cap{ font-size:.74rem; color:var(--ink-soft); margin-top:.25rem;}
+  #tab-cashflow h3.cf-h{ font-family:"Cormorant Garamond",serif; font-weight:600; font-size:1.4rem; margin:1.8rem 0 .1rem; color:var(--ink); letter-spacing:-.005em;}
+  #tab-cashflow .cf-card{ background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:1rem 1.1rem 1.2rem; margin-top:.7rem; }
+  #tab-cashflow .cf-legend{ display:flex; flex-wrap:wrap; gap:.4rem 1rem; margin-bottom:.6rem; }
+  #tab-cashflow .cf-lg{ display:inline-flex; align-items:center; gap:.4rem; font-size:.78rem; color:var(--ink-soft);}
+  #tab-cashflow .cf-sw{ width:11px; height:11px; border-radius:3px;}
+  #tab-cashflow .cf-chartbox{ position:relative; width:100%; overflow-x:auto; }
+  #tab-cashflow .cf-chartbox svg{ display:block; width:100%; height:auto;}
+  #tab-cashflow .cf-tt{ position:absolute; pointer-events:none; background:var(--card); border:1px solid var(--line-2); border-radius:9px; padding:.5rem .6rem; font-size:.75rem; box-shadow:var(--shadow); opacity:0; transition:opacity .1s; min-width:150px; z-index:5;}
+  #tab-cashflow .cf-tt .r{ display:flex; justify-content:space-between; gap:1rem; margin-top:.2rem; font-variant-numeric:tabular-nums;}
+  #tab-cashflow .cf-tt .r .k{ display:flex; align-items:center; gap:.35rem; color:var(--ink-soft);}
+  #tab-cashflow .cf-controls{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:.9rem 1.2rem;}
+  #tab-cashflow .cf-ctrl label{ font-size:.72rem; font-weight:600; color:var(--ink-soft); display:flex; justify-content:space-between; gap:.5rem;}
+  #tab-cashflow .cf-ctrl label .v{ color:var(--green-dk); font-variant-numeric:tabular-nums;}
+  #tab-cashflow .cf-ctrl input[type=range]{ width:100%; margin-top:.35rem; accent-color:var(--c-dist);}
+  #tab-cashflow .cf-ctrl .hint{ font-size:.68rem; color:var(--ink-faint); margin-top:.15rem;}
+  #tab-cashflow .cf-toggle{ display:flex; align-items:center; gap:.5rem; font-size:.82rem; color:var(--ink-soft); margin-top:1rem;}
+  #tab-cashflow .cf-scroll{ overflow-x:auto; margin-top:.7rem; border:1px solid var(--line); border-radius:12px; }
+  #tab-cashflow table{ width:100%; border-collapse:collapse; font-size:.8rem; min-width:720px; background:var(--card);}
+  #tab-cashflow thead th{ text-align:right; font-size:.62rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); padding:.65rem .8rem; border-bottom:1px solid var(--line-2); background:var(--card); position:sticky; top:0;}
+  #tab-cashflow thead th.l{ text-align:left;}
+  #tab-cashflow tbody td{ padding:.48rem .8rem; border-bottom:1px solid var(--line); text-align:right; font-variant-numeric:tabular-nums; color:var(--ink);}
+  #tab-cashflow tbody td.l{ text-align:left; color:var(--ink-soft);}
+  #tab-cashflow tbody td.mo{ font-weight:600; color:var(--ink); text-align:left;}
+  #tab-cashflow tbody tr.evt{ background:color-mix(in srgb,var(--c-flip) 8%,transparent);}
+  #tab-cashflow .evt-tag{ font-size:.66rem; font-weight:600; color:var(--c-flip);}
+  #tab-cashflow .pos{ color:var(--cf-good); font-weight:600;}
+  #tab-cashflow .neg{ color:var(--cf-ref);}
+  #tab-cashflow .cf-flag{ margin-top:1rem; padding:.8rem 1rem; border-radius:10px; background:color-mix(in srgb,var(--c-flip) 10%,transparent); border:1px solid color-mix(in srgb,var(--c-flip) 35%,transparent); font-size:.86rem; color:var(--ink);}
 </style>
 </head>
 <body>
@@ -165,7 +205,28 @@
   </section>
 
   <section class="panel hidden" id="tab-terms"><div class="soon-panel"><h2>Agreed Heads of Terms</h2><p>Who owns what, how much is paid, in what order, and under which conditions. Built from the rows that reach 'agreed' in the matrix. This is the next section to fill.</p><div class="soon-list"><span>Ownership</span><span>Capital &amp; lien</span><span>Waterfall</span><span>Decision rights</span><span>Exit &amp; deadlock</span><span>Conditions precedent</span></div></div></section>
-  <section class="panel hidden" id="tab-cashflow"><div class="soon-panel"><h2>Cash Flow Forecast</h2><p>The 24-month, property-by-property model. Held until enough of the matrix is answered to model it honestly, rather than guessing.</p><div class="soon-list"><span>Capital at risk</span><span>Per-house P&amp;L</span><span>Flip schedule</span><span>Break-even occupancy</span><span>Stress cases</span></div></div></section>
+  <section class="panel hidden" id="tab-cashflow"><div class="cfpad">
+    <p class="cf-intro">Not a fixed promise. A schedule of how your $40,000 comes back and the income builds, from the three streams, on assumptions you can move and Jared can commit to. Capital position tracks investment returns only; the support fee is separate earned income.</p>
+    <div class="cf-tiles" id="cf-tiles"></div>
+    <h3 class="cf-h">How the monthly income builds</h3>
+    <div class="cf-card">
+      <div class="cf-legend">
+        <span class="cf-lg"><span class="cf-sw" style="background:var(--c-serv)"></span> Business support fee (El&auml;m&auml;)</span>
+        <span class="cf-lg"><span class="cf-sw" style="background:var(--c-dist)"></span> Rental profit distribution</span>
+        <span class="cf-lg"><span class="cf-sw" style="background:var(--c-flip)"></span> Flip / refinance event</span>
+        <span class="cf-lg"><span class="cf-sw" style="width:16px;height:0;border-top:2px dashed var(--cf-ref)"></span> $4,000 target</span>
+      </div>
+      <div class="cf-chartbox"><div class="cf-tt" id="cf-tt"></div><svg id="cf-chart" viewBox="0 0 900 340" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Monthly income to Samuel building over 18 months"></svg></div>
+    </div>
+    <h3 class="cf-h">Assumptions</h3>
+    <div class="cf-card">
+      <div class="cf-controls" id="cf-controls"></div>
+      <label class="cf-toggle"><input type="checkbox" id="cf-recycle" checked> Recycle flip proceeds into the next flip and a new rental</label>
+    </div>
+    <h3 class="cf-h">The schedule</h3>
+    <div class="cf-scroll"><table><thead><tr><th class="l">Month</th><th class="l">Event</th><th>Support fee</th><th>Distribution</th><th>Flip / refi</th><th>To Samuel</th><th>Capital position</th><th>Cumulative</th></tr></thead><tbody id="cf-tbody"></tbody></table></div>
+    <div class="cf-flag" id="cf-verdict"></div>
+  </div></section>
   <section class="panel hidden" id="tab-plan"><div class="soon-panel"><h2>Business Plan</h2><p>The narrative over the numbers: the model, the mission, the first six months in detail and year three in outline.</p><div class="soon-list"><span>Model</span><span>Market</span><span>Operations</span><span>Milestones</span><span>Risks &amp; controls</span></div></div></section>
 
   <div class="note" style="padding-top:1.4rem">Private working workspace for Samuel Barlow &middot; El&auml;m&auml; Consulting. Not an offer or an agreement. Legal and tax observations are for framing only and must be confirmed by qualified advisers before capital moves.</div>
@@ -308,6 +369,102 @@
       ["matrix","terms","cashflow","plan"].forEach(function(name){ document.getElementById("tab-"+name).classList.toggle("hidden", name!==t.dataset.tab); });
     });
   });
+})();
+</script>
+
+<script>
+(function(){
+  "use strict";
+  if(!document.getElementById("cf-chart")) return;
+  var fmt=function(n){ n=Math.round(n); return (n<0?"-$":"$")+Math.abs(n).toLocaleString(); };
+  var fmtk=function(n){ return "$"+Math.round(n/100)/10+"k"; };
+  var P={ capital:40000, house1Activate:20000, flipDown:17500, perHouseDist:1750, servicesFee:1500, flipProfitSamuel:22500, flipMonths:4, ramp:[0,0.45,0.75,0.85,0.9,0.9] };
+  var recycle=true;
+  var CONTROLS=[
+    {k:"perHouseDist",label:"Rental profit / house / mo (your half)",min:1000,max:3000,step:250,fmt:fmt,hint:"Jared quotes $2,000-2,500. $1,750 is a conservative pre-refi figure."},
+    {k:"servicesFee",label:"Business support fee / mo (Elama)",min:0,max:3000,step:250,fmt:fmt,hint:"Contractual services fee, paid regardless of profit."},
+    {k:"flipProfitSamuel",label:"Your share of each flip",min:10000,max:40000,step:2500,fmt:fmt,hint:"Half of ~$45k net on a $200k wholesale."},
+    {k:"flipMonths",label:"Build time per flip (months)",min:3,max:7,step:1,fmt:function(v){return v+" mo";},hint:"Time from start to sale."}
+  ];
+  function occ(ms){ var v=P.ramp[Math.min(ms,P.ramp.length-1)]; return (v==null)?0.9:v; }
+  function model(){
+    var N=18, rows=[], houses=[{start:1}], flips=[{start:1}];
+    var capOut=P.house1Activate+P.flipDown, recovered=null, hit4k=null, cum=0, capPos=-capOut;
+    for(var m=1;m<=N;m++){
+      var ev=[], dist=0;
+      houses.forEach(function(h){ if(m>=h.start){ dist+=P.perHouseDist*occ(m-h.start); } });
+      var serv=P.servicesFee, flipCash=0;
+      flips.slice().forEach(function(f){
+        if(!f.sold && m===f.start+P.flipMonths){
+          f.sold=true; var proceeds=P.flipDown+P.flipProfitSamuel; flipCash+=proceeds;
+          ev.push("Flip sells (+"+fmtk(proceeds)+")");
+          if(recycle){ flips.push({start:m}); houses.push({start:m}); ev.push("Recycle: new flip + rental #"+houses.length); }
+        }
+      });
+      if(m===9){ flipCash+=15000; ev.push("Refi house #1 (+$15k cash-out)"); }
+      var toSam=serv+dist+flipCash; cum+=toSam; capPos+=(dist+flipCash);
+      if(recovered===null && capPos>=0){ recovered=m; }
+      var recurring=serv+dist;
+      if(hit4k===null && recurring>=4000){ hit4k=m; }
+      rows.push({m:m,ev:ev,serv:serv,dist:dist,flip:flipCash,toSam:toSam,capPos:capPos,cum:cum,recurring:recurring});
+    }
+    return {rows:rows, recovered:recovered, hit4k:hit4k, houses:houses.length};
+  }
+  function render(){
+    var R=model(), rows=R.rows, last=rows[rows.length-1];
+    document.getElementById("cf-tiles").innerHTML=[
+      ["Capital recovered", R.recovered?("Month "+R.recovered):">18 mo", "Your $40,000 back"],
+      ["$4,000/mo reached", R.hit4k?("Month "+R.hit4k):">18 mo", "Recurring: fee + distribution"],
+      ["Cash to you, 18 mo", fmt(last.cum), "Fees + distributions + flips"],
+      ["Rentals held by mo 18", R.houses, "Plus lumpy flip income"]
+    ].map(function(t){return '<div class="cf-tile"><div class="lbl">'+t[0]+'</div><div class="val">'+t[1]+'</div><div class="cap">'+t[2]+'</div></div>';}).join("");
+    drawChart(rows); drawTable(rows);
+    var v=document.getElementById("cf-verdict");
+    v.innerHTML = R.hit4k
+      ? "On these assumptions your $40,000 is fully back by <b>month "+R.recovered+"</b>, and recurring income (support fee plus distribution) passes <b>$4,000/month around month "+R.hit4k+"</b>, on top of a ~$40k flip event every "+P.flipMonths+" months. The $4,000 is a build-up, not a month-3 starting point."
+      : "On these assumptions recurring income does not reach $4,000/month within 18 months. Raise the per-house distribution, the support fee, or the recycling pace to get there.";
+  }
+  function drawChart(rows){
+    var W=900,H=340,mL=54,mR=16,mT=18,mB=34,pw=W-mL-mR,ph=H-mT-mB;
+    var maxY=Math.max(6000, Math.ceil(Math.max.apply(null,rows.map(function(r){return r.recurring;}))/1000+1)*1000);
+    var x=function(i){return mL+pw*(i/(rows.length-1));}, y=function(v){return mT+ph*(1-v/maxY);};
+    var svg="";
+    for(var g=0;g<=maxY;g+=1000){ svg+='<line x1="'+mL+'" y1="'+y(g)+'" x2="'+(W-mR)+'" y2="'+y(g)+'" stroke="var(--cf-grid)" stroke-width="1"/><text x="'+(mL-8)+'" y="'+(y(g)+3)+'" text-anchor="end" font-size="10" fill="var(--ink-faint)">$'+(g/1000)+'k</text>'; }
+    rows.forEach(function(r,i){ if(r.m%3===0||r.m===1){ svg+='<text x="'+x(i)+'" y="'+(H-12)+'" text-anchor="middle" font-size="10" fill="var(--ink-faint)">M'+r.m+'</text>'; }});
+    function area(topFn,botFn){ var up=rows.map(function(r,i){return (i===0?"M":"L")+x(i)+" "+topFn(r);}).join(" "); var dn=rows.slice().reverse().map(function(r,i){var idx=rows.length-1-i;return "L"+x(idx)+" "+botFn(r);}).join(" "); return up+" "+dn+" Z"; }
+    svg+='<path d="'+area(function(r){return y(r.serv);},function(){return y(0);})+'" fill="var(--c-serv)" fill-opacity="0.85"/>';
+    svg+='<path d="'+area(function(r){return y(r.serv+r.dist);},function(r){return y(r.serv);})+'" fill="var(--c-dist)" fill-opacity="0.85"/>';
+    svg+='<path d="'+rows.map(function(r,i){return (i===0?"M":"L")+x(i)+" "+y(r.serv);}).join(" ")+'" fill="none" stroke="var(--card)" stroke-width="2"/>';
+    svg+='<path d="'+rows.map(function(r,i){return (i===0?"M":"L")+x(i)+" "+y(r.serv+r.dist);}).join(" ")+'" fill="none" stroke="var(--c-dist)" stroke-width="2"/>';
+    svg+='<line x1="'+mL+'" y1="'+y(4000)+'" x2="'+(W-mR)+'" y2="'+y(4000)+'" stroke="var(--cf-ref)" stroke-width="1.5" stroke-dasharray="5 4"/>';
+    svg+='<text x="'+(W-mR)+'" y="'+(y(4000)-5)+'" text-anchor="end" font-size="10" fill="var(--cf-ref)" font-weight="600">$4,000 target</text>';
+    rows.forEach(function(r,i){ if(r.flip>0){ svg+='<circle cx="'+x(i)+'" cy="'+y(r.serv+r.dist)+'" r="5" fill="var(--c-flip)" stroke="var(--card)" stroke-width="2"/>'; }});
+    svg+='<rect id="cf-hit" x="'+mL+'" y="'+mT+'" width="'+pw+'" height="'+ph+'" fill="transparent"/><line id="cf-cross" x1="0" y1="'+mT+'" x2="0" y2="'+(mT+ph)+'" stroke="var(--line-2)" stroke-width="1" opacity="0"/>';
+    var el=document.getElementById("cf-chart"); el.innerHTML=svg;
+    var tt=document.getElementById("cf-tt"), cross=el.querySelector("#cf-cross"), hit=el.querySelector("#cf-hit"), box=el.parentNode;
+    hit.addEventListener("mousemove",function(evt){
+      var pt=el.getBoundingClientRect(), sx=(evt.clientX-pt.left)/pt.width*W;
+      var i=Math.round((sx-mL)/pw*(rows.length-1)); i=Math.max(0,Math.min(rows.length-1,i)); var r=rows[i];
+      cross.setAttribute("x1",x(i)); cross.setAttribute("x2",x(i)); cross.setAttribute("opacity","1"); tt.style.opacity="1";
+      tt.innerHTML='<b>Month '+r.m+'</b><div class="r"><span class="k"><span class="cf-sw" style="background:var(--c-serv)"></span>Support fee</span><span>'+fmt(r.serv)+'</span></div><div class="r"><span class="k"><span class="cf-sw" style="background:var(--c-dist)"></span>Distribution</span><span>'+fmt(r.dist)+'</span></div>'+(r.flip>0?'<div class="r"><span class="k"><span class="cf-sw" style="background:var(--c-flip)"></span>Flip / refi</span><span>'+fmt(r.flip)+'</span></div>':'')+'<div class="r" style="border-top:1px solid var(--line);margin-top:.3rem;padding-top:.3rem"><span class="k">Recurring</span><span>'+fmt(r.recurring)+'</span></div>';
+      var bx=box.getBoundingClientRect(), lx=(x(i)/W)*bx.width; tt.style.left=Math.min(bx.width-165,Math.max(0,lx+10))+"px"; tt.style.top="10px";
+    });
+    hit.addEventListener("mouseleave",function(){tt.style.opacity="0";cross.setAttribute("opacity","0");});
+  }
+  function drawTable(rows){
+    document.getElementById("cf-tbody").innerHTML=rows.map(function(r){
+      return '<tr class="'+(r.flip>0?"evt":"")+'"><td class="mo">M'+r.m+'</td><td class="l">'+(r.ev.length?'<span class="evt-tag">'+r.ev.join(" &middot; ")+'</span>':'')+'</td><td>'+fmt(r.serv)+'</td><td>'+(r.dist?fmt(r.dist):'&mdash;')+'</td><td>'+(r.flip?fmt(r.flip):'&mdash;')+'</td><td><b>'+fmt(r.toSam)+'</b></td><td class="'+(r.capPos>=0?"pos":"neg")+'">'+fmt(r.capPos)+'</td><td>'+fmt(r.cum)+'</td></tr>';
+    }).join("");
+  }
+  var ch=document.getElementById("cf-controls");
+  CONTROLS.forEach(function(c){
+    var d=document.createElement("div"); d.className="cf-ctrl";
+    d.innerHTML='<label>'+c.label+' <span class="v" id="cf-v-'+c.k+'">'+c.fmt(P[c.k])+'</span></label><input type="range" min="'+c.min+'" max="'+c.max+'" step="'+c.step+'" value="'+P[c.k]+'" id="cf-r-'+c.k+'"><div class="hint">'+c.hint+'</div>';
+    ch.appendChild(d);
+    d.querySelector("input").addEventListener("input",function(e){ P[c.k]=+e.target.value; document.getElementById("cf-v-"+c.k).textContent=c.fmt(P[c.k]); render(); });
+  });
+  document.getElementById("cf-recycle").addEventListener("change",function(e){ recycle=e.target.checked; render(); });
+  render();
 })();
 </script>
 </body>
