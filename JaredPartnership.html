@@ -278,6 +278,35 @@
   #tab-agenda .ag-tag.decide{ color:var(--s-cond); background:var(--s-cond-bg); border-color:var(--s-cond); }
   #tab-agenda .ag-foot{ margin-top:1.4rem; font-size:.8rem; color:var(--ink-faint); }
 
+
+  /* ===== Due Diligence tab ===== */
+  #tab-jdd .jd-pad{ padding:1.4rem 1.5rem 1.8rem; }
+  #tab-jdd .jd-intro{ color:var(--ink-soft); font-size:.92rem; margin:0 0 1.1rem; max-width:66ch; }
+  #tab-jdd h3.jd-h{ font-family:"Cormorant Garamond",serif; font-weight:600; font-size:1.4rem; margin:1.9rem 0 .3rem; color:var(--ink); }
+  #tab-jdd .jd-tiles{ display:grid; grid-template-columns:repeat(4,1fr); gap:.7rem; }
+  @media(max-width:680px){ #tab-jdd .jd-tiles{ grid-template-columns:repeat(2,1fr);} }
+  #tab-jdd .jd-tile{ background:var(--paper); border:1px solid var(--line); border-radius:12px; padding:.85rem .95rem; }
+  #tab-jdd .jd-tile .lbl{ font-size:.66rem; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint); }
+  #tab-jdd .jd-tile .val{ font-family:"Cormorant Garamond",serif; font-size:1.45rem; font-weight:600; line-height:1.05; margin-top:.3rem; }
+  #tab-jdd .jd-tile.ok .val{ color:var(--s-agreed); } #tab-jdd .jd-tile.watch .val{ color:var(--s-cond); }
+  #tab-jdd .jd-mwrap{ overflow-x:auto; border:1px solid var(--line); border-radius:12px; margin-top:.4rem; }
+  #tab-jdd table.jd{ width:100%; min-width:640px; border-collapse:collapse; font-size:.86rem; background:var(--card); }
+  #tab-jdd table.jd th,#tab-jdd table.jd td{ text-align:left; padding:.6rem .8rem; border-bottom:1px solid var(--line); vertical-align:top; }
+  #tab-jdd table.jd thead th{ font-size:.64rem; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); font-weight:600; border-bottom:1px solid var(--line-2); }
+  #tab-jdd table.jd td.v{ white-space:nowrap; width:1%; }
+  #tab-jdd .vchip{ display:inline-flex; align-items:center; gap:.35rem; font-size:.64rem; font-weight:600; letter-spacing:.03em; text-transform:uppercase; padding:.2rem .5rem; border-radius:999px; white-space:nowrap; }
+  #tab-jdd .vchip::before{ content:""; width:6px; height:6px; border-radius:50%; background:currentColor; }
+  #tab-jdd .vchip.ok{ color:var(--s-agreed); background:var(--s-agreed-bg); }
+  #tab-jdd .vchip.watch{ color:var(--s-cond); background:var(--s-cond-bg); }
+  #tab-jdd .vchip.open{ color:var(--s-open); background:var(--s-open-bg); }
+  #tab-jdd .jd-flag{ margin-top:1.1rem; padding:.9rem 1.1rem; border-radius:10px; background:var(--s-agreed-bg); border:1px solid var(--s-agreed); font-size:.9rem; color:var(--ink); }
+  #tab-jdd .jd-flag b{ color:var(--s-agreed); }
+  #tab-jdd .jd-todo{ margin-top:1rem; padding:.9rem 1.1rem; border-radius:10px; background:var(--s-cond-bg); border:1px solid var(--s-cond); font-size:.88rem; color:var(--ink); }
+  #tab-jdd .jd-todo b{ color:var(--s-cond); }
+  #tab-jdd .jd-todo ul{ margin:.4rem 0 0; padding-left:1.1rem; } #tab-jdd .jd-todo li{ margin-top:.3rem; }
+  #tab-jdd .jd-note{ margin-top:1rem; padding:.8rem 1rem; border-radius:10px; background:var(--mint-lt); border:1px solid var(--line); font-size:.82rem; color:var(--ink-soft); }
+  #tab-jdd .jd-src{ margin-top:1.1rem; font-size:.75rem; color:var(--ink-faint); }
+
 </style>
 </head>
 <body>
@@ -311,6 +340,7 @@
     <button class="tab" role="tab" aria-selected="false" data-tab="terms">Heads of Terms</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="cashflow">Cash Flow</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="location">Location</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="jdd">Due Diligence</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="tracker">El&auml;m&auml; Tracker</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="plan">Business Plan <span class="soon">soon</span></button>
   </div>
@@ -662,6 +692,43 @@
     <div class="loc-src">Sources: San Bernardino County assessor record via the property listing (80553 Indian Trail); Zillow and Homes.com (Wonder Valley / 92277 sales); Redfin (Wonder Valley housing market). Reverse-geocoded via OpenStreetMap.</div>
   </div></section>
 
+  <section class="panel hidden" id="tab-jdd"><div class="jd-pad">
+    <p class="jd-intro">Diligence on Jared Young, the operator, drawn entirely from public records &mdash; the federal provider registry, public professional directories, a public company record and public web search. What is verified, what is preliminary, and what still needs a formal check.</p>
+
+    <div class="jd-tiles">
+      <div class="jd-tile ok"><div class="lbl">Identity</div><div class="val">Confirmed</div></div>
+      <div class="jd-tile ok"><div class="lbl">Credential</div><div class="val">Verified</div></div>
+      <div class="jd-tile ok"><div class="lbl">Background story</div><div class="val">Corroborated</div></div>
+      <div class="jd-tile watch"><div class="lbl">Criminal record</div><div class="val">Not formally checked</div></div>
+    </div>
+
+    <h3 class="jd-h">Findings</h3>
+    <div class="jd-mwrap"><table class="jd">
+      <thead><tr><th>Item</th><th>What the public record shows</th><th class="v">Verdict</th></tr></thead>
+      <tbody>
+        <tr><td>Identity</td><td>Dr. Jared Young, DC, of Fountain Valley (Peak State Wellness). Samuel confirmed the public directory photo is the man he is dealing with.</td><td class="v"><span class="vchip ok">Confirmed</span></td></tr>
+        <tr><td>Professional credential</td><td>Licensed <b>chiropractor (DC)</b> on the federal NPI registry. He described himself as a chiropractor, which matches; he is not an osteopath (DO), and no osteopath listing exists, consistent with what he said.</td><td class="v"><span class="vchip ok">Verified</span></td></tr>
+        <tr><td>Prior practice &amp; story</td><td>Ran his own corporation, "Peak State Wellness, a Jared Young Doctor of Chiropractic Corporation," in Fountain Valley &mdash; a wellness and lifestyle-mentorship practice &mdash; which closed in May 2026, consistent with moving to the desert project. The orientation matches the recovery-housing pitch.</td><td class="v"><span class="vchip ok">Consistent</span></td></tr>
+        <tr><td>Public-records / criminal search</td><td>An open-source sweep (news, court and arrest terms) found <b>no adverse public records tied to this Jared Young</b>. Other "Young" results were different people. Absence of public results is <b>not</b> a clearance.</td><td class="v"><span class="vchip watch">Preliminary</span></td></tr>
+        <tr><td>Formal background check</td><td>Not yet run. The proper route is an FCRA-compliant check via a licensed provider, ideally with consent.</td><td class="v"><span class="vchip open">Open</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="jd-flag"><b>Where the person stands.</b> The operator and his account hold up well. Identity confirmed, chiropractic credential real and matching what he told you, and a coherent timeline (winding down a wellness practice to build this). With the location diligence also confirmed (county, lot size, off-grid), the <b>person and his story are corroborated</b>. The open risk in this deal is the economics (the $250-300k finished value), not the man.</div>
+
+    <div class="jd-todo"><b>Still to do to fully close the person.</b>
+      <ul>
+        <li>A <b>mutual, consented background check</b>, folded into the "references both ways" term.</li>
+        <li>Two free public checks you can run yourself: the <b>California Megan's Law</b> registry and the <b>San Bernardino Superior Court</b> case index, both by name.</li>
+        <li>Speak to two of his references, including one relationship that did not end well.</li>
+      </ul>
+    </div>
+
+    <div class="jd-note"><strong>Confidence.</strong> Identity and credential are verified from authoritative public sources (federal NPI registry, professional directories) and Samuel's own recognition. The criminal line reflects public-source search only and is not a formal clearance.</div>
+
+    <div class="jd-src">Public sources: federal NPI registry (npiregistry.cms.hhs.gov); Vitals, WebMD and Healthgrades provider profiles; Dun &amp; Bradstreet company record (Peak State Wellness); Yelp; public web search.</div>
+  </div></section>
+
   <section class="panel hidden" id="tab-tracker"><div class="tk-pad">
     <p class="tk-intro">A live business self-assessment. Rate each of the fifty questions and the matrix at the top scores itself in real time, across the three drivers &mdash; Vision, Velocity and Value &mdash; and the five owner levels. It saves and syncs with the rest of the workspace.</p>
     <div class="tk-gauges" id="tk-gauges"></div>
@@ -820,7 +887,7 @@
     t.addEventListener("click", function(){
       Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(x){ x.setAttribute("aria-selected","false"); });
       t.setAttribute("aria-selected","true");
-      ["matrix","agenda","terms","cashflow","location","tracker","plan"].forEach(function(name){ document.getElementById("tab-"+name).classList.toggle("hidden", name!==t.dataset.tab); });
+      ["matrix","agenda","terms","cashflow","location","jdd","tracker","plan"].forEach(function(name){ document.getElementById("tab-"+name).classList.toggle("hidden", name!==t.dataset.tab); });
     });
   });
 })();
