@@ -260,6 +260,24 @@
   #tab-tracker .tk-q select.a-s0{ color:var(--s-un); border-color:var(--s-un); }
   #tab-tracker .tk-save{ font-size:.74rem; color:var(--ink-faint); margin-top:1rem; }
 
+
+  /* ===== Agenda tab ===== */
+  #tab-agenda .ag-pad{ padding:1.4rem 1.6rem 1.9rem; }
+  #tab-agenda .ag-head{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:.6rem; border-bottom:1px solid var(--line); padding-bottom:.9rem; }
+  #tab-agenda .ag-head .when{ font-family:"Cormorant Garamond",serif; font-size:1.3rem; font-weight:600; color:var(--green-dk); }
+  #tab-agenda .ag-intro{ color:var(--ink-soft); font-size:.9rem; margin:.9rem 0 0; max-width:64ch; }
+  #tab-agenda .ag-item{ display:grid; grid-template-columns:auto 1fr; gap:.9rem; padding:1rem 0; border-bottom:1px solid var(--line); }
+  #tab-agenda .ag-num{ width:30px; height:30px; border-radius:8px; background:var(--mint-lt); border:1px solid var(--line-2); color:var(--green-dk); font-weight:600; font-size:.85rem; display:grid; place-items:center; font-variant-numeric:tabular-nums; }
+  #tab-agenda .ag-item h4{ font-family:"Inter"; font-size:1rem; font-weight:600; margin:.15rem 0 0; color:var(--ink); }
+  #tab-agenda .ag-item p{ margin:.35rem 0 0; font-size:.9rem; color:var(--ink-soft); }
+  #tab-agenda .ag-item ul{ margin:.5rem 0 0; padding-left:0; list-style:none; }
+  #tab-agenda .ag-item li{ position:relative; padding-left:1.3rem; margin-top:.35rem; font-size:.88rem; color:var(--ink-soft); }
+  #tab-agenda .ag-item li::before{ content:""; position:absolute; left:.25rem; top:.6rem; width:6px; height:6px; background:var(--green); border-radius:1px; transform:rotate(45deg); }
+  #tab-agenda .ag-item li.decide::before{ background:var(--s-cond); }
+  #tab-agenda .ag-tag{ display:inline-block; font-size:.62rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--green-dk); background:var(--mint-lt); border:1px solid var(--line-2); border-radius:999px; padding:.12rem .5rem; margin-left:.5rem; vertical-align:middle; }
+  #tab-agenda .ag-tag.decide{ color:var(--s-cond); background:var(--s-cond-bg); border-color:var(--s-cond); }
+  #tab-agenda .ag-foot{ margin-top:1.4rem; font-size:.8rem; color:var(--ink-faint); }
+
 </style>
 </head>
 <body>
@@ -289,6 +307,7 @@
 
   <div class="tabs" role="tablist">
     <button class="tab" role="tab" aria-selected="true" data-tab="matrix">Question Matrix</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="agenda">Agenda</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="terms">Heads of Terms</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="cashflow">Cash Flow</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="location">Location</button>
@@ -316,6 +335,78 @@
     </div>
     <div class="note">Click any cell to edit. Changes save automatically to the private workspace and sync to every device with the access code.</div>
   </section>
+
+  <section class="panel hidden" id="tab-agenda"><div class="ag-pad">
+    <div class="ag-head">
+      <div><div class="eyebrow">Meeting</div><div class="when">Wednesday &mdash; project &amp; terms</div></div>
+      <div style="font-size:.8rem;color:var(--ink-faint)">Samuel &amp; Jared</div>
+    </div>
+    <p class="ag-intro">Working agenda. The aim is to close the open questions, get explicit agreement on the protections, and decide who does the two verification checks before any money moves. Items marked <span class="ag-tag decide">decide</span> need a call in the room.</p>
+    <div class="ag-item"><div class="ag-num">1</div><div>
+      <h4>Where we've landed <span class="ag-tag">5 min</span></h4>
+      <p>Quick recap: the commercial and governance shape is largely agreed. Fifteen matrix items are green. This meeting is about the remaining open items and the terms, not re-opening what's settled.</p>
+    </div></div>
+    <div class="ag-item"><div class="ag-num">2</div><div>
+      <h4>Open questions to close</h4>
+      <p>Walk the still-open rows in the matrix and try to settle each:</p>
+      <ul>
+        <li>Base case confirmed on Project #2 ($150-200k in, $250-300k value, 10 beds), not the anomalous #1.</li>
+        <li>Collection rate and the "no one can't pay / jobs-to-earn-it" mechanism &mdash; what happens on genuine non-payment.</li>
+        <li>Insurance: does the rider actually name this use; overdose / naloxone position.</li>
+        <li>Committed beds today vs pipeline for houses beyond #1.</li>
+        <li>The 24-month property-level cash model &mdash; agree the assumptions to build it on.</li>
+      </ul>
+    </div></div>
+    <div class="ag-item"><div class="ag-num">3</div><div>
+      <h4>The protections &mdash; get explicit agreement</h4>
+      <p>These are Samuel's asks, not yet Jared's agreements. Confirm each:</p>
+      <ul>
+        <li class="decide">Overrun cap: Samuel's $40k capped, overruns are the operator's, budgets carry contingency (replaces 50/50).</li>
+        <li class="decide">Reserved matters: veto over winding-up, asset transfers to related entities, and dilution.</li>
+        <li class="decide">Wind-up waterfall + tag-along: secured loan repaid first; exit on a sale.</li>
+        <li class="decide">Investment return not contingent on involvement; support fee is.</li>
+      </ul>
+    </div></div>
+    <div class="ag-item"><div class="ag-num">4</div><div>
+      <h4>The new contract clauses <span class="ag-tag">walk through</span></h4>
+      <p>Three provisions added to the draft agreement, to explain to Jared:</p>
+      <ul>
+        <li class="decide"><b>Liability &amp; conduct:</b> Samuel not responsible for local criminal / regulatory conduct; operator bears it and indemnifies. (A contract allocates this between us; it can't override criminal law &mdash; noted honestly.)</li>
+        <li class="decide"><b>Bank access:</b> Samuel has general access and full visibility; large payments multi-signed; Samuel's own use limited to reconciliation and pre-agreed expenses, including travel when in the LA area.</li>
+        <li class="decide"><b>Continued inclusion:</b> Samuel's ongoing role recognised and protected, having committed at real personal risk at a critical time.</li>
+        <li class="decide"><b>Participation in the national rollout:</b> Jared says this could go nationwide. Given Samuel's founding-stage risk, a right of first refusal to invest in the expansion vehicles &mdash; agree the principle now, scope with the lawyer.</li>
+      </ul>
+    </div></div>
+    <div class="ag-item"><div class="ag-num">5</div><div>
+      <h4>Verification &mdash; who pays <span class="ag-tag decide">decide</span></h4>
+      <p>Two cheap, load-bearing checks. Jared won't fund legal review; decide who does each:</p>
+      <ul>
+        <li class="decide">EKRA / patient-brokering opinion (one healthcare-lawyer hour) &mdash; the top legal risk.</li>
+        <li class="decide">Written lender confirmation the cash-out refinance is available on the stated basis.</li>
+        <li class="decide">Local agent's CMA on the specific parcel to test the $250-300k finished value &mdash; the number the whole engine turns on, and the one the Wonder Valley comps put most in question.</li>
+      </ul>
+    </div></div>
+    <div class="ag-item"><div class="ag-num">6</div><div>
+      <h4>Structural decisions <span class="ag-tag decide">decide</span></h4>
+      <ul>
+        <li class="decide">Ownership entity: UK Ltd (fresh SPV) vs US LLC via ITIN vs a US C-corp blocker &mdash; agree to take cross-border tax advice.</li>
+        <li class="decide">Brett as a third-person tiebreaker: who he is, what stake, and whether it's wanted.</li>
+      </ul>
+    </div></div>
+    <div class="ag-item"><div class="ag-num">7</div><div>
+      <h4>The numbers</h4>
+      <p>Sign off the <b>conservative schedule</b> as the committed baseline (support-fee floor $27k, capital back ~month 7, ~$127k over 18 months). The $4,000/month is a priority target reached in stages, not a month-3 guarantee &mdash; confirm that framing.</p>
+    </div></div>
+    <div class="ag-item"><div class="ag-num">8</div><div>
+      <h4>Next steps &amp; timeline</h4>
+      <ul>
+        <li>Lawyer to review and witness the contract; note which clauses need firming (governing law, entity, the "person of care" wording).</li>
+        <li>References exchanged both ways &mdash; two each, including one that didn't end well. Samuel goes first.</li>
+        <li>House #1 timing and the first milestone-based capital release.</li>
+      </ul>
+    </div></div>
+    <div class="ag-foot">Draft agenda &middot; not minutes. Update as items are settled; the matrix statuses are the running record.</div>
+  </div></section>
 
 <section class="panel hidden" id="tab-terms"><div class="ht-pad"><header>
     <div class="eyebrow">El&auml;m&auml; Consulting &middot; Private draft for discussion</div>
@@ -728,7 +819,7 @@
     t.addEventListener("click", function(){
       Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(x){ x.setAttribute("aria-selected","false"); });
       t.setAttribute("aria-selected","true");
-      ["matrix","terms","cashflow","location","tracker","plan"].forEach(function(name){ document.getElementById("tab-"+name).classList.toggle("hidden", name!==t.dataset.tab); });
+      ["matrix","agenda","terms","cashflow","location","tracker","plan"].forEach(function(name){ document.getElementById("tab-"+name).classList.toggle("hidden", name!==t.dataset.tab); });
     });
   });
 })();
