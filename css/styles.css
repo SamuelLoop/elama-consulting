@@ -1241,9 +1241,9 @@ body {
   .mp-nav-links { display: none; }
 }
 
-/* Anchor targets need room for the sticky nav, or #mechanism/#ask/#history
+/* Anchor targets need room for the sticky nav, or #mechanism/#ask/#history/#for
    land clipped under it when jumped to directly. */
-#top, #ask, #mechanism, #history {
+#top, #ask, #mechanism, #history, #for {
   scroll-margin-top: 90px;
 }
 
@@ -2238,8 +2238,28 @@ html.mp-js .mp-fly-in.is-visible {
 /* ---- Who MPowa is for ---- */
 .mp-for-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  /* Pulled up to overlap the heading/note text above, and cards 2/4 pushed
+     down relative to 1/3 for a staggered (not flatly aligned) grid — the
+     translucent glass background lets the text underneath show through. */
+  margin-top: -3.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+.mp-for-card:nth-child(2), .mp-for-card:nth-child(4) {
+  margin-top: 2.5rem;
+}
+
+@media (max-width: 650px) {
+  .mp-for-grid {
+    grid-template-columns: 1fr;
+    margin-top: 1rem;
+  }
+  .mp-for-card:nth-child(2), .mp-for-card:nth-child(4) {
+    margin-top: 0;
+  }
 }
 
 .mp-for-card {
