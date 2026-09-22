@@ -1713,6 +1713,89 @@ body {
 .mp-tag-hold { border-color: var(--mp-purple); color: var(--mp-purple); }
 .mp-tag-fail { border-color: var(--mp-destructive); color: var(--mp-destructive); }
 
+/* ---- Why MPowa exists: problem-framing cards ---- */
+.mp-reason-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.mp-reason-card {
+  padding: 1.5rem;
+  background: var(--mp-card);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-tile);
+}
+
+.mp-reason-card i {
+  font-size: 1.3rem;
+  color: var(--mp-cyan);
+  margin-bottom: 0.9rem;
+  display: block;
+}
+
+.mp-reason-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--mp-text);
+  margin-bottom: 0.5rem;
+}
+
+.mp-reason-card p {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--mp-muted-text);
+  margin: 0;
+}
+
+/* ---- How Anchor Ledger works: numbered mechanism steps ---- */
+.mp-mechanism-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.mp-mechanism-step {
+  display: flex;
+  gap: 1.1rem;
+  padding: 1.25rem;
+  background: var(--mp-card);
+  border: 1px solid var(--mp-border);
+  border-left: 2px solid var(--mp-purple);
+  border-radius: var(--mp-radius-tile);
+}
+
+.mp-mechanism-num {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--mp-purple);
+  border-radius: 50%;
+  color: var(--mp-purple);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.mp-mechanism-step h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--mp-text);
+  margin-bottom: 0.35rem;
+}
+
+.mp-mechanism-step p {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--mp-muted-text);
+  margin: 0;
+}
+
 /* ---- API code sample. Monospace here is functional (it's literal code),
    not a brand-typeface decision — Inter stays the brand face everywhere else. ---- */
 .mp-code-block {
