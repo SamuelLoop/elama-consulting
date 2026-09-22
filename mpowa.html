@@ -62,7 +62,7 @@
     <span class="mp-topbar-tag">Unofficial concept &mdash; not affiliated with or endorsed by Mpowa</span>
   </div>
 
-  <!-- ===== MAIN ===== -->
+  <!-- ===== MAIN: centered hero (ask + select) ===== -->
   <main class="mp-main">
     <div class="mp-shell">
 
@@ -78,49 +78,63 @@
       <p class="mp-subtitle">Choose a governance module, then ask your question.</p>
 
       <!-- Governance module selector -->
-      <div class="mp-modules" role="radiogroup" aria-label="Governance module">
-        <button type="button" class="mp-module active" data-module="gold-law" role="radio" aria-checked="true">
-          <i class="bi bi-gem"></i> Gold Law
-        </button>
-        <button type="button" class="mp-module" data-module="gdpr" role="radio" aria-checked="false">
-          <i class="bi bi-shield-lock"></i> GDPR Compliance
-        </button>
-        <button type="button" class="mp-module" data-module="fca" role="radio" aria-checked="false">
-          <i class="bi bi-exclamation-octagon"></i> FCA Rule Breaker
-        </button>
-        <button type="button" class="mp-module" data-module="sec" role="radio" aria-checked="false">
-          <i class="bi bi-bank"></i> SEC Compliance
-        </button>
-        <button type="button" class="mp-module mp-module-more" data-bs-toggle="tooltip" title="More modules coming soon" aria-disabled="true">
-          <i class="bi bi-plus-lg"></i> More
-        </button>
+      <div class="mp-glass-panel">
+        <div class="mp-modules" role="radiogroup" aria-label="Governance module">
+          <button type="button" class="mp-module mp-module-flagship active" data-module="gold-law" role="radio" aria-checked="true">
+            <span class="mp-module-flag">Flagship</span>
+            <span class="mp-module-top"><i class="bi bi-gem"></i> Gold Law</span>
+            <span class="mp-module-price">£4,500<span class="mp-module-price-unit">/mo</span></span>
+          </button>
+          <button type="button" class="mp-module" data-module="gdpr" role="radio" aria-checked="false">
+            <span class="mp-module-top"><i class="bi bi-shield-lock"></i> GDPR Compliance</span>
+            <span class="mp-module-price">£320<span class="mp-module-price-unit">/mo</span></span>
+          </button>
+          <button type="button" class="mp-module" data-module="fca" role="radio" aria-checked="false">
+            <span class="mp-module-top"><i class="bi bi-exclamation-octagon"></i> FCA Rule Breaker</span>
+            <span class="mp-module-price">£275<span class="mp-module-price-unit">/mo</span></span>
+          </button>
+          <button type="button" class="mp-module" data-module="sec" role="radio" aria-checked="false">
+            <span class="mp-module-top"><i class="bi bi-bank"></i> SEC Compliance</span>
+            <span class="mp-module-price">£349<span class="mp-module-price-unit">/mo</span></span>
+          </button>
+          <button type="button" class="mp-module mp-module-more" data-bs-toggle="tooltip" title="More modules coming soon" aria-disabled="true">
+            <span class="mp-module-top"><i class="bi bi-plus-lg"></i> More</span>
+          </button>
+        </div>
+
+        <div class="mp-notice">
+          <i class="bi bi-shield-check"></i>
+          <span>Check your AI and be insured for your agent actions.</span>
+        </div>
       </div>
 
       <!-- Search -->
-      <form class="mp-search-form" id="mpSearchForm" autocomplete="off">
-        <div class="mp-search-bar">
-          <i class="bi bi-search mp-search-icon"></i>
-          <input
-            type="text"
-            id="mpSearchInput"
-            class="mp-search-input"
-            placeholder="Ask MPowa about Gold Law compliance…"
-            aria-label="Ask MPowa a compliance question"
-          />
-          <button type="submit" class="mp-search-submit" aria-label="Run compliance check">
-            <i class="bi bi-arrow-right"></i>
-          </button>
-        </div>
-        <div class="mp-search-actions">
-          <button type="submit" class="mp-btn mp-btn-primary">Run Compliance Check</button>
-          <button type="button" class="mp-btn mp-btn-ghost" id="mpResetBtn">Reset</button>
-        </div>
-      </form>
+      <div class="mp-glass-panel">
+        <form class="mp-search-form" id="mpSearchForm" autocomplete="off">
+          <div class="mp-search-bar">
+            <i class="bi bi-search mp-search-icon"></i>
+            <input
+              type="text"
+              id="mpSearchInput"
+              class="mp-search-input"
+              placeholder="Ask MPowa about Gold Law compliance…"
+              aria-label="Ask MPowa a compliance question"
+            />
+            <button type="submit" class="mp-search-submit" aria-label="Run compliance check">
+              <i class="bi bi-arrow-right"></i>
+            </button>
+          </div>
+          <div class="mp-search-actions">
+            <button type="submit" class="mp-btn mp-btn-primary">Run Compliance Check</button>
+            <button type="button" class="mp-btn mp-btn-ghost" id="mpResetBtn">Reset</button>
+          </div>
+        </form>
+      </div>
 
-      <!-- Agent checks -->
-      <section class="mp-agent-panel" aria-live="polite">
-        <div class="mp-agent-header">
-          <span class="mp-agent-label"><i class="bi bi-cpu"></i> Agent checks</span>
+      <!-- ===== Agent checks — dense horizontal stepper ===== -->
+      <section class="mp-stepper-panel" aria-live="polite">
+        <div class="mp-dense-header">
+          <span class="mp-dense-label"><i class="bi bi-cpu"></i> Agent Checks</span>
           <span class="mp-agent-status" id="mpAgentStatus">Standing by &mdash; select a module and ask a question</span>
         </div>
         <ol class="mp-agent-steps" id="mpAgentSteps">
@@ -167,6 +181,84 @@
         </ol>
       </section>
 
+      <!-- ===== Compliance check history / ledger — dense table ===== -->
+      <section class="mp-ledger-panel" aria-label="Compliance check history">
+        <div class="mp-dense-header">
+          <span class="mp-dense-label"><i class="bi bi-link-45deg"></i> Compliance Check History</span>
+          <span class="mp-history-note">Demo data — ledger links are illustrative, not real blockchain records</span>
+        </div>
+        <div class="mp-ledger-scroll">
+          <table class="mp-ledger-table">
+            <thead>
+              <tr>
+                <th>Module</th>
+                <th>Query</th>
+                <th>Verdict</th>
+                <th>Timestamp</th>
+                <th>Ledger</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="mp-tag">Gold Law</span></td>
+                <td class="mp-ledger-query">&ldquo;Can we hold client bullion under Gold Law custody rules?&rdquo;</td>
+                <td><span class="mp-tag mp-tag-pass">Passed</span></td>
+                <td class="mp-ledger-time">2026-09-18 14:32 UTC</td>
+                <td>
+                  <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x4f2a7c119e31" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                    View <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="mp-tag">GDPR Compliance</span></td>
+                <td class="mp-ledger-query">&ldquo;Can we transfer EU customer data to a US subprocessor?&rdquo;</td>
+                <td><span class="mp-tag mp-tag-pass">Passed</span></td>
+                <td class="mp-ledger-time">2026-09-17 09:04 UTC</td>
+                <td>
+                  <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x9b6d2f0a51c8" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                    View <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="mp-tag">FCA Rule Breaker</span></td>
+                <td class="mp-ledger-query">&ldquo;Flag any FCA breach in this outbound comms draft.&rdquo;</td>
+                <td><span class="mp-tag mp-tag-hold">Hold</span></td>
+                <td class="mp-ledger-time">2026-09-16 17:48 UTC</td>
+                <td>
+                  <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x1a83ee4d7f02" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                    View <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="mp-tag">SEC Compliance</span></td>
+                <td class="mp-ledger-query">&ldquo;Does this pitch deck comply with SEC Reg D exemptions?&rdquo;</td>
+                <td><span class="mp-tag mp-tag-pass">Passed</span></td>
+                <td class="mp-ledger-time">2026-09-15 11:21 UTC</td>
+                <td>
+                  <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0xc740b1329da5" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                    View <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="mp-tag">Gold Law</span></td>
+                <td class="mp-ledger-query">&ldquo;Verify chain-of-custody for a 1kg gold bar transfer.&rdquo;</td>
+                <td><span class="mp-tag mp-tag-fail">Failed</span></td>
+                <td class="mp-ledger-time">2026-09-14 08:57 UTC</td>
+                <td>
+                  <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x7e015c9328bf" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                    View <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
     </div>
   </main>
 
@@ -175,8 +267,8 @@
       Unofficial concept interface exploring an alternative MPowa UI, built by
       <a href="index.html">Elämä Consulting</a>. Visual identity (colour, type, mark) is
       inspired by <a href="https://www.mpowa.io/" target="_blank" rel="noopener">mpowa.io</a> —
-      this page is not affiliated with, endorsed by, or connected to Mpowa. Agent checks
-      shown are mocked for demonstration only.
+      this page is not affiliated with, endorsed by, or connected to Mpowa. Agent checks and
+      ledger records shown are mocked for demonstration only.
     </p>
   </footer>
 

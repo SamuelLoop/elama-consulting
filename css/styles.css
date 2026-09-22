@@ -1148,8 +1148,13 @@ body {
 /* ============================================================
    MPOWA — governance-agent search interface (concept)
    Prefix: .mp-*   Brand tokens verified against the real mpowa.io
-   (see ~/.claude/skills/brand-mpowa). This is an UNOFFICIAL concept —
-   colours/type match Mpowa's real brand, not Elama's --ec-* tokens.
+   (see ~/.claude/skills/brand-mpowa). Layout language follows the
+   validated loop-governance design research (DESIGN.web.md, "Signal
+   Pulse"): glass surfaces over flat/sharp tiles, restrained radius
+   (not zero), and glow reserved ONLY for genuinely live elements
+   (an active input, a check that is actively running) — never
+   decorative. Portal-style: one centered column, comfortable spacing,
+   denser typography for the audit-trail sections lower on the page.
    ============================================================ */
 
 .mp-brand {
@@ -1162,7 +1167,13 @@ body {
   --mp-border:      #252837;  /* mpowa.io --border */
   --mp-text:        #F8FAFC;  /* mpowa.io --foreground */
   --mp-destructive: #EF4444;  /* mpowa.io --destructive */
-  --mp-radius:      0.5rem;   /* mpowa.io --radius */
+
+  --mp-glass-bg:     rgba(19, 21, 32, 0.55);
+  --mp-glass-border: rgba(248, 250, 252, 0.08);
+  --mp-glass-blur:   14px;
+
+  --mp-radius-card: 12px;
+  --mp-radius-btn:  8px;
 
   --mp-font: 'Inter', system-ui, sans-serif; /* mpowa.io uses Inter only */
 
@@ -1212,14 +1223,13 @@ body {
 .mp-main {
   flex: 1;
   display: flex;
-  align-items: center;
   justify-content: center;
   padding: 1.5rem 1.25rem 4rem;
 }
 
 .mp-shell {
   width: 100%;
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
   text-align: center;
 }
@@ -1229,7 +1239,7 @@ body {
   font-weight: 400;
   font-size: 1.05rem;
   color: var(--mp-muted-text);
-  margin-bottom: 2.25rem;
+  margin-bottom: 2rem;
 }
 
 .mp-welcome-accent {
@@ -1264,72 +1274,138 @@ body {
   margin-bottom: 2rem;
 }
 
+/* ---- Glass panel: shared surface for the modules card and the search card ---- */
+.mp-glass-panel {
+  background: var(--mp-glass-bg);
+  backdrop-filter: blur(var(--mp-glass-blur));
+  -webkit-backdrop-filter: blur(var(--mp-glass-blur));
+  border: 1px solid var(--mp-glass-border);
+  border-radius: var(--mp-radius-card);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
 /* ---- Governance module selector ---- */
 .mp-modules {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.6rem;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.25rem;
 }
 
 .mp-module {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.55rem 1.1rem;
-  border-radius: 999px;
-  border: 1.5px solid var(--mp-border);
-  background: var(--mp-card);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: var(--mp-radius-btn);
+  border: 1px solid var(--mp-border);
+  background: rgba(255, 255, 255, 0.02);
   color: var(--mp-text);
   font-family: var(--mp-font);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+  text-align: left;
+}
+
+.mp-module-top {
   font-weight: 500;
   font-size: 0.85rem;
-  cursor: pointer;
-  transition: 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.mp-module-price {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--mp-muted-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.mp-module-price-unit {
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+.mp-module-flag {
+  position: absolute;
+  top: -0.55rem;
+  right: 0.7rem;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--mp-cyan);
+  background: var(--mp-bg);
+  color: var(--mp-cyan);
 }
 
 .mp-module:hover {
   border-color: var(--mp-cyan);
-  transform: translateY(-1px);
+  background: rgba(0, 230, 207, 0.06);
 }
 
 .mp-module.active {
   background: var(--mp-cyan);
   border-color: var(--mp-cyan);
   color: var(--mp-bg);
-  box-shadow: 0 6px 18px rgba(0, 230, 207, 0.35);
 }
+
+.mp-module.active .mp-module-price { color: var(--mp-bg); opacity: 0.75; }
 
 .mp-module-more {
   border-style: dashed;
   color: var(--mp-muted-text);
   cursor: not-allowed;
+  justify-content: center;
 }
 
 .mp-module-more:hover {
   border-color: var(--mp-border);
-  transform: none;
+  background: transparent;
 }
 
+/* ---- Insurance notice: inline banner, flat (not glowing — it's static info, not a live state) ---- */
+.mp-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border-left: 3px solid var(--mp-cyan);
+  background: rgba(0, 230, 207, 0.06);
+  border-radius: 0 var(--mp-radius-btn) var(--mp-radius-btn) 0;
+  font-size: 0.82rem;
+  color: var(--mp-text);
+  text-align: left;
+}
+
+.mp-notice i { color: var(--mp-cyan); }
+
 /* ---- Search ---- */
-.mp-search-form { margin-bottom: 2.25rem; }
+.mp-search-form { margin: 0; }
 
 .mp-search-bar {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  background: var(--mp-card);
-  border: 1.5px solid var(--mp-border);
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-card);
   padding: 0.9rem 1.4rem;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
-  transition: 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* The one meaningful glow in this form: the input is genuinely "live" while focused */
 .mp-search-bar:focus-within {
   border-color: var(--mp-cyan);
-  box-shadow: 0 0 0 4px rgba(0, 230, 207, 0.22), 0 20px 45px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 0 0 3px rgba(0, 230, 207, 0.18);
 }
 
 .mp-search-icon {
@@ -1360,7 +1436,7 @@ body {
   background: var(--mp-cyan);
   color: var(--mp-bg);
   flex-shrink: 0;
-  transition: 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .mp-search-submit:hover { background: var(--mp-purple); color: #FFFFFF; }
@@ -1380,10 +1456,10 @@ body {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   padding: 0.75rem 1.75rem;
-  border-radius: var(--mp-radius);
-  border: 1.5px solid transparent;
+  border-radius: var(--mp-radius-btn);
+  border: 1px solid transparent;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .mp-btn-primary {
@@ -1407,41 +1483,43 @@ body {
   color: var(--mp-text);
 }
 
-/* ---- Agent checks panel ---- */
-.mp-agent-panel {
-  background: var(--mp-card);
-  border: 1px solid var(--mp-border);
-  border-radius: 12px;
-  padding: 1.5rem;
-  text-align: left;
-}
-
-.mp-agent-header {
+/* ---- Dense section header, shared by the stepper and ledger panels ---- */
+.mp-dense-header {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.1rem;
-  padding-bottom: 0.9rem;
-  border-bottom: 1px solid var(--mp-border);
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
 }
 
-.mp-agent-label {
+.mp-dense-label {
   font-family: var(--mp-font);
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--mp-text);
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
-.mp-agent-status {
-  font-size: 0.8rem;
+.mp-agent-status,
+.mp-history-note {
+  font-size: 0.74rem;
   color: var(--mp-muted-text);
+  text-align: right;
+}
+
+/* ---- Agent checks: dense horizontal stepper (desktop), stacked (mobile) ---- */
+.mp-stepper-panel {
+  background: var(--mp-card);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-card);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
 }
 
 .mp-agent-steps {
@@ -1450,40 +1528,40 @@ body {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .mp-agent-step {
   display: flex;
-  align-items: flex-start;
-  gap: 0.85rem;
-  padding: 0.6rem 0.75rem;
-  border-radius: 10px;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 8px;
   transition: background 0.2s ease;
 }
 
 .mp-agent-step.is-running { background: rgba(142, 69, 252, 0.08); }
-.mp-agent-step.is-pass    { background: rgba(0, 230, 207, 0.08); }
+.mp-agent-step.is-pass    { background: rgba(0, 230, 207, 0.06); }
 
 .mp-step-dot {
-  width: 12px;
-  height: 12px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  margin-top: 0.3rem;
   flex-shrink: 0;
   background: var(--mp-border);
-  transition: 0.2s ease;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Glow here is meaningful: this dot is actively processing right now */
 .mp-agent-step.is-running .mp-step-dot {
   background: var(--mp-purple);
   box-shadow: 0 0 0 4px rgba(142, 69, 252, 0.25);
   animation: mp-pulse 0.9s ease-in-out infinite;
 }
 
+/* Settled state: solid fill, no glow — it's no longer "live" */
 .mp-agent-step.is-pass .mp-step-dot {
   background: var(--mp-cyan);
-  box-shadow: 0 0 0 4px rgba(0, 230, 207, 0.25);
 }
 
 @keyframes mp-pulse {
@@ -1494,32 +1572,170 @@ body {
 .mp-step-body {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
+  align-items: baseline;
+  gap: 0.5rem;
+  min-width: 0;
 }
 
 .mp-step-title {
   font-weight: 600;
-  font-size: 0.92rem;
+  font-size: 0.85rem;
   color: var(--mp-text);
+  white-space: nowrap;
 }
 
 .mp-step-detail {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--mp-muted-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mp-step-state {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.03em;
   color: var(--mp-muted-text);
   white-space: nowrap;
-  margin-top: 0.3rem;
+  flex-shrink: 0;
 }
 
 .mp-agent-step.is-running .mp-step-state { color: var(--mp-purple); }
 .mp-agent-step.is-pass .mp-step-state    { color: var(--mp-cyan); }
+
+/* Desktop: collapse the list into a connected horizontal stepper — denser,
+   reads as a pipeline rather than a checklist. Descriptions stay in the DOM
+   for screen readers (visually-hidden, not display:none). */
+@media (min-width: 700px) {
+  .mp-agent-steps {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 0;
+    position: relative;
+    padding-top: 4px;
+  }
+
+  .mp-agent-steps::before {
+    content: '';
+    position: absolute;
+    top: 13px;
+    left: 8%;
+    right: 8%;
+    height: 1px;
+    background: var(--mp-border);
+    z-index: 0;
+  }
+
+  .mp-agent-step {
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    position: relative;
+    z-index: 1;
+    padding: 0.4rem 0.35rem;
+    text-align: center;
+  }
+
+  .mp-agent-step.is-running,
+  .mp-agent-step.is-pass { background: none; }
+
+  .mp-step-body { flex-direction: column; gap: 0; }
+
+  .mp-step-title { white-space: normal; font-size: 0.76rem; line-height: 1.2; }
+
+  .mp-step-detail {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .mp-step-state { margin-top: 0.1rem; }
+}
+
+/* ---- Ledger: dense table ---- */
+.mp-ledger-panel {
+  background: var(--mp-card);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-card);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.mp-ledger-scroll {
+  overflow-x: auto;
+}
+
+.mp-ledger-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.mp-ledger-table th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mp-muted-text);
+  padding: 0 0.6rem 0.5rem;
+  border-bottom: 1px solid var(--mp-border);
+  white-space: nowrap;
+}
+
+.mp-ledger-table td {
+  padding: 0.55rem 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+  color: var(--mp-text);
+}
+
+.mp-ledger-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.mp-ledger-query {
+  color: var(--mp-muted-text);
+  font-style: italic;
+  max-width: 260px;
+}
+
+.mp-ledger-time {
+  color: var(--mp-muted-text);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.mp-history-link {
+  color: var(--mp-cyan);
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.mp-history-link:hover { color: var(--mp-purple); }
+
+/* ---- Tags: pill-shaped throughout (module badges, verdict states) ---- */
+.mp-tag {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--mp-border);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--mp-muted-text);
+  white-space: nowrap;
+}
+
+.mp-tag-pass { border-color: var(--mp-cyan);  color: var(--mp-cyan); }
+.mp-tag-hold { border-color: var(--mp-purple); color: var(--mp-purple); }
+.mp-tag-fail { border-color: var(--mp-destructive); color: var(--mp-destructive); }
 
 .mp-footer {
   text-align: center;
@@ -1539,4 +1755,8 @@ body {
   .mp-topbar { padding: 1rem 1.25rem; }
   .mp-search-actions { flex-direction: column; }
   .mp-search-actions .mp-btn { width: 100%; }
+  .mp-dense-header { flex-direction: column; align-items: flex-start; }
+  .mp-agent-status, .mp-history-note { text-align: left; }
+  .mp-step-body { flex-direction: column; align-items: flex-start; gap: 0.1rem; }
+  .mp-step-title, .mp-step-detail { white-space: normal; }
 }
