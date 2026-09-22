@@ -13,8 +13,12 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
 
-  <!-- Mpowa's real brand type is Inter only, at varying weights (verified against mpowa.io) -->
+  <!-- Inter: Mpowa's real body/UI brand face (verified against mpowa.io) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- General Sans: display face for this page's narrative headings — a free stand-in for
+       Orchid's paid "Aeonik" (same substitution already used in the user's own loop-governance
+       design research). Not part of Mpowa's real brand; used here for this page only. -->
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
 
   <!-- Custom Styles -->
   <link rel="stylesheet" href="css/styles.css" />
@@ -52,22 +56,23 @@
     </defs>
   </svg>
 
-  <!-- ===== MINIMAL TOP BAR ===== -->
-  <div class="mp-topbar">
-    <a class="mp-mark" href="mpowa.html">
+  <!-- ===== NAV ===== -->
+  <nav class="mp-nav">
+    <a class="mp-mark" href="#top">
       <span class="mp-mark-text">MP</span>
       <svg class="mp-mark-icon"><use href="#mpowaNodeIcon"></use></svg>
       <span class="mp-mark-text">WA</span>
     </a>
-    <span class="mp-topbar-tag">Unofficial concept &mdash; not affiliated with or endorsed by Mpowa</span>
-  </div>
+    <a class="mp-btn mp-btn-gradient mp-btn-sm" href="#ask">Run a Compliance Check</a>
+  </nav>
 
   <!-- ===== MAIN ===== -->
   <main class="mp-main">
     <div class="mp-shell">
 
-      <!-- Hero: left-aligned, plain text, no card — matches how ibm.com sets its own hero -->
-      <div class="mp-hero-block">
+      <!-- Hero: centered, narrative — Orchid's convention for this kind of page -->
+      <section class="mp-hero mp-reveal" id="top">
+        <span class="mp-eyebrow-pill">Unofficial concept &mdash; not affiliated with or endorsed by Mpowa</span>
         <h1 class="mp-hero-title">
           Welcome to MPowa, where agents meet compliance. <span class="mp-welcome-accent">AI for humanity.</span>
         </h1>
@@ -75,16 +80,65 @@
           Select a governance module, ask a question, and MPowa's agents verify the answer
           against that module's rulebook before you act on it.
         </p>
-      </div>
+        <div class="mp-hero-actions">
+          <a class="mp-btn mp-btn-gradient mp-btn-lg" href="#ask">Run a Compliance Check <i class="bi bi-arrow-right"></i></a>
+          <a class="mp-btn mp-btn-glass mp-btn-lg" href="#mechanism">See How It Works</a>
+        </div>
+      </section>
+
+      <!-- Product window: an original preview of MPowa's own interface, not Orchid's -->
+      <section class="mp-window-wrap mp-reveal">
+        <div class="mp-window">
+          <div class="mp-window-chrome">
+            <span class="mp-window-dot mp-window-dot-red"></span>
+            <span class="mp-window-dot mp-window-dot-amber"></span>
+            <span class="mp-window-dot mp-window-dot-green"></span>
+          </div>
+          <div class="mp-window-body">
+            <div class="mp-window-stats">
+              <div class="mp-window-stat">
+                <span class="mp-window-stat-num">5</span>
+                <span class="mp-window-stat-label">Automated checks per query</span>
+              </div>
+              <div class="mp-window-stat">
+                <span class="mp-window-stat-num">100%</span>
+                <span class="mp-window-stat-label">Verdicts logged to the Anchor Ledger</span>
+              </div>
+              <div class="mp-window-stat">
+                <span class="mp-window-stat-num">4</span>
+                <span class="mp-window-stat-label">Governance modules live</span>
+              </div>
+            </div>
+            <div class="mp-window-preview-table">
+              <div class="mp-window-row mp-window-row-head">
+                <span>Module</span><span>Verdict</span><span>Ledger</span>
+              </div>
+              <div class="mp-window-row">
+                <span>Gold Law</span><span class="mp-tag mp-tag-pass">Passed</span><span class="mp-window-hash">0x4f2a…9e31</span>
+              </div>
+              <div class="mp-window-row">
+                <span>GDPR Compliance</span><span class="mp-tag mp-tag-pass">Passed</span><span class="mp-window-hash">0x9b6d…51c8</span>
+              </div>
+              <div class="mp-window-row">
+                <span>FCA Rule Breaker</span><span class="mp-tag mp-tag-hold">Hold</span><span class="mp-window-hash">0x1a83…4f02</span>
+              </div>
+            </div>
+            <a class="mp-window-link" href="#history">See the full compliance check history <i class="bi bi-arrow-down"></i></a>
+          </div>
+        </div>
+      </section>
 
       <!-- Why MPowa exists -->
-      <section class="mp-section">
-        <h2 class="mp-heading">Agentic AI has no flight recorder</h2>
-        <p class="mp-heading-note">
-          Autonomous agents are already making consequential decisions inside regulated
-          businesses — and most leave no tamper-proof, independently verifiable record of what
-          they did or why.
-        </p>
+      <section class="mp-section mp-reveal" id="why">
+        <div class="mp-section-head">
+          <span class="mp-eyebrow-pill">Why MPowa Exists</span>
+          <h2 class="mp-heading">Agentic AI has no flight recorder</h2>
+          <p class="mp-heading-note">
+            Autonomous agents are already making consequential decisions inside regulated
+            businesses — and most leave no tamper-proof, independently verifiable record of
+            what they did or why.
+          </p>
+        </div>
 
         <div class="mp-reason-grid">
           <div class="mp-reason-card">
@@ -109,12 +163,15 @@
       </section>
 
       <!-- Governance modules -->
-      <section class="mp-section">
-        <h2 class="mp-heading">Governance modules</h2>
-        <p class="mp-heading-note">
-          Each module encodes one regulatory rulebook. Selecting a module scopes every agent
-          check that follows to its rules — pricing is per module, billed monthly.
-        </p>
+      <section class="mp-section mp-reveal" id="ask">
+        <div class="mp-section-head">
+          <span class="mp-eyebrow-pill">Select &amp; Ask</span>
+          <h2 class="mp-heading">Governance modules</h2>
+          <p class="mp-heading-note">
+            Each module encodes one regulatory rulebook. Selecting a module scopes every agent
+            check that follows to its rules — pricing is per module, billed monthly.
+          </p>
+        </div>
 
         <div class="mp-panel">
           <div class="mp-modules" role="radiogroup" aria-label="Governance module">
@@ -163,7 +220,7 @@
               />
             </div>
             <div class="mp-search-actions">
-              <button type="submit" class="mp-btn mp-btn-primary mp-btn-lg">Run compliance check <i class="bi bi-arrow-right"></i></button>
+              <button type="submit" class="mp-btn mp-btn-gradient mp-btn-lg">Run compliance check <i class="bi bi-arrow-right"></i></button>
               <button type="button" class="mp-btn mp-btn-ghost mp-btn-lg" id="mpResetBtn">Reset</button>
             </div>
           </form>
@@ -171,12 +228,15 @@
       </section>
 
       <!-- How Anchor Ledger works -->
-      <section class="mp-section">
-        <h2 class="mp-heading">Every action, captured, ordered, and anchored</h2>
-        <p class="mp-heading-note">
-          The agent checks below aren't a black box. Every step is written to the Anchor
-          Ledger, a three-layer record designed to survive scrutiny.
-        </p>
+      <section class="mp-section mp-reveal" id="mechanism">
+        <div class="mp-section-head">
+          <span class="mp-eyebrow-pill">How It Works</span>
+          <h2 class="mp-heading">Every action, captured, ordered, and anchored</h2>
+          <p class="mp-heading-note">
+            The agent checks below aren't a black box. Every step is written to the Anchor
+            Ledger, a three-layer record designed to survive scrutiny.
+          </p>
+        </div>
 
         <ol class="mp-mechanism-steps">
           <li class="mp-mechanism-step">
@@ -209,12 +269,14 @@
       </section>
 
       <!-- Agent checks -->
-      <section class="mp-section">
-        <h2 class="mp-heading">Agent checks</h2>
-        <p class="mp-heading-note">
-          Every question runs through the same five-step pipeline before you see an answer —
-          nothing reaches you unverified.
-        </p>
+      <section class="mp-section mp-reveal">
+        <div class="mp-section-head">
+          <h2 class="mp-heading">Agent checks</h2>
+          <p class="mp-heading-note">
+            Every question runs through the same five-step pipeline before you see an answer —
+            nothing reaches you unverified.
+          </p>
+        </div>
 
         <div class="mp-panel" aria-live="polite">
           <div class="mp-panel-header">
@@ -267,12 +329,15 @@
       </section>
 
       <!-- Compliance check history / ledger -->
-      <section class="mp-section" aria-label="Compliance check history">
-        <h2 class="mp-heading">Compliance check history</h2>
-        <p class="mp-heading-note">
-          Every verdict is written to the Anchor Ledger — a record you can point to later. The
-          links below are demo data only — they do not resolve to a real blockchain transaction.
-        </p>
+      <section class="mp-section mp-reveal" id="history" aria-label="Compliance check history">
+        <div class="mp-section-head">
+          <h2 class="mp-heading">Compliance check history</h2>
+          <p class="mp-heading-note">
+            Every verdict is written to the Anchor Ledger — a record you can point to later.
+            The links below are demo data only — they do not resolve to a real blockchain
+            transaction.
+          </p>
+        </div>
 
         <div class="mp-panel">
           <div class="mp-ledger-scroll">
@@ -349,13 +414,16 @@
       </section>
 
       <!-- API -->
-      <section class="mp-section" aria-label="API access">
-        <h2 class="mp-heading">Engage our service through API and be compliant automatically</h2>
-        <p class="mp-heading-note">
-          Call the same governance modules and agent-check pipeline directly from your own
-          systems. Every request runs the full pipeline and is logged automatically — nothing
-          to configure by hand.
-        </p>
+      <section class="mp-section mp-reveal" aria-label="API access">
+        <div class="mp-section-head">
+          <span class="mp-eyebrow-pill">Integrate</span>
+          <h2 class="mp-heading">Engage our service through API and be compliant automatically</h2>
+          <p class="mp-heading-note">
+            Call the same governance modules and agent-check pipeline directly from your own
+            systems. Every request runs the full pipeline and is logged automatically — nothing
+            to configure by hand.
+          </p>
+        </div>
 
         <div class="mp-panel">
           <div class="mp-panel-header">
@@ -384,6 +452,13 @@
         </div>
       </section>
 
+      <!-- Closing CTA -->
+      <section class="mp-cta-band mp-reveal">
+        <h2 class="mp-cta-title">Now the question is&hellip;</h2>
+        <p class="mp-cta-lede">What can MPowa do for your compliance program?</p>
+        <a class="mp-btn mp-btn-gradient mp-btn-lg" href="#ask">Run a Compliance Check <i class="bi bi-arrow-right"></i></a>
+      </section>
+
     </div>
   </main>
 
@@ -392,13 +467,16 @@
       Unofficial concept interface exploring an alternative MPowa UI, built by
       <a href="index.html">Elämä Consulting</a>. Visual identity (colour, type, mark) is
       inspired by <a href="https://www.mpowa.io/" target="_blank" rel="noopener">mpowa.io</a> —
-      this page is not affiliated with, endorsed by, or connected to Mpowa. Agent checks and
-      ledger records shown are mocked for demonstration only.
+      this page is not affiliated with, endorsed by, or connected to Mpowa. Page structure and
+      motion are inspired by <a href="https://www.orchid.security/" target="_blank" rel="noopener">orchid.security</a>
+      (rebuilt from scratch, not their code). Agent checks and ledger records shown are mocked
+      for demonstration only.
     </p>
   </footer>
 
   <!-- Bootstrap Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/mpowa.js"></script>
+  <script src="js/mpowa-reveal.js"></script>
 </body>
 </html>

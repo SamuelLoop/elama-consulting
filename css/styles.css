@@ -1147,14 +1147,18 @@ body {
 
 /* ============================================================
    MPOWA — governance-agent search interface (concept)
-   Prefix: .mp-*   Brand tokens verified against the real mpowa.io
-   (see ~/.claude/skills/brand-mpowa). Structural language checked
-   directly against ibm.com's computed styles: buttons are 0-radius
-   rectangles, content tiles use a barely-there 4px radius with a
-   plain 1px solid border (no blur/glass anywhere), and body copy is
-   left-aligned throughout, including the hero — nothing is
-   text-align:center except the small nav wordmark. Sections carry a
-   short explanatory line under each heading.
+   Prefix: .mp-*   Brand colour tokens verified against the real
+   mpowa.io (see ~/.claude/skills/brand-mpowa).
+
+   Page flow/motion rebuilt from measurements taken against
+   orchid.security (centered narrative sections, eyebrow pill badges,
+   gradient/glass pill buttons, scroll-reveal-on-view, a framed
+   "product window" panel) — NOT their code. This is original CSS
+   using Mpowa's own cyan/purple gradient instead of Orchid's
+   blue-violet, and General Sans in place of their paid "Aeonik" face
+   for narrative headings (Inter stays for body/UI, per the real
+   brand). See the file-level comment above the .mp-reveal rules for
+   how the scroll animation degrades without JS.
    ============================================================ */
 
 .mp-brand {
@@ -1172,7 +1176,9 @@ body {
   --mp-radius-tag:  2px;  /* near-sharp, matches the tile's restraint without being a full pill */
   --mp-radius-btn:  0px;  /* measured from ibm.com's buttons — true rectangles */
 
-  --mp-font: 'Inter', system-ui, sans-serif; /* mpowa.io uses Inter only */
+  --mp-font:         'Inter', system-ui, sans-serif;          /* mpowa.io's real brand face — body/UI */
+  --mp-font-display: 'General Sans', 'Inter', system-ui, sans-serif; /* narrative headings on this page only — see header comment */
+  --mp-gradient: linear-gradient(135deg, var(--mp-cyan), var(--mp-purple));
 
   background: var(--mp-bg);
   color: var(--mp-text);
@@ -1182,14 +1188,24 @@ body {
   font-family: var(--mp-font);
 }
 
-.mp-topbar {
+.mp-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.5rem 2rem;
+  padding: 1.25rem 2rem;
   border-bottom: 1px solid var(--mp-border);
   flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  background: var(--mp-bg);
+  z-index: 10;
+}
+
+/* Anchor targets need room for the sticky nav, or #mechanism/#ask/#history
+   land clipped under it when jumped to directly. */
+#top, #ask, #mechanism, #history {
+  scroll-margin-top: 90px;
 }
 
 .mp-mark {
@@ -1212,17 +1228,11 @@ body {
   height: 24px;
 }
 
-.mp-topbar-tag {
-  font-size: 0.72rem;
-  color: var(--mp-muted-text);
-  font-style: italic;
-}
-
 .mp-main {
   flex: 1;
   display: flex;
   justify-content: center;
-  padding: 3rem 1.5rem 5rem;
+  padding: 4rem 1.5rem 6rem;
 }
 
 .mp-shell {
@@ -1232,21 +1242,36 @@ body {
   text-align: left;
 }
 
-/* ---- Hero: plain text, no card, left-aligned ---- */
-.mp-hero-block {
+/* ---- Hero: centered narrative, per Orchid's convention for this page type ---- */
+.mp-hero {
+  text-align: center;
   margin-bottom: 4rem;
-  padding-bottom: 2.5rem;
+  padding-bottom: 3rem;
   border-bottom: 1px solid var(--mp-border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mp-eyebrow-pill {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--mp-border);
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--mp-muted-text);
+  margin-bottom: 1.5rem;
 }
 
 .mp-hero-title {
-  font-family: var(--mp-font);
-  font-weight: 400;
-  font-size: 2.1rem;
-  line-height: 1.3;
+  font-family: var(--mp-font-display);
+  font-weight: 500;
+  font-size: 2.4rem;
+  line-height: 1.25;
   color: var(--mp-text);
   margin-bottom: 1rem;
-  max-width: 34ch;
+  max-width: 26ch;
 }
 
 .mp-welcome-accent {
@@ -1258,28 +1283,40 @@ body {
   font-size: 1.05rem;
   line-height: 1.6;
   color: var(--mp-muted-text);
-  max-width: 52ch;
+  max-width: 46ch;
+  margin-bottom: 2rem;
 }
 
-/* ---- Section scaffolding: heading + one-line explanation, then content ---- */
+.mp-hero-actions {
+  display: flex;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ---- Section scaffolding: centered heading + one-line explanation, then content ---- */
 .mp-section {
-  margin-bottom: 3.5rem;
+  margin-bottom: 4.5rem;
+}
+
+.mp-section-head {
+  text-align: center;
+  max-width: 52ch;
+  margin: 0 auto 2rem;
 }
 
 .mp-heading {
-  font-family: var(--mp-font);
-  font-weight: 600;
-  font-size: 1.4rem;
+  font-family: var(--mp-font-display);
+  font-weight: 500;
+  font-size: 1.7rem;
   color: var(--mp-text);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
 }
 
 .mp-heading-note {
-  font-size: 0.92rem;
-  line-height: 1.55;
+  font-size: 0.95rem;
+  line-height: 1.6;
   color: var(--mp-muted-text);
-  max-width: 58ch;
-  margin-bottom: 1.5rem;
 }
 
 /* ---- Flat panel: shared surface, no blur, hairline border, near-sharp corners ---- */
@@ -1482,6 +1519,7 @@ body {
 .mp-btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   font-family: var(--mp-font);
   font-weight: 500;
@@ -1490,7 +1528,13 @@ body {
   border-radius: var(--mp-radius-btn);
   border: 1px solid transparent;
   cursor: pointer;
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+
+.mp-btn-sm {
+  font-size: 0.82rem;
+  padding: 0.55rem 1.1rem;
 }
 
 .mp-btn-lg {
@@ -1513,6 +1557,26 @@ body {
 }
 
 .mp-btn-ghost:hover { border-color: var(--mp-cyan); }
+
+/* Pill radius here is a deliberate exception, matching Orchid's CTA anatomy —
+   every other button/tile on the page keeps the sharp/near-sharp ibm.com scale. */
+.mp-btn-gradient {
+  background: var(--mp-gradient);
+  color: var(--mp-bg);
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.mp-btn-gradient:hover { opacity: 0.88; }
+
+.mp-btn-glass {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--mp-border);
+  color: var(--mp-text);
+  border-radius: 999px;
+}
+
+.mp-btn-glass:hover { border-color: var(--mp-cyan); background: rgba(255, 255, 255, 0.07); }
 
 /* ---- Agent checks: dense horizontal stepper (desktop), stacked (mobile) ---- */
 .mp-agent-steps {
@@ -1850,9 +1914,168 @@ body {
 
 .mp-footer a { color: var(--mp-cyan); }
 
+/* ---- Product window: an original framed preview of MPowa's own interface ---- */
+.mp-window-wrap {
+  margin-bottom: 4.5rem;
+}
+
+.mp-window {
+  background: var(--mp-card);
+  border: 1px solid var(--mp-border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+.mp-window-chrome {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--mp-border);
+}
+
+.mp-window-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--mp-border);
+}
+
+.mp-window-dot-red   { background: #EF4444; opacity: 0.6; }
+.mp-window-dot-amber { background: #F5B942; opacity: 0.6; }
+.mp-window-dot-green { background: var(--mp-cyan); opacity: 0.6; }
+
+.mp-window-body {
+  padding: 2rem;
+}
+
+.mp-window-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--mp-border);
+}
+
+.mp-window-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.mp-window-stat-num {
+  font-family: var(--mp-font-display);
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--mp-cyan);
+}
+
+.mp-window-stat-label {
+  font-size: 0.8rem;
+  color: var(--mp-muted-text);
+}
+
+.mp-window-preview-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+
+.mp-window-row {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--mp-text);
+}
+
+.mp-window-row-head {
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--mp-muted-text);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--mp-border);
+}
+
+.mp-window-hash {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  color: var(--mp-muted-text);
+}
+
+.mp-window-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--mp-cyan);
+  text-decoration: none;
+}
+
+.mp-window-link:hover { color: var(--mp-purple); }
+
+/* ---- Scroll reveal: progressive enhancement, page stays fully visible without JS ---- */
+.mp-reveal {
+  opacity: 1;
+  transform: none;
+}
+
+html.mp-js .mp-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+html.mp-js .mp-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.mp-js .mp-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---- Closing CTA band ---- */
+.mp-cta-band {
+  text-align: center;
+  padding: 3.5rem 2rem;
+  margin-bottom: 0;
+  background: var(--mp-card);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-tile);
+}
+
+.mp-cta-title {
+  font-family: var(--mp-font-display);
+  font-weight: 500;
+  font-size: 2rem;
+  color: var(--mp-text);
+  margin-bottom: 0.5rem;
+}
+
+.mp-cta-lede {
+  font-size: 1.05rem;
+  color: var(--mp-muted-text);
+  margin-bottom: 1.75rem;
+}
+
 @media (max-width: 575.98px) {
-  .mp-hero-title { font-size: 1.6rem; }
-  .mp-topbar { padding: 1rem 1.25rem; }
+  .mp-hero-title { font-size: 1.7rem; }
+  .mp-nav { padding: 1rem 1.25rem; }
+  .mp-hero-actions { flex-direction: column; width: 100%; }
+  .mp-hero-actions .mp-btn { width: 100%; }
+  .mp-window-body { padding: 1.25rem; }
+  .mp-window-row { grid-template-columns: 1fr; gap: 0.15rem; }
+  .mp-window-row-head { display: none; }
   .mp-search-actions { flex-direction: column; }
   .mp-search-actions .mp-btn { width: 100%; justify-content: center; }
   .mp-step-body { flex-direction: column; align-items: flex-start; gap: 0.1rem; }
