@@ -62,54 +62,60 @@
     <span class="mp-topbar-tag">Unofficial concept &mdash; not affiliated with or endorsed by Mpowa</span>
   </div>
 
-  <!-- ===== MAIN: centered hero (ask + select) ===== -->
+  <!-- ===== MAIN ===== -->
   <main class="mp-main">
     <div class="mp-shell">
 
-      <p class="mp-welcome">
-        Welcome to MPowa, where agents meet compliance. <span class="mp-welcome-accent">AI for humanity.</span>
-      </p>
-
-      <h1 class="mp-wordmark" aria-label="MPowa">
-        <span class="mp-w-text">MP</span>
-        <svg class="mp-w-icon"><use href="#mpowaNodeIcon"></use></svg>
-        <span class="mp-w-text">WA</span>
-      </h1>
-      <p class="mp-subtitle">Choose a governance module, then ask your question.</p>
-
-      <!-- Governance module selector -->
-      <div class="mp-glass-panel">
-        <div class="mp-modules" role="radiogroup" aria-label="Governance module">
-          <button type="button" class="mp-module mp-module-flagship active" data-module="gold-law" role="radio" aria-checked="true">
-            <span class="mp-module-flag">Flagship</span>
-            <span class="mp-module-top"><i class="bi bi-gem"></i> Gold Law</span>
-            <span class="mp-module-price">£4,500<span class="mp-module-price-unit">/mo</span></span>
-          </button>
-          <button type="button" class="mp-module" data-module="gdpr" role="radio" aria-checked="false">
-            <span class="mp-module-top"><i class="bi bi-shield-lock"></i> GDPR Compliance</span>
-            <span class="mp-module-price">£320<span class="mp-module-price-unit">/mo</span></span>
-          </button>
-          <button type="button" class="mp-module" data-module="fca" role="radio" aria-checked="false">
-            <span class="mp-module-top"><i class="bi bi-exclamation-octagon"></i> FCA Rule Breaker</span>
-            <span class="mp-module-price">£275<span class="mp-module-price-unit">/mo</span></span>
-          </button>
-          <button type="button" class="mp-module" data-module="sec" role="radio" aria-checked="false">
-            <span class="mp-module-top"><i class="bi bi-bank"></i> SEC Compliance</span>
-            <span class="mp-module-price">£349<span class="mp-module-price-unit">/mo</span></span>
-          </button>
-          <button type="button" class="mp-module mp-module-more" data-bs-toggle="tooltip" title="More modules coming soon" aria-disabled="true">
-            <span class="mp-module-top"><i class="bi bi-plus-lg"></i> More</span>
-          </button>
-        </div>
-
-        <div class="mp-notice">
-          <i class="bi bi-shield-check"></i>
-          <span>Check your AI and be insured for your agent actions.</span>
-        </div>
+      <!-- Hero: left-aligned, plain text, no card — matches how ibm.com sets its own hero -->
+      <div class="mp-hero-block">
+        <h1 class="mp-hero-title">
+          Welcome to MPowa, where agents meet compliance. <span class="mp-welcome-accent">AI for humanity.</span>
+        </h1>
+        <p class="mp-hero-lede">
+          Select a governance module, ask a question, and MPowa's agents verify the answer
+          against that module's rulebook before you act on it.
+        </p>
       </div>
 
-      <!-- Search -->
-      <div class="mp-glass-panel">
+      <!-- Governance modules -->
+      <section class="mp-section">
+        <h2 class="mp-heading">Governance modules</h2>
+        <p class="mp-heading-note">
+          Each module encodes one regulatory rulebook. Selecting a module scopes every agent
+          check that follows to its rules — pricing is per module, billed monthly.
+        </p>
+
+        <div class="mp-panel">
+          <div class="mp-modules" role="radiogroup" aria-label="Governance module">
+            <button type="button" class="mp-module mp-module-flagship active" data-module="gold-law" role="radio" aria-checked="true">
+              <span class="mp-module-flag">Flagship</span>
+              <span class="mp-module-top"><i class="bi bi-gem"></i> Gold Law</span>
+              <span class="mp-module-price">£4,500<span class="mp-module-price-unit">/mo</span></span>
+            </button>
+            <button type="button" class="mp-module" data-module="gdpr" role="radio" aria-checked="false">
+              <span class="mp-module-top"><i class="bi bi-shield-lock"></i> GDPR Compliance</span>
+              <span class="mp-module-price">£320<span class="mp-module-price-unit">/mo</span></span>
+            </button>
+            <button type="button" class="mp-module" data-module="fca" role="radio" aria-checked="false">
+              <span class="mp-module-top"><i class="bi bi-exclamation-octagon"></i> FCA Rule Breaker</span>
+              <span class="mp-module-price">£275<span class="mp-module-price-unit">/mo</span></span>
+            </button>
+            <button type="button" class="mp-module" data-module="sec" role="radio" aria-checked="false">
+              <span class="mp-module-top"><i class="bi bi-bank"></i> SEC Compliance</span>
+              <span class="mp-module-price">£349<span class="mp-module-price-unit">/mo</span></span>
+            </button>
+            <button type="button" class="mp-module mp-module-more" data-bs-toggle="tooltip" title="More modules coming soon" aria-disabled="true">
+              <span class="mp-module-top"><i class="bi bi-plus-lg"></i> More</span>
+            </button>
+          </div>
+
+          <div class="mp-notice">
+            <i class="bi bi-shield-check"></i>
+            <span>Check your AI and be insured for your agent actions.</span>
+          </div>
+        </div>
+
+        <!-- Search -->
         <form class="mp-search-form" id="mpSearchForm" autocomplete="off">
           <div class="mp-search-bar">
             <i class="bi bi-search mp-search-icon"></i>
@@ -120,142 +126,151 @@
               placeholder="Ask MPowa about Gold Law compliance…"
               aria-label="Ask MPowa a compliance question"
             />
-            <button type="submit" class="mp-search-submit" aria-label="Run compliance check">
-              <i class="bi bi-arrow-right"></i>
-            </button>
           </div>
           <div class="mp-search-actions">
-            <button type="submit" class="mp-btn mp-btn-primary">Run Compliance Check</button>
+            <button type="submit" class="mp-btn mp-btn-primary">Run compliance check <i class="bi bi-arrow-right"></i></button>
             <button type="button" class="mp-btn mp-btn-ghost" id="mpResetBtn">Reset</button>
           </div>
         </form>
-      </div>
-
-      <!-- ===== Agent checks — dense horizontal stepper ===== -->
-      <section class="mp-stepper-panel" aria-live="polite">
-        <div class="mp-dense-header">
-          <span class="mp-dense-label"><i class="bi bi-cpu"></i> Agent Checks</span>
-          <span class="mp-agent-status" id="mpAgentStatus">Standing by &mdash; select a module and ask a question</span>
-        </div>
-        <ol class="mp-agent-steps" id="mpAgentSteps">
-          <li class="mp-agent-step" data-step="regulatory">
-            <span class="mp-step-dot"></span>
-            <span class="mp-step-body">
-              <span class="mp-step-title">Regulatory Scan</span>
-              <span class="mp-step-detail">Checks the query against the selected module's rulebook</span>
-            </span>
-            <span class="mp-step-state">Idle</span>
-          </li>
-          <li class="mp-agent-step" data-step="bias">
-            <span class="mp-step-dot"></span>
-            <span class="mp-step-body">
-              <span class="mp-step-title">Bias &amp; Fairness</span>
-              <span class="mp-step-detail">Screens the draft answer for skewed or unfair framing</span>
-            </span>
-            <span class="mp-step-state">Idle</span>
-          </li>
-          <li class="mp-agent-step" data-step="provenance">
-            <span class="mp-step-dot"></span>
-            <span class="mp-step-body">
-              <span class="mp-step-title">Data Provenance</span>
-              <span class="mp-step-detail">Confirms every citation traces to a verifiable source</span>
-            </span>
-            <span class="mp-step-state">Idle</span>
-          </li>
-          <li class="mp-agent-step" data-step="audit">
-            <span class="mp-step-dot"></span>
-            <span class="mp-step-body">
-              <span class="mp-step-title">Audit Trail</span>
-              <span class="mp-step-detail">Writes an immutable record of the check for later review</span>
-            </span>
-            <span class="mp-step-state">Idle</span>
-          </li>
-          <li class="mp-agent-step" data-step="verdict">
-            <span class="mp-step-dot"></span>
-            <span class="mp-step-body">
-              <span class="mp-step-title">Compliance Verdict</span>
-              <span class="mp-step-detail">Issues a pass / hold / fail decision with reasoning</span>
-            </span>
-            <span class="mp-step-state">Idle</span>
-          </li>
-        </ol>
       </section>
 
-      <!-- ===== Compliance check history / ledger — dense table ===== -->
-      <section class="mp-ledger-panel" aria-label="Compliance check history">
-        <div class="mp-dense-header">
-          <span class="mp-dense-label"><i class="bi bi-link-45deg"></i> Compliance Check History</span>
-          <span class="mp-history-note">Demo data — ledger links are illustrative, not real blockchain records</span>
+      <!-- Agent checks -->
+      <section class="mp-section">
+        <h2 class="mp-heading">Agent checks</h2>
+        <p class="mp-heading-note">
+          Every question runs through the same five-step pipeline before you see an answer —
+          nothing reaches you unverified.
+        </p>
+
+        <div class="mp-panel" aria-live="polite">
+          <div class="mp-panel-header">
+            <span class="mp-panel-label"><i class="bi bi-cpu"></i> Pipeline status</span>
+            <span class="mp-agent-status" id="mpAgentStatus">Standing by &mdash; select a module and ask a question</span>
+          </div>
+          <ol class="mp-agent-steps" id="mpAgentSteps">
+            <li class="mp-agent-step" data-step="regulatory">
+              <span class="mp-step-dot"></span>
+              <span class="mp-step-body">
+                <span class="mp-step-title">Regulatory Scan</span>
+                <span class="mp-step-detail">Checks the query against the selected module's rulebook</span>
+              </span>
+              <span class="mp-step-state">Idle</span>
+            </li>
+            <li class="mp-agent-step" data-step="bias">
+              <span class="mp-step-dot"></span>
+              <span class="mp-step-body">
+                <span class="mp-step-title">Bias &amp; Fairness</span>
+                <span class="mp-step-detail">Screens the draft answer for skewed or unfair framing</span>
+              </span>
+              <span class="mp-step-state">Idle</span>
+            </li>
+            <li class="mp-agent-step" data-step="provenance">
+              <span class="mp-step-dot"></span>
+              <span class="mp-step-body">
+                <span class="mp-step-title">Data Provenance</span>
+                <span class="mp-step-detail">Confirms every citation traces to a verifiable source</span>
+              </span>
+              <span class="mp-step-state">Idle</span>
+            </li>
+            <li class="mp-agent-step" data-step="audit">
+              <span class="mp-step-dot"></span>
+              <span class="mp-step-body">
+                <span class="mp-step-title">Audit Trail</span>
+                <span class="mp-step-detail">Writes an immutable record of the check for later review</span>
+              </span>
+              <span class="mp-step-state">Idle</span>
+            </li>
+            <li class="mp-agent-step" data-step="verdict">
+              <span class="mp-step-dot"></span>
+              <span class="mp-step-body">
+                <span class="mp-step-title">Compliance Verdict</span>
+                <span class="mp-step-detail">Issues a pass / hold / fail decision with reasoning</span>
+              </span>
+              <span class="mp-step-state">Idle</span>
+            </li>
+          </ol>
         </div>
-        <div class="mp-ledger-scroll">
-          <table class="mp-ledger-table">
-            <thead>
-              <tr>
-                <th>Module</th>
-                <th>Query</th>
-                <th>Verdict</th>
-                <th>Timestamp</th>
-                <th>Ledger</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><span class="mp-tag">Gold Law</span></td>
-                <td class="mp-ledger-query">&ldquo;Can we hold client bullion under Gold Law custody rules?&rdquo;</td>
-                <td><span class="mp-tag mp-tag-pass">Passed</span></td>
-                <td class="mp-ledger-time">2026-09-18 14:32 UTC</td>
-                <td>
-                  <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x4f2a7c119e31" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
-                    View <i class="bi bi-box-arrow-up-right"></i>
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="mp-tag">GDPR Compliance</span></td>
-                <td class="mp-ledger-query">&ldquo;Can we transfer EU customer data to a US subprocessor?&rdquo;</td>
-                <td><span class="mp-tag mp-tag-pass">Passed</span></td>
-                <td class="mp-ledger-time">2026-09-17 09:04 UTC</td>
-                <td>
-                  <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x9b6d2f0a51c8" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
-                    View <i class="bi bi-box-arrow-up-right"></i>
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="mp-tag">FCA Rule Breaker</span></td>
-                <td class="mp-ledger-query">&ldquo;Flag any FCA breach in this outbound comms draft.&rdquo;</td>
-                <td><span class="mp-tag mp-tag-hold">Hold</span></td>
-                <td class="mp-ledger-time">2026-09-16 17:48 UTC</td>
-                <td>
-                  <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x1a83ee4d7f02" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
-                    View <i class="bi bi-box-arrow-up-right"></i>
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="mp-tag">SEC Compliance</span></td>
-                <td class="mp-ledger-query">&ldquo;Does this pitch deck comply with SEC Reg D exemptions?&rdquo;</td>
-                <td><span class="mp-tag mp-tag-pass">Passed</span></td>
-                <td class="mp-ledger-time">2026-09-15 11:21 UTC</td>
-                <td>
-                  <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0xc740b1329da5" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
-                    View <i class="bi bi-box-arrow-up-right"></i>
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td><span class="mp-tag">Gold Law</span></td>
-                <td class="mp-ledger-query">&ldquo;Verify chain-of-custody for a 1kg gold bar transfer.&rdquo;</td>
-                <td><span class="mp-tag mp-tag-fail">Failed</span></td>
-                <td class="mp-ledger-time">2026-09-14 08:57 UTC</td>
-                <td>
-                  <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x7e015c9328bf" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
-                    View <i class="bi bi-box-arrow-up-right"></i>
-                  </a>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      </section>
+
+      <!-- Compliance check history / ledger -->
+      <section class="mp-section" aria-label="Compliance check history">
+        <h2 class="mp-heading">Compliance check history</h2>
+        <p class="mp-heading-note">
+          Every verdict is written to a record you can point to later. The links below are
+          demo data only — they do not resolve to a real blockchain transaction.
+        </p>
+
+        <div class="mp-panel">
+          <div class="mp-ledger-scroll">
+            <table class="mp-ledger-table">
+              <thead>
+                <tr>
+                  <th>Module</th>
+                  <th>Query</th>
+                  <th>Verdict</th>
+                  <th>Timestamp</th>
+                  <th>Ledger</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="mp-tag">Gold Law</span></td>
+                  <td class="mp-ledger-query">&ldquo;Can we hold client bullion under Gold Law custody rules?&rdquo;</td>
+                  <td><span class="mp-tag mp-tag-pass">Passed</span></td>
+                  <td class="mp-ledger-time">2026-09-18 14:32 UTC</td>
+                  <td>
+                    <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x4f2a7c119e31" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                      View <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="mp-tag">GDPR Compliance</span></td>
+                  <td class="mp-ledger-query">&ldquo;Can we transfer EU customer data to a US subprocessor?&rdquo;</td>
+                  <td><span class="mp-tag mp-tag-pass">Passed</span></td>
+                  <td class="mp-ledger-time">2026-09-17 09:04 UTC</td>
+                  <td>
+                    <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x9b6d2f0a51c8" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                      View <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="mp-tag">FCA Rule Breaker</span></td>
+                  <td class="mp-ledger-query">&ldquo;Flag any FCA breach in this outbound comms draft.&rdquo;</td>
+                  <td><span class="mp-tag mp-tag-hold">Hold</span></td>
+                  <td class="mp-ledger-time">2026-09-16 17:48 UTC</td>
+                  <td>
+                    <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x1a83ee4d7f02" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                      View <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="mp-tag">SEC Compliance</span></td>
+                  <td class="mp-ledger-query">&ldquo;Does this pitch deck comply with SEC Reg D exemptions?&rdquo;</td>
+                  <td><span class="mp-tag mp-tag-pass">Passed</span></td>
+                  <td class="mp-ledger-time">2026-09-15 11:21 UTC</td>
+                  <td>
+                    <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0xc740b1329da5" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                      View <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="mp-tag">Gold Law</span></td>
+                  <td class="mp-ledger-query">&ldquo;Verify chain-of-custody for a 1kg gold bar transfer.&rdquo;</td>
+                  <td><span class="mp-tag mp-tag-fail">Failed</span></td>
+                  <td class="mp-ledger-time">2026-09-14 08:57 UTC</td>
+                  <td>
+                    <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x7e015c9328bf" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                      View <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
