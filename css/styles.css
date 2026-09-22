@@ -1180,19 +1180,28 @@ body {
   --mp-font-display: 'General Sans', 'Inter', system-ui, sans-serif; /* narrative headings on this page only — see header comment */
   --mp-gradient: linear-gradient(135deg, var(--mp-cyan), var(--mp-purple));
 
-  /* Page-wide atmospheric wash — spans the full viewport width (this is on the
-     body itself, which isn't constrained by .mp-shell's 760px column), not just
-     a glow clipped inside the narrow content column. */
-  background:
-    radial-gradient(ellipse 1100px 700px at 78% 0%, rgba(0, 230, 207, 0.14), transparent 62%),
-    radial-gradient(ellipse 900px 650px at 12% 8%, rgba(142, 69, 252, 0.12), transparent 60%),
-    var(--mp-bg);
-  background-repeat: no-repeat;
+  background: var(--mp-bg);
   color: var(--mp-text);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   font-family: var(--mp-font);
+}
+
+/* Page-wide atmospheric wash. Previously this gradient was set as the
+   background on .mp-brand (body) itself — that turned out unreliable for
+   guaranteed full-viewport coverage (body's own background box can end up
+   narrower than the viewport depending on layout/overflow context). A
+   position:fixed layer with inset:0 cannot fail to cover exactly 100vw x
+   100vh, regardless of any ancestor's width. */
+.mp-bg-wash {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 1100px 700px at 78% 0%, rgba(0, 230, 207, 0.14), transparent 62%),
+    radial-gradient(ellipse 900px 650px at 12% 8%, rgba(142, 69, 252, 0.12), transparent 60%);
 }
 
 .mp-nav {
