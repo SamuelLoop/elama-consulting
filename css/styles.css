@@ -1874,6 +1874,15 @@ html.mp-pin-active .mp-why-sticky {
   border: 1px solid var(--mp-border);
   border-radius: 14px;
   box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Neon glow-ring hover highlight — same technique as orchid.security's card
+   hover (a bright coloured border with a soft outward glow), in Mpowa's
+   purple rather than their yellow. */
+.mp-reason-card:hover {
+  border-color: var(--mp-purple);
+  box-shadow: 0 0 0 1px var(--mp-purple), 0 0 36px rgba(142, 69, 252, 0.5), 0 24px 48px rgba(0, 0, 0, 0.45);
 }
 
 .mp-reason-card-icon {
@@ -2096,6 +2105,12 @@ html.mp-pin-active .mp-why-sticky {
   background: var(--mp-muted);
   border: 1px solid var(--mp-border);
   border-radius: 8px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.mp-window-chip:hover {
+  border-color: var(--mp-purple);
+  box-shadow: 0 0 0 1px var(--mp-purple), 0 0 24px rgba(142, 69, 252, 0.45);
 }
 
 .mp-window-chip-icon {
@@ -2239,12 +2254,13 @@ html.mp-js .mp-fly-in.is-visible {
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: var(--mp-radius-tile);
   box-shadow: 0 20px 44px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .mp-for-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 28px 56px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  border-color: var(--mp-purple);
+  box-shadow: 0 0 0 1px var(--mp-purple), 0 0 40px rgba(142, 69, 252, 0.5), 0 28px 56px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .mp-for-card i {
