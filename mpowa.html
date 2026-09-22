@@ -206,57 +206,84 @@
           </p>
         </div>
 
-        <div class="mp-panel">
-          <div class="mp-modules" role="radiogroup" aria-label="Governance module">
-            <button type="button" class="mp-module mp-module-flagship active" data-module="gold-law" role="radio" aria-checked="true">
-              <span class="mp-module-flag">Flagship</span>
-              <span class="mp-module-top"><i class="bi bi-gem"></i> Gold Law</span>
-              <span class="mp-module-price">£4,500<span class="mp-module-price-unit">/mo</span></span>
-            </button>
-            <button type="button" class="mp-module" data-module="gdpr" role="radio" aria-checked="false">
-              <span class="mp-module-top"><i class="bi bi-shield-lock"></i> GDPR Compliance</span>
-              <span class="mp-module-price">£320<span class="mp-module-price-unit">/mo</span></span>
-            </button>
-            <button type="button" class="mp-module" data-module="fca" role="radio" aria-checked="false">
-              <span class="mp-module-top"><i class="bi bi-exclamation-octagon"></i> FCA Rule Breaker</span>
-              <span class="mp-module-price">£275<span class="mp-module-price-unit">/mo</span></span>
-            </button>
-            <button type="button" class="mp-module" data-module="sec" role="radio" aria-checked="false">
-              <span class="mp-module-top"><i class="bi bi-bank"></i> SEC Compliance</span>
-              <span class="mp-module-price">£349<span class="mp-module-price-unit">/mo</span></span>
-            </button>
-            <button type="button" class="mp-module mp-module-more" data-bs-toggle="tooltip" title="More modules coming soon" aria-disabled="true">
-              <span class="mp-module-top"><i class="bi bi-plus-lg"></i> More</span>
-            </button>
-          </div>
-
-          <div class="mp-notice">
-            <i class="bi bi-shield-check"></i>
-            <span class="mp-notice-text">
-              Check your AI and be insured for your agent actions.
-              <span class="mp-notice-sub">Insurance guaranteed when Anchor Ledger compliant.</span>
-            </span>
-          </div>
-        </div>
-
-        <!-- Search: raised above the flow — this is the primary call to action -->
-        <div class="mp-search-panel">
-          <form class="mp-search-form" id="mpSearchForm" autocomplete="off">
-            <div class="mp-search-bar">
-              <i class="bi bi-search mp-search-icon"></i>
-              <input
-                type="text"
-                id="mpSearchInput"
-                class="mp-search-input"
-                placeholder="Ask MPowa about Gold Law compliance…"
-                aria-label="Ask MPowa a compliance question"
-              />
+        <!-- Unified into one large focal frame, broken out full-bleed like the
+             product window above — this is the "window into the system":
+             a precision console (small header bar with live status, a thin
+             functional icon rail, dense module tiles, compact toolbar search)
+             rather than a marketing panel, and it scroll-zooms into focus
+             (see setupAskFrameZoom in mpowa-pin.js). -->
+        <div class="mp-ask-frame-wrap">
+          <div class="mp-ask-frame">
+            <div class="mp-ask-frame-bar">
+              <span class="mp-ask-frame-title"><i class="bi bi-grid-1x2"></i> Governance console</span>
+              <span class="mp-ask-frame-meta"><span class="mp-live-dot"></span> Live</span>
             </div>
-            <div class="mp-search-actions">
-              <button type="submit" class="mp-btn mp-btn-gradient mp-btn-lg">Run compliance check <i class="bi bi-arrow-right"></i></button>
-              <button type="button" class="mp-btn mp-btn-ghost mp-btn-lg" id="mpResetBtn">Reset</button>
+
+            <div class="mp-ask-frame-body">
+              <nav class="mp-ask-rail" aria-label="Console sections">
+                <a href="#ask" class="mp-ask-rail-btn active" title="Modules" aria-current="page"><i class="bi bi-grid-1x2"></i></a>
+                <a href="#mechanism" class="mp-ask-rail-btn" title="How Anchor Ledger works"><i class="bi bi-diagram-3"></i></a>
+                <a href="#history" class="mp-ask-rail-btn" title="Check history"><i class="bi bi-clock-history"></i></a>
+                <span class="mp-ask-rail-btn is-disabled" title="More — coming soon" aria-disabled="true"><i class="bi bi-gear"></i></span>
+              </nav>
+
+              <div class="mp-ask-main">
+                <div class="mp-ask-modules">
+                  <div class="mp-modules" role="radiogroup" aria-label="Governance module">
+                    <button type="button" class="mp-module mp-module-flagship active" data-module="gold-law" role="radio" aria-checked="true">
+                      <span class="mp-module-flag">Flagship</span>
+                      <span class="mp-module-top"><i class="bi bi-gem"></i> Gold Law</span>
+                      <span class="mp-module-price">£4,500<span class="mp-module-price-unit">/mo</span></span>
+                    </button>
+                    <button type="button" class="mp-module" data-module="gdpr" role="radio" aria-checked="false">
+                      <span class="mp-module-top"><i class="bi bi-shield-lock"></i> GDPR Compliance</span>
+                      <span class="mp-module-price">£320<span class="mp-module-price-unit">/mo</span></span>
+                    </button>
+                    <button type="button" class="mp-module" data-module="fca" role="radio" aria-checked="false">
+                      <span class="mp-module-top"><i class="bi bi-exclamation-octagon"></i> FCA Rule Breaker</span>
+                      <span class="mp-module-price">£275<span class="mp-module-price-unit">/mo</span></span>
+                    </button>
+                    <button type="button" class="mp-module" data-module="sec" role="radio" aria-checked="false">
+                      <span class="mp-module-top"><i class="bi bi-bank"></i> SEC Compliance</span>
+                      <span class="mp-module-price">£349<span class="mp-module-price-unit">/mo</span></span>
+                    </button>
+                    <button type="button" class="mp-module mp-module-more" data-bs-toggle="tooltip" title="More modules coming soon" aria-disabled="true">
+                      <span class="mp-module-top"><i class="bi bi-plus-lg"></i> More</span>
+                    </button>
+                  </div>
+
+                  <div class="mp-notice mp-notice-compact">
+                    <i class="bi bi-shield-check"></i>
+                    <span class="mp-notice-text">
+                      Check your AI and be insured for your agent actions.
+                      <span class="mp-notice-sub">Insurance guaranteed when Anchor Ledger compliant.</span>
+                    </span>
+                  </div>
+                </div>
+
+                <div class="mp-ask-divider"></div>
+
+                <div class="mp-ask-search">
+                  <form class="mp-search-form mp-search-form-compact" id="mpSearchForm" autocomplete="off">
+                    <div class="mp-search-bar mp-search-bar-compact">
+                      <i class="bi bi-search mp-search-icon"></i>
+                      <input
+                        type="text"
+                        id="mpSearchInput"
+                        class="mp-search-input"
+                        placeholder="Ask MPowa about Gold Law compliance…"
+                        aria-label="Ask MPowa a compliance question"
+                      />
+                      <div class="mp-search-actions mp-search-actions-inline">
+                        <button type="button" class="mp-btn mp-btn-ghost mp-btn-sm" id="mpResetBtn">Reset</button>
+                        <button type="submit" class="mp-btn mp-btn-gradient mp-btn-sm">Run check <i class="bi bi-arrow-right"></i></button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
-          </form>
+          </div>
         </div>
       </section>
 

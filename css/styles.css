@@ -1510,22 +1510,177 @@ body {
 
 .mp-notice-sub { font-size: 0.76rem; color: var(--mp-muted-text); }
 
-/* ---- Search: the primary call to action, deliberately raised off the flat
-   page rather than sitting flush with everything else — a subtle bevel
-   (light top edge, soft neutral shadow beneath), not a colour glow. ---- */
-.mp-search-panel {
-  margin: 2.5rem 0;
-  padding: 2rem;
+/* ---- Ask frame: the module picker, insurance notice and search form
+   unified into ONE large focal panel — "the window into the system" —
+   rather than two stacked boxes. Broken out full-bleed the same way as
+   .mp-window-wrap above, so it reads as the same class of large hero object,
+   and scroll-zoomed into focus via .mp-ask-frame in mpowa-pin.js (see
+   setupAskFrameZoom). ---- */
+.mp-ask-frame-wrap {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 0 1.5rem;
+}
+
+.mp-ask-frame {
+  max-width: 1180px;
+  margin: 0 auto;
   background: linear-gradient(180deg, #1C1F2C 0%, var(--mp-card) 100%);
   border: 1px solid var(--mp-border);
   border-top-color: #3A3D4C;
   border-radius: var(--mp-radius-tile);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    0 16px 40px rgba(0, 0, 0, 0.5);
+    0 40px 90px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  transform-origin: center top;
+}
+
+/* Precision console chrome: a small title/status bar and a thin functional
+   icon rail, in place of a plain marketing panel — this is meant to read as
+   an operating instrument, not another content block. */
+.mp-ask-frame-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.5rem;
+  border-bottom: 1px solid var(--mp-border);
+}
+
+.mp-ask-frame-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--mp-text);
+}
+
+.mp-ask-frame-title i { color: var(--mp-cyan); }
+
+.mp-ask-frame-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.76rem;
+  color: var(--mp-muted-text);
+}
+
+.mp-live-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--mp-cyan);
+  box-shadow: 0 0 0 0 rgba(0, 230, 207, 0.6);
+  animation: mp-live-pulse 2.2s ease-out infinite;
+}
+
+@keyframes mp-live-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 230, 207, 0.55); }
+  70% { box-shadow: 0 0 0 6px rgba(0, 230, 207, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 230, 207, 0); }
+}
+
+.mp-ask-frame-body {
+  display: flex;
+  align-items: stretch;
+}
+
+.mp-ask-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex: none;
+  width: 3.25rem;
+  padding: 1rem 0;
+  border-right: 1px solid var(--mp-border);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.mp-ask-rail-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 6px;
+  color: var(--mp-muted-text);
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.mp-ask-rail-btn:hover { color: var(--mp-text); background: rgba(255, 255, 255, 0.06); }
+
+.mp-ask-rail-btn.active { color: var(--mp-cyan); background: rgba(0, 230, 207, 0.12); }
+
+.mp-ask-rail-btn.is-disabled { opacity: 0.35; cursor: not-allowed; }
+
+.mp-ask-main {
+  flex: 1;
+  min-width: 0;
+  padding: 1.75rem 2rem;
+}
+
+.mp-ask-modules .mp-modules { margin-bottom: 1.25rem; }
+
+.mp-notice-compact {
+  padding: 0.55rem 0.85rem;
+  font-size: 0.78rem;
+}
+
+.mp-ask-divider {
+  height: 1px;
+  margin: 1.75rem 0;
+  background: linear-gradient(90deg, transparent, var(--mp-border) 15%, var(--mp-border) 85%, transparent);
 }
 
 .mp-search-form { margin: 0; }
+
+/* Compact toolbar variant: input + actions on one row, sized like a
+   functional instrument rather than a big marketing CTA block. */
+.mp-search-bar-compact {
+  padding: 0.65rem 0.85rem;
+  gap: 0.65rem;
+}
+
+.mp-search-bar-compact .mp-search-input {
+  font-size: 0.95rem;
+}
+
+.mp-search-actions-inline {
+  margin-top: 0;
+  margin-left: auto;
+  flex-wrap: nowrap;
+  flex: none;
+}
+
+@media (max-width: 650px) {
+  .mp-ask-rail {
+    display: none;
+  }
+
+  .mp-ask-main {
+    padding: 1.25rem;
+  }
+
+  .mp-search-bar-compact {
+    flex-wrap: wrap;
+  }
+
+  .mp-search-actions-inline {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
 
 .mp-search-bar {
   display: flex;

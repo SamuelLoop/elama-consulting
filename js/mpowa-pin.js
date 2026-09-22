@@ -97,6 +97,29 @@
     });
   }
 
+  // Ask/console frame: a much stronger version of the window-zoom above —
+  // starts noticeably small and grows to full size as it scrolls into view,
+  // so it reads as "zooming in to focus" on the console rather than a subtle
+  // polish tween. This is the section's whole point (the "window into the
+  // system"), so the effect is deliberately more dramatic than elsewhere.
+  function setupAskFrameZoom() {
+    var frame = document.querySelector('.mp-ask-frame');
+    if (!frame) return;
+
+    gsap.set(frame, { scale: 0.72, opacity: 0.5, transformOrigin: 'center top' });
+    gsap.to(frame, {
+      scale: 1,
+      opacity: 1,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: frame,
+        start: 'top 95%',
+        end: 'top 28%',
+        scrub: 0.6,
+      },
+    });
+  }
+
   // "Who It's For" cards: the two columns drift at slightly different rates
   // as the section scrolls, and the heading drifts a little the other way —
   // that relative motion between layers is what actually reads as "floating
@@ -124,6 +147,7 @@
   function setup() {
     setupWhyStack();
     setupWindowZoom();
+    setupAskFrameZoom();
     setupForGridParallax();
   }
 
