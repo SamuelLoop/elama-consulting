@@ -97,9 +97,34 @@
     });
   }
 
+  // "Who It's For" cards: the two columns drift at slightly different rates
+  // as the section scrolls, and the heading drifts a little the other way —
+  // that relative motion between layers is what actually reads as "floating
+  // over the text," not just a static staggered offset.
+  function setupForGridParallax() {
+    var section = document.querySelector('#for');
+    if (!section) return;
+    if (window.matchMedia && window.matchMedia('(max-width: 650px)').matches) {
+      return;
+    }
+
+    var head = section.querySelector('.mp-section-head');
+    var colA = section.querySelector('.mp-for-col:not(.mp-for-col-offset)');
+    var colB = section.querySelector('.mp-for-col-offset');
+    if (!colA || !colB) return;
+
+    var trigger = { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 0.6 };
+    gsap.fromTo(colA, { y: 34 }, { y: -34, ease: 'none', scrollTrigger: trigger });
+    gsap.fromTo(colB, { y: 58 }, { y: -12, ease: 'none', scrollTrigger: trigger });
+    if (head) {
+      gsap.fromTo(head, { y: -18 }, { y: 14, ease: 'none', scrollTrigger: trigger });
+    }
+  }
+
   function setup() {
     setupWhyStack();
     setupWindowZoom();
+    setupForGridParallax();
   }
 
   if (document.readyState === 'complete') {
