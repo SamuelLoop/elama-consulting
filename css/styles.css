@@ -2229,9 +2229,22 @@ html.mp-js .mp-fly-in.is-visible {
 
 .mp-for-card {
   padding: 1.5rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.04)), var(--mp-card);
-  border: 1px solid var(--mp-border);
+  /* Real glassmorphism, not just a gradient sheen over a solid fill: the
+     background is semi-transparent so .mp-bg-wash actually shows through and
+     blurs behind it, and the stronger shadow gives it a floating, elevated
+     read rather than sitting flush with the page. */
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: var(--mp-radius-tile);
+  box-shadow: 0 20px 44px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mp-for-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 28px 56px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .mp-for-card i {
