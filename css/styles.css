@@ -1158,13 +1158,13 @@ body {
    ============================================================ */
 
 .mp-brand {
-  --mp-bg:          #050C24;  /* mpowa.io --background */
-  --mp-card:        #131520;  /* mpowa.io --card */
+  --mp-bg:          #0D1121;  /* toned down from mpowa.io's literal #050C24 — same navy family, less saturated/vivid blue, calmer for a full page of dense content */
+  --mp-card:        #171922;  /* toned down from mpowa.io's #131520 to match the desaturated background */
   --mp-cyan:        #00E6CF;  /* mpowa.io --primary / --mpowa-cyan */
   --mp-purple:      #8E45FC;  /* mpowa.io --secondary / --mpowa-purple */
-  --mp-muted:       #1F212E;  /* mpowa.io --muted */
+  --mp-muted:       #21232E;  /* toned down from mpowa.io's #1F212E */
   --mp-muted-text:  #94A3B8;  /* mpowa.io --muted-foreground */
-  --mp-border:      #2B2F42;  /* lightened slightly from mpowa.io's #252837 — needs to read as a visible flat border with no blur to lean on */
+  --mp-border:      #2E3040;  /* toned down, still a visible flat border with no blur to lean on */
   --mp-text:        #F8FAFC;  /* mpowa.io --foreground */
   --mp-destructive: #EF4444;  /* mpowa.io --destructive */
 
@@ -1404,7 +1404,7 @@ body {
 /* ---- Insurance notice: flat, left-accented, no glow ---- */
 .mp-notice {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.5rem;
   padding: 0.7rem 1rem;
   border: 1px solid var(--mp-border);
@@ -1414,7 +1414,11 @@ body {
   color: var(--mp-text);
 }
 
-.mp-notice i { color: var(--mp-cyan); }
+.mp-notice i { color: var(--mp-cyan); margin-top: 0.15rem; }
+
+.mp-notice-text { display: flex; flex-direction: column; gap: 0.25rem; }
+
+.mp-notice-sub { font-size: 0.76rem; color: var(--mp-muted-text); }
 
 /* ---- Search: the primary call to action, deliberately raised off the flat
    page rather than sitting flush with everything else — a subtle bevel
@@ -1422,9 +1426,9 @@ body {
 .mp-search-panel {
   margin: 2.5rem 0;
   padding: 2rem;
-  background: linear-gradient(180deg, #171B2C 0%, var(--mp-card) 100%);
+  background: linear-gradient(180deg, #1C1F2C 0%, var(--mp-card) 100%);
   border: 1px solid var(--mp-border);
-  border-top-color: #363B52;
+  border-top-color: #3A3D4C;
   border-radius: var(--mp-radius-tile);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
