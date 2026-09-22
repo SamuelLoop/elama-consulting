@@ -115,23 +115,25 @@
           </div>
         </div>
 
-        <!-- Search -->
-        <form class="mp-search-form" id="mpSearchForm" autocomplete="off">
-          <div class="mp-search-bar">
-            <i class="bi bi-search mp-search-icon"></i>
-            <input
-              type="text"
-              id="mpSearchInput"
-              class="mp-search-input"
-              placeholder="Ask MPowa about Gold Law compliance…"
-              aria-label="Ask MPowa a compliance question"
-            />
-          </div>
-          <div class="mp-search-actions">
-            <button type="submit" class="mp-btn mp-btn-primary">Run compliance check <i class="bi bi-arrow-right"></i></button>
-            <button type="button" class="mp-btn mp-btn-ghost" id="mpResetBtn">Reset</button>
-          </div>
-        </form>
+        <!-- Search: raised above the flow — this is the primary call to action -->
+        <div class="mp-search-panel">
+          <form class="mp-search-form" id="mpSearchForm" autocomplete="off">
+            <div class="mp-search-bar">
+              <i class="bi bi-search mp-search-icon"></i>
+              <input
+                type="text"
+                id="mpSearchInput"
+                class="mp-search-input"
+                placeholder="Ask MPowa about Gold Law compliance…"
+                aria-label="Ask MPowa a compliance question"
+              />
+            </div>
+            <div class="mp-search-actions">
+              <button type="submit" class="mp-btn mp-btn-primary mp-btn-lg">Run compliance check <i class="bi bi-arrow-right"></i></button>
+              <button type="button" class="mp-btn mp-btn-ghost mp-btn-lg" id="mpResetBtn">Reset</button>
+            </div>
+          </form>
+        </div>
       </section>
 
       <!-- Agent checks -->
@@ -271,6 +273,42 @@
               </tbody>
             </table>
           </div>
+        </div>
+      </section>
+
+      <!-- API -->
+      <section class="mp-section" aria-label="API access">
+        <h2 class="mp-heading">Engage our service through API and be compliant automatically</h2>
+        <p class="mp-heading-note">
+          Call the same governance modules and agent-check pipeline directly from your own
+          systems. Every request runs the full pipeline and is logged automatically — nothing
+          to configure by hand.
+        </p>
+
+        <div class="mp-panel">
+          <div class="mp-panel-header">
+            <span class="mp-panel-label"><i class="bi bi-code-slash"></i> Example request</span>
+            <span class="mp-agent-status">Illustrative &mdash; does not call a live endpoint</span>
+          </div>
+          <pre class="mp-code-block"><code>curl -X POST https://api.mpowa.example/v1/checks \
+  -H "Authorization: Bearer $MPOWA_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "module": "gold-law",
+    "query": "Can we hold client bullion under Gold Law custody rules?"
+  }'
+
+&gt; {
+&gt;   "verdict": "passed",
+&gt;   "checks": ["regulatory", "bias", "provenance", "audit", "verdict"],
+&gt;   "ledger_url": "https://ledger.mpowa.example/tx/0x4f2a7c119e31"
+&gt; }</code></pre>
+
+          <ul class="mp-feature-list">
+            <li><i class="bi bi-check-circle"></i> Same governance modules and agent checks as the interface above</li>
+            <li><i class="bi bi-check-circle"></i> Every call logged to the compliance ledger automatically, no manual step</li>
+            <li><i class="bi bi-check-circle"></i> Returns a pass / hold / fail verdict with reasoning in the response</li>
+          </ul>
         </div>
       </section>
 

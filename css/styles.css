@@ -1416,17 +1416,31 @@ body {
 
 .mp-notice i { color: var(--mp-cyan); }
 
-/* ---- Search ---- */
+/* ---- Search: the primary call to action, deliberately raised off the flat
+   page rather than sitting flush with everything else — a subtle bevel
+   (light top edge, soft neutral shadow beneath), not a colour glow. ---- */
+.mp-search-panel {
+  margin: 2.5rem 0;
+  padding: 2rem;
+  background: linear-gradient(180deg, #171B2C 0%, var(--mp-card) 100%);
+  border: 1px solid var(--mp-border);
+  border-top-color: #363B52;
+  border-radius: var(--mp-radius-tile);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 16px 40px rgba(0, 0, 0, 0.5);
+}
+
 .mp-search-form { margin: 0; }
 
 .mp-search-bar {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  background: transparent;
+  gap: 0.85rem;
+  background: var(--mp-bg);
   border: 1px solid var(--mp-border);
   border-radius: var(--mp-radius-tile);
-  padding: 0.9rem 1.1rem;
+  padding: 1.15rem 1.4rem;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -1439,7 +1453,7 @@ body {
 
 .mp-search-icon {
   color: var(--mp-muted-text);
-  font-size: 1.05rem;
+  font-size: 1.15rem;
 }
 
 .mp-search-input {
@@ -1447,7 +1461,7 @@ body {
   border: none;
   outline: none;
   font-family: var(--mp-font);
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: var(--mp-text);
   background: transparent;
 }
@@ -1457,7 +1471,7 @@ body {
 .mp-search-actions {
   display: flex;
   gap: 0.75rem;
-  margin-top: 1.1rem;
+  margin-top: 1.4rem;
   flex-wrap: wrap;
 }
 
@@ -1473,6 +1487,12 @@ body {
   border: 1px solid transparent;
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.mp-btn-lg {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 1rem 2rem;
 }
 
 .mp-btn-primary {
@@ -1688,6 +1708,48 @@ body {
 .mp-tag-pass { border-color: var(--mp-cyan);  color: var(--mp-cyan); }
 .mp-tag-hold { border-color: var(--mp-purple); color: var(--mp-purple); }
 .mp-tag-fail { border-color: var(--mp-destructive); color: var(--mp-destructive); }
+
+/* ---- API code sample. Monospace here is functional (it's literal code),
+   not a brand-typeface decision — Inter stays the brand face everywhere else. ---- */
+.mp-code-block {
+  margin: 0 0 1.5rem;
+  padding: 1.25rem;
+  background: var(--mp-bg);
+  border: 1px solid var(--mp-border);
+  border-radius: var(--mp-radius-tile);
+  overflow-x: auto;
+}
+
+.mp-code-block code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--mp-text);
+  white-space: pre;
+}
+
+.mp-feature-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.mp-feature-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+  color: var(--mp-muted-text);
+}
+
+.mp-feature-list i {
+  color: var(--mp-cyan);
+  margin-top: 0.15rem;
+  flex-shrink: 0;
+}
 
 .mp-footer {
   text-align: left;
