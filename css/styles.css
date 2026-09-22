@@ -1180,7 +1180,14 @@ body {
   --mp-font-display: 'General Sans', 'Inter', system-ui, sans-serif; /* narrative headings on this page only — see header comment */
   --mp-gradient: linear-gradient(135deg, var(--mp-cyan), var(--mp-purple));
 
-  background: var(--mp-bg);
+  /* Page-wide atmospheric wash — spans the full viewport width (this is on the
+     body itself, which isn't constrained by .mp-shell's 760px column), not just
+     a glow clipped inside the narrow content column. */
+  background:
+    radial-gradient(ellipse 1100px 700px at 78% 0%, rgba(0, 230, 207, 0.14), transparent 62%),
+    radial-gradient(ellipse 900px 650px at 12% 8%, rgba(142, 69, 252, 0.12), transparent 60%),
+    var(--mp-bg);
+  background-repeat: no-repeat;
   color: var(--mp-text);
   min-height: 100vh;
   display: flex;
@@ -1890,23 +1897,11 @@ html.mp-pin-active .mp-why-sticky {
   margin: 0;
 }
 
-/* ---- Background glow orb: CSS recreation of Orchid's blurred hero orb image,
-   in MPowa's own cyan/purple rather than their asset or their teal/lime tones ---- */
-.mp-glow-orb {
-  position: absolute;
-  top: -120px;
-  right: -140px;
-  width: 480px;
-  height: 480px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 230, 207, 0.35), rgba(142, 69, 252, 0.22) 45%, transparent 70%);
-  filter: blur(60px);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.mp-hero { position: relative; overflow: hidden; }
-.mp-hero > *:not(.mp-glow-orb) { position: relative; z-index: 1; }
+/* The atmospheric glow is now a full page-width wash on .mp-brand itself (see
+   above) rather than an orb clipped inside the hero's own narrow box — that's
+   the "full page width background" fix. .mp-glow-orb is unused; kept out of
+   markup rather than left as dead CSS. */
+.mp-hero { position: relative; }
 
 /* ---- How Anchor Ledger works: numbered mechanism steps ---- */
 .mp-mechanism-steps {
@@ -2010,17 +2005,31 @@ html.mp-pin-active .mp-why-sticky {
 
 .mp-footer a { color: var(--mp-cyan); }
 
-/* ---- Product window: an original framed preview of MPowa's own interface ---- */
+/* ---- Product window: an original framed preview of MPowa's own interface.
+   Breaks out of .mp-shell's 760px column to near-full viewport width (the
+   standard "full-bleed inside a centered container" trick: 100vw + negative
+   margins via left:50%), then centers its own wider max-width inside that —
+   this is the "big, centered console" section, not confined to the narrow
+   text column the rest of the page reads in. ---- */
 .mp-window-wrap {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 0 1.5rem;
   margin-bottom: 4.5rem;
 }
 
 .mp-window {
+  max-width: 1180px;
+  margin: 0 auto;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.04)), var(--mp-card);
   border: 1px solid var(--mp-border);
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.5);
 }
 
 .mp-window-chrome {
@@ -2043,7 +2052,7 @@ html.mp-pin-active .mp-why-sticky {
 .mp-window-dot-green { background: var(--mp-cyan); opacity: 0.6; }
 
 .mp-window-body {
-  padding: 2rem;
+  padding: 2.5rem;
 }
 
 .mp-window-stats {
@@ -2053,6 +2062,45 @@ html.mp-pin-active .mp-why-sticky {
   margin-bottom: 2rem;
   padding-bottom: 2rem;
   border-bottom: 1px solid var(--mp-border);
+}
+
+/* Small square info-message chips — icon badge + short bold-ish message,
+   a row of quick facts sitting between the headline stats and the data table. */
+.mp-window-chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.mp-window-chip {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.9rem 1rem;
+  background: var(--mp-muted);
+  border: 1px solid var(--mp-border);
+  border-radius: 8px;
+}
+
+.mp-window-chip-icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: var(--mp-gradient);
+  color: var(--mp-bg);
+  font-size: 0.85rem;
+}
+
+.mp-window-chip-text {
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--mp-text);
 }
 
 .mp-window-stat {

@@ -27,17 +27,17 @@
     return;
   }
 
-  var scrollBox = document.querySelector('.mp-why-scroll');
-  var stackWrap = document.querySelector('.mp-reason-stack');
-  var cards = stackWrap ? Array.prototype.slice.call(stackWrap.querySelectorAll('.mp-reason-card')) : [];
-
-  if (!scrollBox || !stackWrap || cards.length < 2) {
-    return;
-  }
-
   gsap.registerPlugin(ScrollTrigger);
 
-  function setup() {
+  function setupWhyStack() {
+    var scrollBox = document.querySelector('.mp-why-scroll');
+    var stackWrap = document.querySelector('.mp-reason-stack');
+    var cards = stackWrap ? Array.prototype.slice.call(stackWrap.querySelectorAll('.mp-reason-card')) : [];
+
+    if (!scrollBox || !stackWrap || cards.length < 2) {
+      return;
+    }
+
     document.documentElement.classList.add('mp-pin-active');
 
     var tallest = Math.max.apply(null, cards.map(function (c) { return c.offsetHeight; }));
@@ -72,6 +72,34 @@
       tl.to(cards[i - 1], { scale: 0.94, opacity: 0.35, duration: 1 }, i === 1 ? 0 : '<')
         .to(card, { opacity: 1, y: 0, duration: 1 }, '<');
     });
+  }
+
+  // Product window: scales/fades in as it scrolls into view, like a device
+  // screenshot coming into focus — a common pattern on product marketing pages
+  // (Apple/Stripe/Linear-style), implemented independently here with GSAP scrub,
+  // no pin involved. Starts already visible (opacity 1, scale 0.92) so it never
+  // depends on JS for basic visibility, only for the extra polish of the zoom.
+  function setupWindowZoom() {
+    var win = document.querySelector('.mp-window');
+    if (!win) return;
+
+    gsap.set(win, { scale: 0.92, opacity: 0.85, transformOrigin: 'center center' });
+    gsap.to(win, {
+      scale: 1,
+      opacity: 1,
+      ease: 'power1.out',
+      scrollTrigger: {
+        trigger: win,
+        start: 'top 90%',
+        end: 'top 40%',
+        scrub: 0.6,
+      },
+    });
+  }
+
+  function setup() {
+    setupWhyStack();
+    setupWindowZoom();
   }
 
   if (document.readyState === 'complete') {
