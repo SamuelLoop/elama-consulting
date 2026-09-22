@@ -1144,3 +1144,399 @@ body {
 @media (min-width: 768px) and (max-width: 991.98px) {
   .ec-photo-frame { width: 250px; height: 305px; }
 }
+
+/* ============================================================
+   MPOWA — governance-agent search interface (concept)
+   Prefix: .mp-*   Brand tokens verified against the real mpowa.io
+   (see ~/.claude/skills/brand-mpowa). This is an UNOFFICIAL concept —
+   colours/type match Mpowa's real brand, not Elama's --ec-* tokens.
+   ============================================================ */
+
+.mp-brand {
+  --mp-bg:          #050C24;  /* mpowa.io --background */
+  --mp-card:        #131520;  /* mpowa.io --card */
+  --mp-cyan:        #00E6CF;  /* mpowa.io --primary / --mpowa-cyan */
+  --mp-purple:      #8E45FC;  /* mpowa.io --secondary / --mpowa-purple */
+  --mp-muted:       #1F212E;  /* mpowa.io --muted */
+  --mp-muted-text:  #94A3B8;  /* mpowa.io --muted-foreground */
+  --mp-border:      #252837;  /* mpowa.io --border */
+  --mp-text:        #F8FAFC;  /* mpowa.io --foreground */
+  --mp-destructive: #EF4444;  /* mpowa.io --destructive */
+  --mp-radius:      0.5rem;   /* mpowa.io --radius */
+
+  --mp-font: 'Inter', system-ui, sans-serif; /* mpowa.io uses Inter only */
+
+  background: var(--mp-bg);
+  color: var(--mp-text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--mp-font);
+}
+
+.mp-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 2rem;
+  flex-wrap: wrap;
+}
+
+.mp-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+}
+
+.mp-mark-text {
+  font-family: var(--mp-font);
+  font-weight: 300;
+  letter-spacing: 0.25em;
+  font-size: 0.95rem;
+  color: var(--mp-text);
+}
+
+.mp-mark-icon {
+  width: 26px;
+  height: 26px;
+}
+
+.mp-topbar-tag {
+  font-size: 0.72rem;
+  color: var(--mp-muted-text);
+  font-style: italic;
+}
+
+.mp-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1.25rem 4rem;
+}
+
+.mp-shell {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.mp-welcome {
+  font-family: var(--mp-font);
+  font-weight: 400;
+  font-size: 1.05rem;
+  color: var(--mp-muted-text);
+  margin-bottom: 2.25rem;
+}
+
+.mp-welcome-accent {
+  color: var(--mp-cyan);
+  font-weight: 600;
+}
+
+.mp-wordmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.mp-w-text {
+  font-family: var(--mp-font);
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  font-size: 2.75rem;
+  color: var(--mp-text);
+}
+
+.mp-w-icon {
+  width: 52px;
+  height: 52px;
+}
+
+.mp-subtitle {
+  color: var(--mp-muted-text);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+/* ---- Governance module selector ---- */
+.mp-modules {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 1.75rem;
+}
+
+.mp-module {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--mp-border);
+  background: var(--mp-card);
+  color: var(--mp-text);
+  font-family: var(--mp-font);
+  font-weight: 500;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.mp-module:hover {
+  border-color: var(--mp-cyan);
+  transform: translateY(-1px);
+}
+
+.mp-module.active {
+  background: var(--mp-cyan);
+  border-color: var(--mp-cyan);
+  color: var(--mp-bg);
+  box-shadow: 0 6px 18px rgba(0, 230, 207, 0.35);
+}
+
+.mp-module-more {
+  border-style: dashed;
+  color: var(--mp-muted-text);
+  cursor: not-allowed;
+}
+
+.mp-module-more:hover {
+  border-color: var(--mp-border);
+  transform: none;
+}
+
+/* ---- Search ---- */
+.mp-search-form { margin-bottom: 2.25rem; }
+
+.mp-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--mp-card);
+  border: 1.5px solid var(--mp-border);
+  border-radius: 16px;
+  padding: 0.9rem 1.4rem;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+  transition: 0.2s ease;
+}
+
+.mp-search-bar:focus-within {
+  border-color: var(--mp-cyan);
+  box-shadow: 0 0 0 4px rgba(0, 230, 207, 0.22), 0 20px 45px rgba(0, 0, 0, 0.45);
+}
+
+.mp-search-icon {
+  color: var(--mp-muted-text);
+  font-size: 1.1rem;
+}
+
+.mp-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: var(--mp-font);
+  font-size: 1.05rem;
+  color: var(--mp-text);
+  background: transparent;
+}
+
+.mp-search-input::placeholder { color: var(--mp-muted-text); }
+
+.mp-search-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: var(--mp-cyan);
+  color: var(--mp-bg);
+  flex-shrink: 0;
+  transition: 0.2s ease;
+}
+
+.mp-search-submit:hover { background: var(--mp-purple); color: #FFFFFF; }
+
+.mp-search-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.1rem;
+  flex-wrap: wrap;
+}
+
+.mp-btn {
+  font-family: var(--mp-font);
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.75rem 1.75rem;
+  border-radius: var(--mp-radius);
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.mp-btn-primary {
+  background: var(--mp-cyan);
+  color: var(--mp-bg);
+}
+
+.mp-btn-primary:hover {
+  background: var(--mp-purple);
+  color: #FFFFFF;
+}
+
+.mp-btn-ghost {
+  background: transparent;
+  border-color: var(--mp-border);
+  color: var(--mp-muted-text);
+}
+
+.mp-btn-ghost:hover {
+  border-color: var(--mp-cyan);
+  color: var(--mp-text);
+}
+
+/* ---- Agent checks panel ---- */
+.mp-agent-panel {
+  background: var(--mp-card);
+  border: 1px solid var(--mp-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: left;
+}
+
+.mp-agent-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--mp-border);
+}
+
+.mp-agent-label {
+  font-family: var(--mp-font);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mp-text);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mp-agent-status {
+  font-size: 0.8rem;
+  color: var(--mp-muted-text);
+}
+
+.mp-agent-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mp-agent-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.mp-agent-step.is-running { background: rgba(142, 69, 252, 0.08); }
+.mp-agent-step.is-pass    { background: rgba(0, 230, 207, 0.08); }
+
+.mp-step-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-top: 0.3rem;
+  flex-shrink: 0;
+  background: var(--mp-border);
+  transition: 0.2s ease;
+}
+
+.mp-agent-step.is-running .mp-step-dot {
+  background: var(--mp-purple);
+  box-shadow: 0 0 0 4px rgba(142, 69, 252, 0.25);
+  animation: mp-pulse 0.9s ease-in-out infinite;
+}
+
+.mp-agent-step.is-pass .mp-step-dot {
+  background: var(--mp-cyan);
+  box-shadow: 0 0 0 4px rgba(0, 230, 207, 0.25);
+}
+
+@keyframes mp-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.4; }
+}
+
+.mp-step-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.mp-step-title {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--mp-text);
+}
+
+.mp-step-detail {
+  font-size: 0.8rem;
+  color: var(--mp-muted-text);
+}
+
+.mp-step-state {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--mp-muted-text);
+  white-space: nowrap;
+  margin-top: 0.3rem;
+}
+
+.mp-agent-step.is-running .mp-step-state { color: var(--mp-purple); }
+.mp-agent-step.is-pass .mp-step-state    { color: var(--mp-cyan); }
+
+.mp-footer {
+  text-align: center;
+  padding: 1.5rem 1.25rem 2rem;
+  font-size: 0.76rem;
+  color: var(--mp-muted-text);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.mp-footer a { color: var(--mp-cyan); }
+
+@media (max-width: 575.98px) {
+  .mp-wordmark { gap: 0.5rem; }
+  .mp-w-text { font-size: 1.9rem; letter-spacing: 0.18em; }
+  .mp-w-icon { width: 38px; height: 38px; }
+  .mp-topbar { padding: 1rem 1.25rem; }
+  .mp-search-actions { flex-direction: column; }
+  .mp-search-actions .mp-btn { width: 100%; }
+}

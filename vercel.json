@@ -8,6 +8,7 @@
     { "source": "/privacy-policy", "destination": "/privacy-policy.html" },
     { "source": "/terms", "destination": "/terms.html" },
     { "source": "/litigation-intelligence", "destination": "/litigation-intelligence.html" },
+    { "source": "/mpowa", "destination": "/mpowa.html" },
     { "source": "/litigation-analysis-outreach", "destination": "/litigation-analysis-outreach.html" },
     { "source": "/JaredPartnership", "destination": "/JaredPartnership.html" }
   ],
