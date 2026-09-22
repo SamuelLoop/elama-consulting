@@ -72,6 +72,7 @@
 
       <!-- Hero: centered, narrative — Orchid's convention for this kind of page -->
       <section class="mp-hero mp-reveal" id="top">
+        <div class="mp-glow-orb" aria-hidden="true"></div>
         <span class="mp-eyebrow-pill">Unofficial concept &mdash; not affiliated with or endorsed by Mpowa</span>
         <h1 class="mp-hero-title">
           Welcome to MPowa, where agents meet compliance. <span class="mp-welcome-accent">AI for humanity.</span>
@@ -128,36 +129,41 @@
         </div>
       </section>
 
-      <!-- Why MPowa exists -->
-      <section class="mp-section mp-reveal" id="why">
-        <div class="mp-section-head">
-          <span class="mp-eyebrow-pill">Why MPowa Exists</span>
-          <h2 class="mp-heading">Agentic AI has no flight recorder</h2>
-          <p class="mp-heading-note">
-            Autonomous agents are already making consequential decisions inside regulated
-            businesses — and most leave no tamper-proof, independently verifiable record of
-            what they did or why.
-          </p>
-        </div>
+      <!-- Why MPowa exists: sticky header+stack (native CSS position:sticky, no manual
+           spacer math) with GSAP driving a pure scrub crossfade on the cards. -->
+      <section class="mp-section mp-why-pin" id="why">
+        <div class="mp-why-scroll">
+          <div class="mp-why-sticky">
+            <div class="mp-section-head mp-why-head">
+              <span class="mp-eyebrow-pill">Why MPowa Exists</span>
+              <h2 class="mp-heading">Agentic AI has no flight recorder</h2>
+              <p class="mp-heading-note">
+                Autonomous agents are already making consequential decisions inside regulated
+                businesses — and most leave no tamper-proof, independently verifiable record of
+                what they did or why.
+              </p>
+            </div>
 
-        <div class="mp-reason-grid">
-          <div class="mp-reason-card">
-            <i class="bi bi-file-earmark-x"></i>
-            <h3>No record survives the agent</h3>
-            <p>When something goes wrong, there's rarely a trustworthy account of what the
-              agent actually did, in what order, or who — if anyone — was watching.</p>
-          </div>
-          <div class="mp-reason-card">
-            <i class="bi bi-hourglass-split"></i>
-            <h3>Regulation has a deadline. Infrastructure doesn't.</h3>
-            <p>New AI regulation increasingly requires documented oversight of automated
-              decisions — but mandating oversight doesn't create the plumbing to deliver it.</p>
-          </div>
-          <div class="mp-reason-card">
-            <i class="bi bi-shield-exclamation"></i>
-            <h3>Training alone doesn't fix it</h3>
-            <p>Safety training reduces bad outcomes; it doesn't produce the verifiable record
-              of what an agent actually did that an audit or a regulator will ask for.</p>
+            <div class="mp-reason-stack">
+              <div class="mp-reason-card">
+                <span class="mp-reason-card-icon"><i class="bi bi-file-earmark-x"></i></span>
+                <h3>No record survives the agent</h3>
+                <p>When something goes wrong, there's rarely a trustworthy account of what the
+                  agent actually did, in what order, or who — if anyone — was watching.</p>
+              </div>
+              <div class="mp-reason-card">
+                <span class="mp-reason-card-icon"><i class="bi bi-hourglass-split"></i></span>
+                <h3>Regulation has a deadline. Infrastructure doesn't.</h3>
+                <p>New AI regulation increasingly requires documented oversight of automated
+                  decisions — but mandating oversight doesn't create the plumbing to deliver it.</p>
+              </div>
+              <div class="mp-reason-card">
+                <span class="mp-reason-card-icon"><i class="bi bi-shield-exclamation"></i></span>
+                <h3>Training alone doesn't fix it</h3>
+                <p>Safety training reduces bad outcomes; it doesn't produce the verifiable record
+                  of what an agent actually did that an audit or a regulator will ask for.</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -478,5 +484,12 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/mpowa.js"></script>
   <script src="js/mpowa-reveal.js"></script>
+
+  <!-- GSAP + ScrollTrigger: the same public animation library orchid.security itself uses
+       for its pinned-card scroll effect (confirmed via their loaded scripts) — used here to
+       build the same interaction pattern with original config, not their code. -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="js/mpowa-pin.js"></script>
 </body>
 </html>

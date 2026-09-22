@@ -1253,15 +1253,21 @@ body {
   align-items: center;
 }
 
+/* Gradient-border pill, same technique measured on orchid.security's tag badges
+   (a gradient background peeking through a 1px inset), recoloured to cyan/purple
+   with a dark gradient fill instead of their purple-only tones. */
 .mp-eyebrow-pill {
   display: inline-block;
   padding: 0.4rem 1rem;
-  border: 1px solid var(--mp-border);
   border-radius: 999px;
   font-size: 0.74rem;
   font-weight: 500;
   color: var(--mp-muted-text);
   margin-bottom: 1.5rem;
+  background:
+    linear-gradient(var(--mp-bg), var(--mp-bg)) padding-box,
+    linear-gradient(135deg, rgba(0, 230, 207, 0.55), rgba(142, 69, 252, 0.4)) border-box;
+  border: 1px solid transparent;
 }
 
 .mp-hero-title {
@@ -1319,9 +1325,11 @@ body {
   color: var(--mp-muted-text);
 }
 
-/* ---- Flat panel: shared surface, no blur, hairline border, near-sharp corners ---- */
+/* ---- Flat panel: shared surface, hairline border, near-sharp corners.
+   Background carries the same subtle vertical glass-sheen gradient measured on
+   orchid.security's cards (rgba white 0 -> 0.05), over Mpowa's own card colour. ---- */
 .mp-panel {
-  background: var(--mp-card);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.04)), var(--mp-card);
   border: 1px solid var(--mp-border);
   border-radius: var(--mp-radius-tile);
   padding: 1.75rem;
@@ -1559,15 +1567,24 @@ body {
 .mp-btn-ghost:hover { border-color: var(--mp-cyan); }
 
 /* Pill radius here is a deliberate exception, matching Orchid's CTA anatomy —
-   every other button/tile on the page keeps the sharp/near-sharp ibm.com scale. */
+   every other button/tile on the page keeps the sharp/near-sharp ibm.com scale.
+   Hover glow is the same layered trick measured on their nav button (a second,
+   slightly lighter gradient layer that only becomes visible via box-shadow on
+   hover) — recoloured to Mpowa's cyan/purple. */
 .mp-btn-gradient {
+  position: relative;
   background: var(--mp-gradient);
   color: var(--mp-bg);
   border-radius: 999px;
   font-weight: 600;
+  box-shadow: 0 0 0 0 rgba(0, 230, 207, 0);
+  transition: box-shadow 0.25s ease, transform 0.15s ease;
 }
 
-.mp-btn-gradient:hover { opacity: 0.88; }
+.mp-btn-gradient:hover {
+  box-shadow: 0 8px 28px rgba(0, 230, 207, 0.28), 0 8px 28px rgba(142, 69, 252, 0.22);
+  transform: translateY(-1px);
+}
 
 .mp-btn-glass {
   background: rgba(255, 255, 255, 0.04);
@@ -1777,40 +1794,96 @@ body {
 .mp-tag-hold { border-color: var(--mp-purple); color: var(--mp-purple); }
 .mp-tag-fail { border-color: var(--mp-destructive); color: var(--mp-destructive); }
 
-/* ---- Why MPowa exists: problem-framing cards ---- */
-.mp-reason-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1rem;
+/* ---- Why MPowa exists: sticky header+stack, GSAP-scrubbed card crossfade ----
+   .mp-why-scroll's tall height and .mp-why-sticky's sticky position only apply
+   once mpowa-pin.js confirms GSAP set up successfully (html.mp-pin-active).
+   Without that — no GSAP, load failure, prefers-reduced-motion — this whole
+   block is just a normal-height section with cards stacked in ordinary flow. */
+.mp-why-pin {
+  padding-bottom: 2rem;
+}
+
+.mp-why-head {
+  position: relative;
+  padding: 1.5rem 0 0.5rem;
+  background: var(--mp-bg);
+}
+
+html.mp-pin-active .mp-why-scroll {
+  height: 170vh;
+  position: relative;
+}
+
+html.mp-pin-active .mp-why-sticky {
+  position: sticky;
+  top: 96px;
+}
+
+.mp-reason-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 460px;
+  margin: 0 auto;
 }
 
 .mp-reason-card {
-  padding: 1.5rem;
-  background: var(--mp-card);
+  position: relative;
+  padding: 1.75rem;
+  /* glass sheen, same technique measured on orchid.security's cards, recoloured */
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.05)), var(--mp-card);
   border: 1px solid var(--mp-border);
-  border-radius: var(--mp-radius-tile);
+  border-radius: 14px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
 }
 
-.mp-reason-card i {
-  font-size: 1.3rem;
-  color: var(--mp-cyan);
-  margin-bottom: 0.9rem;
-  display: block;
+.mp-reason-card-icon {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--mp-gradient);
+  margin-bottom: 1.1rem;
+}
+
+.mp-reason-card-icon i {
+  font-size: 1.1rem;
+  color: var(--mp-bg);
 }
 
 .mp-reason-card h3 {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--mp-text);
   margin-bottom: 0.5rem;
 }
 
 .mp-reason-card p {
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   line-height: 1.55;
   color: var(--mp-muted-text);
   margin: 0;
 }
+
+/* ---- Background glow orb: CSS recreation of Orchid's blurred hero orb image,
+   in MPowa's own cyan/purple rather than their asset or their teal/lime tones ---- */
+.mp-glow-orb {
+  position: absolute;
+  top: -120px;
+  right: -140px;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 230, 207, 0.35), rgba(142, 69, 252, 0.22) 45%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mp-hero { position: relative; overflow: hidden; }
+.mp-hero > *:not(.mp-glow-orb) { position: relative; z-index: 1; }
 
 /* ---- How Anchor Ledger works: numbered mechanism steps ---- */
 .mp-mechanism-steps {
@@ -1826,7 +1899,7 @@ body {
   display: flex;
   gap: 1.1rem;
   padding: 1.25rem;
-  background: var(--mp-card);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.04)), var(--mp-card);
   border: 1px solid var(--mp-border);
   border-left: 2px solid var(--mp-purple);
   border-radius: var(--mp-radius-tile);
@@ -1920,7 +1993,7 @@ body {
 }
 
 .mp-window {
-  background: var(--mp-card);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.04)), var(--mp-card);
   border: 1px solid var(--mp-border);
   border-radius: 10px;
   overflow: hidden;
@@ -2046,13 +2119,30 @@ html.mp-js .mp-reveal.is-visible {
 
 /* ---- Closing CTA band ---- */
 .mp-cta-band {
+  position: relative;
+  overflow: hidden;
   text-align: center;
   padding: 3.5rem 2rem;
   margin-bottom: 0;
-  background: var(--mp-card);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.04)), var(--mp-card);
   border: 1px solid var(--mp-border);
   border-radius: var(--mp-radius-tile);
 }
+
+.mp-cta-band::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 520px;
+  height: 240px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse, rgba(0, 230, 207, 0.18), rgba(142, 69, 252, 0.14) 50%, transparent 75%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.mp-cta-band > * { position: relative; z-index: 1; }
 
 .mp-cta-title {
   font-family: var(--mp-font-display);
