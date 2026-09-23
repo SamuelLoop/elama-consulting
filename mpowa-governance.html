@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="MPowa's governance layer: why it exists, how the Anchor Ledger captures, orders and anchors every agent action, and the compliance check history it produces. Unofficial concept, not affiliated with or endorsed by Mpowa (mpowa.io)." />
+  <title>MPowa — The Governance (Concept)</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+  <!-- Bootstrap 5.3 (grid/utilities + icons only — no Bootstrap theme colours used) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="mp-brand">
+
+  <div class="mp-bg-wash" aria-hidden="true"></div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <linearGradient id="mpGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#00E6CF" />
+        <stop offset="100%" stop-color="#8E45FC" />
+      </linearGradient>
+      <symbol id="mpowaNodeIcon" viewBox="0 0 40 40">
+        <circle cx="20" cy="20" r="18" fill="none" stroke="url(#mpGrad)" stroke-width="2.5" />
+        <g stroke="#F8FAFC" stroke-width="1.1" fill="none">
+          <polygon points="20,9 29,14.5 29,25.5 20,31 11,25.5 11,14.5" />
+          <line x1="20" y1="9" x2="20" y2="20" />
+          <line x1="29" y1="14.5" x2="20" y2="20" />
+          <line x1="29" y1="25.5" x2="20" y2="20" />
+          <line x1="20" y1="31" x2="20" y2="20" />
+          <line x1="11" y1="25.5" x2="20" y2="20" />
+          <line x1="11" y1="14.5" x2="20" y2="20" />
+        </g>
+        <g fill="#F8FAFC">
+          <circle cx="20" cy="9" r="1.6" />
+          <circle cx="29" cy="14.5" r="1.6" />
+          <circle cx="29" cy="25.5" r="1.6" />
+          <circle cx="20" cy="31" r="1.6" />
+          <circle cx="11" cy="25.5" r="1.6" />
+          <circle cx="11" cy="14.5" r="1.6" />
+          <circle cx="20" cy="20" r="1.8" />
+        </g>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- ===== NAV: shared across all three pages ===== -->
+  <nav class="mp-nav">
+    <a class="mp-mark" href="mpowa.html">
+      <span class="mp-mark-text">MP</span>
+      <svg class="mp-mark-icon"><use href="#mpowaNodeIcon"></use></svg>
+      <span class="mp-mark-text">WA</span>
+    </a>
+    <div class="mp-nav-links">
+      <a href="mpowa.html">The System</a>
+      <a href="mpowa-partners.html">The Market</a>
+      <a href="mpowa-governance.html" class="is-current">The Governance</a>
+    </div>
+    <a class="mp-btn mp-btn-gradient mp-btn-sm" href="mpowa.html#ask">Run a Compliance Check</a>
+  </nav>
+
+  <main class="mp-main">
+    <div class="mp-shell">
+
+      <section class="mp-hero mp-reveal" id="top">
+        <span class="mp-eyebrow-pill">Unofficial concept &mdash; not affiliated with or endorsed by Mpowa</span>
+        <h1 class="mp-hero-title">
+          Why MPowa exists, <span class="mp-welcome-accent">and how it proves it.</span>
+        </h1>
+        <p class="mp-hero-lede">
+          Agentic AI has no flight recorder by default. The Anchor Ledger is MPowa's answer —
+          every action captured, ordered, and anchored, with the compliance history to show for it.
+        </p>
+        <div class="mp-hero-actions">
+          <a class="mp-btn mp-btn-gradient mp-btn-lg" href="#mechanism">See How It Works</a>
+          <a class="mp-btn mp-btn-glass mp-btn-lg" href="#history">View Compliance History</a>
+        </div>
+      </section>
+
+      <!-- Why MPowa exists: sticky header+stack (native CSS position:sticky, no manual
+           spacer math) with GSAP driving a pure scrub crossfade on the cards. -->
+      <section class="mp-section mp-why-pin" id="why">
+        <div class="mp-why-scroll">
+          <div class="mp-why-sticky">
+            <div class="mp-section-head mp-why-head">
+              <span class="mp-eyebrow-pill">Why MPowa Exists</span>
+              <h2 class="mp-heading">Agentic AI has no flight recorder</h2>
+              <p class="mp-heading-note">
+                Autonomous agents are already making consequential decisions inside regulated
+                businesses — and most leave no tamper-proof, independently verifiable record of
+                what they did or why.
+              </p>
+            </div>
+
+            <div class="mp-reason-stack">
+              <div class="mp-reason-card">
+                <span class="mp-reason-card-icon"><i class="bi bi-file-earmark-x"></i></span>
+                <h3>No record survives the agent</h3>
+                <p>When something goes wrong, there's rarely a trustworthy account of what the
+                  agent actually did, in what order, or who — if anyone — was watching.</p>
+              </div>
+              <div class="mp-reason-card">
+                <span class="mp-reason-card-icon"><i class="bi bi-hourglass-split"></i></span>
+                <h3>Regulation has a deadline. Infrastructure doesn't.</h3>
+                <p>New AI regulation increasingly requires documented oversight of automated
+                  decisions — but mandating oversight doesn't create the plumbing to deliver it.</p>
+              </div>
+              <div class="mp-reason-card">
+                <span class="mp-reason-card-icon"><i class="bi bi-shield-exclamation"></i></span>
+                <h3>Training alone doesn't fix it</h3>
+                <p>Safety training reduces bad outcomes; it doesn't produce the verifiable record
+                  of what an agent actually did that an audit or a regulator will ask for.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- How Anchor Ledger works -->
+      <section class="mp-section mp-reveal" id="mechanism">
+        <div class="mp-section-head">
+          <span class="mp-eyebrow-pill">How It Works</span>
+          <h2 class="mp-heading">Every action, captured, ordered, and anchored</h2>
+          <p class="mp-heading-note">
+            The agent checks aren't a black box. Every step is written to the Anchor
+            Ledger, a three-layer record designed to survive scrutiny.
+          </p>
+        </div>
+
+        <ol class="mp-mechanism-steps">
+          <li class="mp-mechanism-step">
+            <span class="mp-mechanism-num">1</span>
+            <div>
+              <h3>Capture</h3>
+              <p>Every action an agent takes — a tool call, a message to another agent, a
+                human stepping in, a safety trigger — is written to an append-only log within
+                milliseconds.</p>
+            </div>
+          </li>
+          <li class="mp-mechanism-step">
+            <span class="mp-mechanism-num">2</span>
+            <div>
+              <h3>Order</h3>
+              <p>Actions are sealed into linked batches, each one cryptographically bound to
+                the one before it, so nothing can be quietly edited, removed, or reordered
+                after the fact.</p>
+            </div>
+          </li>
+          <li class="mp-mechanism-step">
+            <span class="mp-mechanism-num">3</span>
+            <div>
+              <h3>Anchor</h3>
+              <p>A fingerprint of each batch is committed to a public ledger — independent
+                proof that doesn't rely on taking MPowa's word for it.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- Compliance check history / ledger -->
+      <section class="mp-section mp-reveal" id="history" aria-label="Compliance check history">
+        <div class="mp-section-head">
+          <h2 class="mp-heading">Compliance check history</h2>
+          <p class="mp-heading-note">
+            Every verdict is written to the Anchor Ledger — a record you can point to later.
+            The links below are demo data only — they do not resolve to a real blockchain
+            transaction.
+          </p>
+        </div>
+
+        <div class="mp-panel">
+          <div class="mp-ledger-scroll">
+            <table class="mp-ledger-table">
+              <thead>
+                <tr>
+                  <th>Module</th>
+                  <th>Query</th>
+                  <th>Verdict</th>
+                  <th>Timestamp</th>
+                  <th>Anchor Ledger</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="mp-tag">Gold Law</span></td>
+                  <td class="mp-ledger-query">&ldquo;Can we hold client bullion under Gold Law custody rules?&rdquo;</td>
+                  <td><span class="mp-tag mp-tag-pass">Passed</span></td>
+                  <td class="mp-ledger-time">2026-09-18 14:32 UTC</td>
+                  <td>
+                    <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x4f2a7c119e31" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                      View <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="mp-tag">GDPR Compliance</span></td>
+                  <td class="mp-ledger-query">&ldquo;Can we transfer EU customer data to a US subprocessor?&rdquo;</td>
+                  <td><span class="mp-tag mp-tag-pass">Passed</span></td>
+                  <td class="mp-ledger-time">2026-09-17 09:04 UTC</td>
+                  <td>
+                    <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x9b6d2f0a51c8" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                      View <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="mp-tag">FCA Rule Breaker</span></td>
+                  <td class="mp-ledger-query">&ldquo;Flag any FCA breach in this outbound comms draft.&rdquo;</td>
+                  <td><span class="mp-tag mp-tag-hold">Hold</span></td>
+                  <td class="mp-ledger-time">2026-09-16 17:48 UTC</td>
+                  <td>
+                    <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x1a83ee4d7f02" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                      View <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="mp-tag">SEC Compliance</span></td>
+                  <td class="mp-ledger-query">&ldquo;Does this pitch deck comply with SEC Reg D exemptions?&rdquo;</td>
+                  <td><span class="mp-tag mp-tag-pass">Passed</span></td>
+                  <td class="mp-ledger-time">2026-09-15 11:21 UTC</td>
+                  <td>
+                    <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0xc740b1329da5" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                      View <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td><span class="mp-tag">Gold Law</span></td>
+                  <td class="mp-ledger-query">&ldquo;Verify chain-of-custody for a 1kg gold bar transfer.&rdquo;</td>
+                  <td><span class="mp-tag mp-tag-fail">Failed</span></td>
+                  <td class="mp-ledger-time">2026-09-14 08:57 UTC</td>
+                  <td>
+                    <a class="mp-history-link" href="https://ledger.mpowa.example/tx/0x7e015c9328bf" target="_blank" rel="noopener" title="Mock ledger entry — illustrative only, does not resolve to a real blockchain record">
+                      View <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Before / With MPowa -->
+      <section class="mp-section mp-reveal">
+        <div class="mp-section-head">
+          <span class="mp-eyebrow-pill">The Difference</span>
+          <h2 class="mp-heading">Simple, automated, provable</h2>
+          <p class="mp-heading-note">
+            Replacing the ad hoc review process most teams run today with one consistent,
+            logged pipeline.
+          </p>
+        </div>
+
+        <div class="mp-compare-grid">
+          <div class="mp-compare-col">
+            <span class="mp-compare-label mp-compare-label-before">Before MPowa</span>
+            <ul class="mp-compare-list">
+              <li><i class="bi bi-x-lg"></i> Compliance checks happen manually, after the fact</li>
+              <li><i class="bi bi-x-lg"></i> Evidence gets reconstructed when someone finally asks for it</li>
+              <li><i class="bi bi-x-lg"></i> Each regulation is interpreted ad hoc by whoever picks up the question</li>
+              <li><i class="bi bi-x-lg"></i> No single record ties a decision back to the rule it was checked against</li>
+            </ul>
+          </div>
+          <div class="mp-compare-col mp-compare-col-with">
+            <span class="mp-compare-label mp-compare-label-with">With MPowa</span>
+            <ul class="mp-compare-list">
+              <li><i class="bi bi-check-lg"></i> Every question runs the same automated pipeline before you get an answer</li>
+              <li><i class="bi bi-check-lg"></i> Every check is written to the Anchor Ledger the moment it happens</li>
+              <li><i class="bi bi-check-lg"></i> Governance modules encode each rulebook once, consistently</li>
+              <li><i class="bi bi-check-lg"></i> Any verdict traces back to the exact check that produced it</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Closing CTA -->
+      <section class="mp-cta-band mp-reveal">
+        <h2 class="mp-cta-title">Now the question is&hellip;</h2>
+        <p class="mp-cta-lede">What can MPowa do for your compliance program?</p>
+        <a class="mp-btn mp-btn-gradient mp-btn-lg" href="mpowa.html#ask">Run a Compliance Check <i class="bi bi-arrow-right"></i></a>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="mp-footer">
+    <p>
+      Unofficial concept interface exploring an alternative MPowa UI, built by
+      <a href="index.html">Elämä Consulting</a>. Visual identity (colour, type, mark) is
+      inspired by <a href="https://www.mpowa.io/" target="_blank" rel="noopener">mpowa.io</a> —
+      this page is not affiliated with, endorsed by, or connected to Mpowa. Page structure and
+      motion are inspired by <a href="https://www.orchid.security/" target="_blank" rel="noopener">orchid.security</a>
+      (rebuilt from scratch, not their code). Agent checks and ledger records shown are mocked
+      for demonstration only.
+    </p>
+  </footer>
+
+  <!-- Bootstrap Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/mpowa-reveal.js"></script>
+
+  <!-- GSAP + ScrollTrigger: drives the "Why MPowa Exists" sticky-stack crossfade
+       (setupWhyStack in mpowa-pin.js) — the same script used on mpowa.html, its
+       other setup functions no-op here since their target elements live on the
+       other pages. -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="js/mpowa-pin.js"></script>
+</body>
+</html>

@@ -1237,6 +1237,12 @@ body {
 
 .mp-nav-links a:hover { color: var(--mp-text); }
 
+/* Shared 3-tab top nav (The System / The Market / The Governance) — marks
+   which of the three pages is currently open. */
+.mp-nav-links a.is-current {
+  color: var(--mp-cyan);
+}
+
 @media (max-width: 900px) {
   .mp-nav-links { display: none; }
 }
