@@ -1163,12 +1163,12 @@ body {
 
 .mp-brand {
   --mp-bg:          #0D1121;  /* toned down from mpowa.io's literal #050C24 — same navy family, less saturated/vivid blue, calmer for a full page of dense content */
-  --mp-card:        #14232E;  /* retinted sky blue (hue ~205, same lightness as the old #171922) — every card/box in the system reads off this one token */
+  --mp-card:        #123749;  /* brighter, more saturated sky blue (hue ~200, was reading grey-green at the previous low saturation) — every card/box in the system reads off this one token */
   --mp-cyan:        #00E6CF;  /* mpowa.io --primary / --mpowa-cyan */
   --mp-purple:      #8E45FC;  /* mpowa.io --secondary / --mpowa-purple */
-  --mp-muted:       #1B2E3A;  /* retinted sky blue, same relationship to --mp-card as the old #21232E had to #171922 */
+  --mp-muted:       #112D3B;  /* same hue/saturation family as --mp-card */
   --mp-muted-text:  #94A3B8;  /* mpowa.io --muted-foreground */
-  --mp-border:      #263B49;  /* retinted sky blue (same hue as --mp-card, lighter for a visible flat border) */
+  --mp-border:      #20556F;  /* brighter sky blue (same hue as --mp-card, higher saturation + lightness for a clearly-blue visible border) */
   --mp-text:        #F8FAFC;  /* mpowa.io --foreground */
   --mp-destructive: #EF4444;  /* mpowa.io --destructive */
 
@@ -1535,9 +1535,9 @@ body {
 .mp-ask-frame {
   max-width: 1180px;
   margin: 0 auto;
-  background: linear-gradient(180deg, #1A2C38 0%, var(--mp-card) 100%);
+  background: linear-gradient(180deg, #184359 0%, var(--mp-card) 100%);
   border: 1px solid var(--mp-border);
-  border-top-color: #3D5868;
+  border-top-color: #27749B;
   border-radius: var(--mp-radius-tile);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
