@@ -2434,8 +2434,8 @@ html.mp-js .mp-fly-in.is-visible {
 .mp-for-grid {
   display: flex;
   align-items: flex-start;
-  gap: 1.25rem;
-  margin-top: -4.25rem;
+  gap: 3rem;
+  margin-top: -2.25rem;
   position: relative;
   z-index: 2;
 }
@@ -2443,13 +2443,13 @@ html.mp-js .mp-fly-in.is-visible {
 .mp-for-col {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 3rem;
   flex: 1 1 0;
   min-width: 0;
 }
 
 .mp-for-col-offset {
-  margin-top: 3.5rem;
+  margin-top: 4.5rem;
 }
 
 @media (max-width: 650px) {

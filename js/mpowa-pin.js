@@ -136,11 +136,17 @@
     var colB = section.querySelector('.mp-for-col-offset');
     if (!colA || !colB) return;
 
+    // Range increased substantially (was +/-34 / +/-58px) — at the old magnitude
+    // the cards barely moved relative to the section's full enter-to-exit scroll
+    // distance, so they sat almost locked over the heading text for most of the
+    // scroll instead of clearing it. This is now a real footrace: the cards
+    // travel far enough, early enough, that scrolling past actually gets you
+    // past them.
     var trigger = { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 0.6 };
-    gsap.fromTo(colA, { y: 34 }, { y: -34, ease: 'none', scrollTrigger: trigger });
-    gsap.fromTo(colB, { y: 58 }, { y: -12, ease: 'none', scrollTrigger: trigger });
+    gsap.fromTo(colA, { y: 160 }, { y: -160, ease: 'none', scrollTrigger: trigger });
+    gsap.fromTo(colB, { y: 220 }, { y: -80, ease: 'none', scrollTrigger: trigger });
     if (head) {
-      gsap.fromTo(head, { y: -18 }, { y: 14, ease: 'none', scrollTrigger: trigger });
+      gsap.fromTo(head, { y: -60 }, { y: 40, ease: 'none', scrollTrigger: trigger });
     }
   }
 
