@@ -2408,13 +2408,10 @@ html.mp-js .mp-fly-in.is-visible {
 .mp-partner-tile:nth-child(3) { transition-delay: 0.18s; }
 .mp-partner-tile:nth-child(4) { transition-delay: 0.27s; }
 
-/* Cards now nest inside two .mp-for-col wrappers, so nth-child on the card
-   itself only ever resolves to 1 or 2 within its own column — target the
-   column too so all four cards keep distinct cascade steps. */
-.mp-for-col:not(.mp-for-col-offset) .mp-for-card:nth-child(1) { transition-delay: 0s; }
-.mp-for-col:not(.mp-for-col-offset) .mp-for-card:nth-child(2) { transition-delay: 0.18s; }
-.mp-for-col-offset .mp-for-card:nth-child(1) { transition-delay: 0.09s; }
-.mp-for-col-offset .mp-for-card:nth-child(2) { transition-delay: 0.27s; }
+.mp-for-card:nth-child(1) { transition-delay: 0s; }
+.mp-for-card:nth-child(2) { transition-delay: 0.09s; }
+.mp-for-card:nth-child(3) { transition-delay: 0.18s; }
+.mp-for-card:nth-child(4) { transition-delay: 0.27s; }
 
 @media (prefers-reduced-motion: reduce) {
   html.mp-js .mp-reveal {
@@ -2425,40 +2422,20 @@ html.mp-js .mp-fly-in.is-visible {
 }
 
 /* ---- Who MPowa is for ---- */
-/* Two independent flex columns rather than a single grid — a shared grid row
-   would grow to fit whatever margin-top staggers a cell by, which just adds
-   dead space (cards looked "bigger") instead of real overlap. Independent
-   columns let the second one sit at a different vertical offset entirely,
-   pulled up over the heading/note text above so the translucent glass cards
-   genuinely float over it. */
+/* Standard fixed 2x2 grid, sitting in normal flow below the heading text —
+   no overlap, no stagger, no scroll-driven parallax (see mpowa-pin.js: the
+   floating/staggered/parallax treatment this section previously had didn't
+   read well and there wasn't time to tune it, so it's been dropped in
+   favour of a plain, reliable grid). */
 .mp-for-grid {
-  display: flex;
-  align-items: flex-start;
-  gap: 3rem;
-  margin-top: -2.25rem;
-  position: relative;
-  z-index: 2;
-}
-
-.mp-for-col {
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
-  flex: 1 1 0;
-  min-width: 0;
-}
-
-.mp-for-col-offset {
-  margin-top: 4.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
 }
 
 @media (max-width: 650px) {
   .mp-for-grid {
-    flex-direction: column;
-    margin-top: 1rem;
-  }
-  .mp-for-col-offset {
-    margin-top: 0;
+    grid-template-columns: 1fr;
   }
 }
 

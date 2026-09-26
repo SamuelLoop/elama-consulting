@@ -120,41 +120,10 @@
     });
   }
 
-  // "Who It's For" cards: the two columns drift at slightly different rates
-  // as the section scrolls, and the heading drifts a little the other way —
-  // that relative motion between layers is what actually reads as "floating
-  // over the text," not just a static staggered offset.
-  function setupForGridParallax() {
-    var section = document.querySelector('#for');
-    if (!section) return;
-    if (window.matchMedia && window.matchMedia('(max-width: 650px)').matches) {
-      return;
-    }
-
-    var head = section.querySelector('.mp-section-head');
-    var colA = section.querySelector('.mp-for-col:not(.mp-for-col-offset)');
-    var colB = section.querySelector('.mp-for-col-offset');
-    if (!colA || !colB) return;
-
-    // Range increased substantially (was +/-34 / +/-58px) — at the old magnitude
-    // the cards barely moved relative to the section's full enter-to-exit scroll
-    // distance, so they sat almost locked over the heading text for most of the
-    // scroll instead of clearing it. This is now a real footrace: the cards
-    // travel far enough, early enough, that scrolling past actually gets you
-    // past them.
-    var trigger = { trigger: section, start: 'top bottom', end: 'bottom top', scrub: 0.6 };
-    gsap.fromTo(colA, { y: 160 }, { y: -160, ease: 'none', scrollTrigger: trigger });
-    gsap.fromTo(colB, { y: 220 }, { y: -80, ease: 'none', scrollTrigger: trigger });
-    if (head) {
-      gsap.fromTo(head, { y: -60 }, { y: 40, ease: 'none', scrollTrigger: trigger });
-    }
-  }
-
   function setup() {
     setupWhyStack();
     setupWindowZoom();
     setupAskFrameZoom();
-    setupForGridParallax();
   }
 
   if (document.readyState === 'complete') {
