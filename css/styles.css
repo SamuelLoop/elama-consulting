@@ -1163,12 +1163,12 @@ body {
 
 .mp-brand {
   --mp-bg:          #0D1121;  /* toned down from mpowa.io's literal #050C24 — same navy family, less saturated/vivid blue, calmer for a full page of dense content */
-  --mp-card:        #0A3B7B;  /* hue/saturation matched to the reference RGB(59,139,247) azure, darkened for a card fill — every card/box in the system reads off this one token */
+  --mp-card:        #071F40;  /* darker dark-blue — same hue/saturation family as the reference azure, lightness pulled way down so cards read as dark blue rather than a bright fill */
   --mp-cyan:        #00E6CF;  /* mpowa.io --primary / --mpowa-cyan */
   --mp-purple:      #8E45FC;  /* mpowa.io --secondary / --mpowa-purple */
-  --mp-muted:       #082F66;  /* same hue/saturation family as --mp-card */
+  --mp-muted:       #061832;  /* same hue/saturation family as --mp-card */
   --mp-muted-text:  #94A3B8;  /* mpowa.io --muted-foreground */
-  --mp-border:      #0D4FA5;  /* same hue/saturation as --mp-card, lighter for a visible flat border */
+  --mp-border:      #0C356E;  /* same hue/saturation as --mp-card, lighter for a visible flat border */
   --mp-text:        #F8FAFC;  /* mpowa.io --foreground */
   --mp-destructive: #EF4444;  /* mpowa.io --destructive */
 
@@ -1536,9 +1536,9 @@ body {
 .mp-ask-frame {
   max-width: 1180px;
   margin: 0 auto;
-  background: linear-gradient(180deg, #0C448D 0%, var(--mp-card) 100%);
+  background: linear-gradient(180deg, #0A2A57 0%, var(--mp-card) 100%);
   border: 1px solid var(--mp-border);
-  border-top-color: #1166D4;
+  border-top-color: #104793;
   border-radius: var(--mp-radius-tile);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
